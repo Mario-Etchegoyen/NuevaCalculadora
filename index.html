@@ -4,100 +4,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Página</title>
+  <meta name="description" content="Calculadora de préstamos prendarios - TuPrendario.com">
+  <meta name="keywords" content="préstamos, prendarios, calculadora, financiamiento, vehículos">
+  <title>Calculadora de Préstamos Prendarios - TuPrendario.com</title>
   <style>
-    /* === VARIABLES CSS === */
+    /* === VARIABLES CSS OPTIMIZADAS === */
     :root {
-      /* Colores */
-      --color-white: #ffffff;
-      --color-gray-semi: rgba(128, 128, 128, 0.5);
-      --color-white-08: rgba(255, 255, 255, 0.8);
-      --color-white-09: rgba(255, 255, 255, 0.9);
-      --color-white-1: rgba(255, 255, 255, 1);
-      --color-white-01: rgba(255, 255, 255, 0.1);
-      --color-white-02: rgba(255, 255, 255, 0.2);
-      --color-header-bg: rgba(211, 211, 211, 0.2);
-      --color-active-button: red;
-      --color-card-primary: rgba(41, 112, 143, 0.95);
-      --color-card-secondary: rgba(30, 147, 197, 0.9);
-      --color-shadow-light: rgba(234, 234, 234, 0.5);
-      --color-shadow-dark: rgba(0, 0, 0, 0.2);
-      --color-text-light: #f5f5f5;
-      --color-text-light-alpha: #f5f5f5aa;
-      --color-text-dark: #333;
+      /* Colores base */
+      --white: #ffffff;
+      --white-10: rgba(255, 255, 255, 0.1);
+      --white-20: rgba(255, 255, 255, 0.2);
+      --white-80: rgba(255, 255, 255, 0.8);
+      --white-90: rgba(255, 255, 255, 0.9);
+      --gray-50: rgba(128, 128, 128, 0.5);
+      --blue-primary: rgba(41, 112, 143, 0.95);
+      --blue-secondary: rgba(30, 147, 197, 0.9);
+      --blue-hover: rgba(95, 172, 220);
+      --blue-active: rgba(36, 130, 170, 0.925);
+      --text-light: #f5f5f5;
+      --text-light-alpha: #f5f5f5aa;
+      --text-dark: #333;
+      --shadow-light: rgba(234, 234, 234, 0.5);
+      --shadow-dark: rgba(0, 0, 0, 0.2);
+      --success-green: #009E4F;
 
       /* Dimensiones */
-      --height-element: 3vh;
-      --height-card: 55vh;
-      --height-container: 70vh;
-      --height-form: 66vh;
-      --width-container: 55vh;
-      --width-form: 51vh;
-      --width-card: 47vh;
+      --element-height: 3vh;
+      --card-height: 55vh;
+      --container-height: 70vh;
+      --form-height: 66vh;
+      --container-width: 55vh;
+      --form-width: 51vh;
+      --card-width: 47vh;
 
       /* Espaciados */
-      --spacing-small: 0.5vh;
-      --spacing-medium: 1vh;
-      --spacing-large: 2vh;
-      --spacing-xlarge: 3vh;
+      --space-xs: 0.5vh;
+      --space-sm: 1vh;
+      --space-md: 2vh;
+      --space-lg: 3vh;
+
       /* Border radius */
-      --radius-small: 6px;
-      --radius-medium: 12px;
-      --radius-large: 1vw;
-      --radius-xlarge: 0.75vw;
-      --radius-button: 0.8vw;
-      --radius-nav-button: 1.5vh;
+      --radius-xs: 6px;
+      --radius-sm: 12px;
+      --radius-md: 0.75vw;
+      --radius-lg: 1vw;
+      --radius-nav: 1.5vh;
       --radius-info: 0.42vh;
 
-      /* Transiciones */
-      --transition-base: 0.3s ease;
-      --transition-transform: transform 0.3s ease;
-      --transition-all: all 0.3s ease;
-
-      /* Sombras */
-      --shadow-card: 0 8px 32px var(--color-shadow-dark);
-      --shadow-element: 0 2vh 4vh var(--color-shadow-light);
-      --shadow-hover: 0 0 4vh var(--color-shadow-light);
-      --shadow-header: 0 2px 5px var(--color-white-02);
+      /* Transiciones y sombras */
+      --transition: all 0.3s ease;
+      --shadow-card: 0 8px 32px var(--shadow-dark);
+      --shadow-element: 0 2vh 4vh var(--shadow-light);
+      --shadow-hover: 0 0 4vh var(--shadow-light);
+      --shadow-header: 0 2px 5px var(--white-20);
     }
 
+    /* === ESTILOS BASE === */
     html,
     body {
       height: 100vh;
       width: 100%;
       overflow: hidden;
+      margin: 0;
+      font-family: Arial, sans-serif;
     }
 
     body {
-      font-family: Arial, sans-serif;
-      margin: 0vh 0;
-      background-image: url('Imagenes/Agencia.png');
-      background-size: cover;
-      background-position: top center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      overflow: hidden;
+      background: url('Imagenes/Agencia.png') top center / cover no-repeat fixed;
     }
 
+    /* === HEADER === */
     header {
-      background-color: var(--color-header-bg);
-      padding: 0px 0px;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
-      z-index: 1000;
+      height: 15vh;
+      background-color: var(--white-20);
       box-shadow: var(--shadow-header);
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 15vh;
+      z-index: 1000;
     }
 
     header a {
       text-decoration: none;
       text-align: center;
-      color: var(--color-text-light);
+      color: var(--text-light);
       font-weight: bold;
     }
 
@@ -112,9 +106,10 @@
       font-size: 3vh;
       line-height: 1;
       text-align: left;
-      color: var(--color-text-light-alpha);
+      color: var(--text-light-alpha);
     }
 
+    /* === LAYOUT PRINCIPAL === */
     main {
       width: 100%;
       height: 85vh;
@@ -123,31 +118,6 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-    }
-
-    .contenedor-padre {
-      height: var(--height-container);
-      width: var(--width-container);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background-color: var(--color-gray-semi);
-      border-radius: var(--radius-large);
-      box-shadow: var(--shadow-element);
-    }
-
-    .contenedor-form {
-      height: var(--height-form);
-      width: var(--width-form);
-      background-color: var(--color-gray-semi);
-      border: 2px solid var(--color-white);
-      border-radius: var(--radius-xlarge);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      box-shadow: var(--shadow-element);
     }
 
     section {
@@ -160,90 +130,116 @@
       align-items: center;
     }
 
+    /* === CONTENEDORES === */
+    .contenedor-padre {
+      height: var(--container-height);
+      width: var(--container-width);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--gray-50);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-element);
+    }
+
+    .contenedor-form {
+      height: var(--form-height);
+      width: var(--form-width);
+      background-color: var(--gray-50);
+      border: 2px solid var(--white);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: var(--shadow-element);
+    }
+
+    /* === NAVEGACIÓN === */
     .nav-buttons {
       position: absolute;
       right: 2vw;
       display: flex;
       flex-direction: column;
-      gap: 1vh;
+      gap: var(--space-sm);
     }
 
     .nav-button {
-      background-color: var(--color-white-08);
+      background-color: var(--white-80);
       border: none;
-      padding: var(--spacing-small) 1.5vw;
-      border-radius: var(--radius-nav-button);
+      padding: var(--space-xs) 1.5vw;
+      border-radius: var(--radius-nav);
       cursor: pointer;
       font-weight: bold;
       font-size: 1.8vh;
-      height: var(--height-element);
-      transition: var(--transition-all), var(--transition-transform);
+      height: var(--element-height);
+      transition: var(--transition);
     }
 
     .nav-button:hover {
-      background-color: rgba(95, 172, 220, 0.514);
+      background-color: var(--blue-hover);
     }
 
     .nav-button.active {
-      background-color: rgba(36, 130, 170, 0.925);
-      color: var(--color-white);
+      background-color: var(--blue-active);
+      color: var(--white);
       transform: scale(1.15);
     }
 
+    /* === BOTONES DE FORMULARIO === */
     .form-button {
-      background-color: var(--color-white-09);
-      border: 2px solid var(--color-white);
+      background-color: var(--white-90);
+      border: 2px solid var(--white);
       padding: 0 2vw;
-      border-radius: var(--radius-button);
+      border-radius: var(--radius-md);
       cursor: pointer;
       font-weight: bold;
       font-size: 2vh;
-      color: var(--color-text-dark);
-      margin-top: 3vh;
-      height: var(--height-element);
+      color: var(--text-dark);
+      margin-top: var(--space-lg);
+      height: var(--element-height);
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: var(--transition-all), var(--transition-transform);
+      transition: var(--transition);
       box-shadow: var(--shadow-element);
     }
 
     .form-button:hover {
-      background-color: var(--color-white-1);
+      background-color: var(--white);
       transform: scale(1.05);
       box-shadow: var(--shadow-hover);
     }
 
-    /* === ESTILOS PARA TARJETAS MODERNAS DEL FORMULARIO === */
+    /* === TARJETAS DE FORMULARIO === */
     .form-card {
-      height: var(--height-card);
-      max-height: var(--height-card);
-      width: var(--width-card);
-      background: linear-gradient(135deg, var(--color-card-primary), var(--color-card-secondary));
-      border-radius: var(--radius-medium);
-      margin-bottom: 0;
-      box-shadow: var(--shadow-card);
-      border: 1px solid var(--color-white-01);
+      height: var(--card-height);
+      max-height: var(--card-height);
+      width: var(--card-width);
+      background: linear-gradient(135deg, var(--blue-primary), var(--blue-secondary));
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--white-10);
       backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-card);
+      transition: var(--transition);
       overflow: visible;
-      transition: var(--transition-transform), box-shadow var(--transition-base);
       min-height: fit-content;
     }
 
     .form-card:hover {
-      transform: translateY(-0px);
       box-shadow: var(--shadow-hover);
     }
 
     .card-header {
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
-      padding: 2vh 5vh;
-      border-bottom: 1px solid var(--color-white-01);
+      padding: var(--space-md) 5vh;
+      border-bottom: 1px solid var(--white-10);
       text-align: left;
     }
 
     .card-title {
-      color: var(--color-white);
+      color: var(--white);
       font-size: 1em;
       font-weight: 600;
       margin: 0;
@@ -251,22 +247,21 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: var(--spacing-small);
+      gap: var(--space-xs);
     }
 
     .card-content {
-      padding: var(--spacing-xlarge) var(--spacing-xlarge) 0.2vh var(--spacing-xlarge);
+      padding: var(--space-lg) var(--space-lg) 0.2vh var(--space-lg);
       display: block;
-      visibility: visible;
       min-height: 100px;
       overflow: visible;
     }
 
+    /* === FORMULARIOS === */
     .form-row {
       display: flex;
-      gap: var(--spacing-medium);
+      gap: var(--space-sm);
       align-items: flex-start;
-      visibility: visible;
       min-height: 8vh;
     }
 
@@ -274,7 +269,6 @@
       flex: 1;
       min-width: 0;
       display: block;
-      visibility: visible;
     }
 
     .form-group.full-width {
@@ -282,7 +276,7 @@
     }
 
     .form-group label {
-      color: var(--color-white);
+      color: var(--white);
       font-weight: bold;
       font-size: 0.7em;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -290,60 +284,46 @@
       margin-bottom: 4px;
     }
 
-    .form-group input,
-    .form-group select {
+    .form-group input {
       width: 100%;
-      height: var(--height-element);
+      height: var(--element-height);
       padding: 0;
-      border: 1px solid var(--color-white-02);
-      border-radius: var(--radius-small);
-      background: var(--color-white-09);
-      color: var(--color-white);
+      border: 1px solid var(--white-20);
+      border-radius: var(--radius-xs);
+      background: var(--white-90);
+      color: var(--white);
       font-size: 0.8em;
       backdrop-filter: blur(5px);
-      transition: var(--transition-all);
+      transition: var(--transition);
       display: flex;
       align-items: center;
       justify-content: center;
       box-sizing: border-box;
-      -webkit-appearance: none;
-      -moz-appearance: none;
+      text-align: center;
       appearance: none;
-      text-align: center;
     }
 
-    /* Estilos para las opciones de los selects */
-    .form-group select option {
-      background: rgba(95, 172, 220, 0.514);
-      color: var(--color-text-dark);
-      padding: 8px 12px;
-      font-size: 0.8em;
-      border: none;
-      outline: none;
-      text-align: center;
-    }
-
-    .form-group select option:hover,
-    .form-group select option:focus {
-      background: rgba(95, 172, 220, 0.8);
-      color: var(--color-text-dark);
-    }
-
-    .form-group input:focus,
-    .form-group select:focus {
+    .form-group input:focus {
       outline: none;
       border-color: rgba(255, 255, 255, 0.5);
       background: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 0 0 2px var(--color-white-01);
+      box-shadow: 0 0 0 2px var(--white-10);
     }
 
-    /* === ESTILOS PARA TASA UVA === */
+    /* Estilos para texto ingresado en inputs */
+    .form-group input:not(:placeholder-shown) {
+      color: #000000;
+      font-weight: bold;
+      background: var(--success-green);
+    }
+
+    /* === SECCIÓN TASA UVA === */
     .frase-moto-info {
       display: block;
       margin: 0.1vh auto;
-      padding: 0.42vh var(--spacing-small);
-      color: var(--color-white);
-      background: var(--color-card-secondary);
+      padding: var(--radius-info) var(--space-xs);
+      color: var(--white);
+      background: var(--blue-secondary);
       font-weight: normal;
       border-radius: var(--radius-info);
       min-width: 100px;
@@ -365,24 +345,23 @@
     }
 
     #frase-uva-info {
-      background: var(--color-white-09);
-      color: var(--color-card-primary);
+      background: var(--white-90);
+      color: var(--blue-primary);
     }
 
     .lista-vehiculos {
       list-style-type: none;
       padding: 0;
-      margin: 0;
-      color: var(--color-white);
+      margin: 0 0 0 1ch;
+      color: var(--white);
       text-align: left;
       font-size: 0.7em;
-      margin-left: 1ch;
     }
 
     .lista-vehiculos li {
       margin-bottom: 0;
       display: block;
-      color: var(--color-card-primary);
+      color: var(--blue-primary);
     }
 
     .lista-vehiculos li div {
@@ -393,20 +372,132 @@
     .lista-vehiculos li::before {
       content: none;
     }
+
+    /* === CUSTOM SELECTS === */
+    .custom-select {
+      position: relative;
+      width: 100%;
+      height: var(--element-height);
+      background: var(--white-90);
+      border: 1px solid var(--white-20);
+      border-radius: var(--radius-xs);
+      font-size: 0.8em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-sizing: border-box;
+      transition: var(--transition);
+    }
+
+    /* Estilo específico para el texto seleccionado */
+    .custom-select .selected-text {
+      color: rgba(100, 100, 100, 0.9);
+    }
+
+    /* Estilos para cuando hay un valor seleccionado en el select */
+    .custom-select.has-value .selected-text {
+      color: #000000;
+      font-weight: bold;
+    }
+
+    .custom-select::after {
+      content: '▼';
+      position: absolute;
+      right: 2px;
+      color: var(--white);
+      font-size: 0.7em;
+      pointer-events: none;
+    }
+
+    .custom-select.open::after {
+      content: '▲';
+    }
+
+    .custom-select:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 0 2px var(--white-10);
+    }
+
+    .custom-select.focused {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+    }
+
+    /* El verde debe tener prioridad sobre focus y focused */
+    .custom-select.has-value,
+    .custom-select.has-value:focus,
+    .custom-select.has-value.focused {
+      background: var(--success-green);
+    }
+
+    .custom-options {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--blue-hover);
+      border: 1px solid var(--white-20);
+      border-radius: var(--radius-xs);
+      border-top: none;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+    }
+
+    .custom-options.show {
+      display: block;
+    }
+
+    .custom-option {
+      padding: 8px 12px;
+      color: var(--text-dark);
+      cursor: pointer;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .custom-option:hover {
+      background: rgba(60, 140, 180, 0.85);
+      color: black;
+      font-weight: bold;
+    }
+
+    .custom-option.highlighted {
+      background: rgba(60, 140, 180, 0.85);
+      color: black;
+      font-weight: bold;
+    }
+
+    .custom-option:first-child {
+      border-top-left-radius: var(--radius-xs);
+      border-top-right-radius: var(--radius-xs);
+    }
+
+    .custom-option:last-child {
+      border-bottom-left-radius: var(--radius-xs);
+      border-bottom-right-radius: var(--radius-xs);
+    }
   </style>
 </head>
 
 <body>
   <header>
-    <a href="https://www.tuprendario.com">
+    <a href="https://www.tuprendario.com" rel="noopener" target="_blank" aria-label="Ir a TuPrendario.com">
       <h1>TuPrendario.com</h1>
       <p>Préstamos Prendarios para Vos</p>
     </a>
-    <div class="nav-buttons">
-      <button class="nav-button" onclick="showSection('calculadora')">Calculadora</button>
-      <button class="nav-button" onclick="showSection('datero')">Datero</button>
-      <button class="nav-button" onclick="showSection('contacto')">Contacto</button>
-    </div>
+    <nav class="nav-buttons" role="navigation" aria-label="Navegación principal">
+      <button class="nav-button" onclick="showSection('calculadora')" aria-label="Ir a calculadora">Calculadora</button>
+      <button class="nav-button" onclick="showSection('datero')" aria-label="Ir a datero">Datero</button>
+      <button class="nav-button" onclick="showSection('contacto')" aria-label="Ir a contacto">Contacto</button>
+    </nav>
   </header>
   <main>
     <section id="calculadora">
@@ -427,58 +518,74 @@
               </div>
               <div class="form-row">
                 <div class="form-group">
-                  <label for="tipoVehiculo">Tipo de Vehículo:</label> <select id="tipoVehiculo" name="tipoVehiculo">
-                    <option value="" hidden>Seleccioná Vehículo</option>
-                    <option value="auto">Auto/Camioneta</option>
-                    <option value="utilitario">Utilitario</option>
-                    <option value="moto">Moto</option>
-                    <option value="cuatriciclo">Cuatriciclo/Quad/SSV</option>
-                  </select>
+                  <label for="tipoVehiculo">Tipo de Vehículo:</label>
+                  <div class="custom-select" id="tipoVehiculo" tabindex="0">
+                    <span class="selected-text">Seleccioná Vehículo</span>
+                    <div class="custom-options">
+                      <div class="custom-option" data-value="auto">Auto/Camioneta</div>
+                      <div class="custom-option" data-value="utilitario">Utilitario</div>
+                      <div class="custom-option" data-value="moto">Moto</div>
+                      <div class="custom-option" data-value="cuatriciclo">Cuatriciclo/Quad/SSV</div>
+                    </div>
+                  </div>
+                  <input type="hidden" name="tipoVehiculo" id="tipoVehiculoValue">
                 </div>
                 <div class="form-group">
-                  <label for="tipoCombustible">Tipo de Combustible:</label> <select id="tipoCombustible"
-                    name="tipoCombustible">
-                    <option value="" hidden>Seleccioná Combustible</option>
-                    <option value="nafta">Nafta</option>
-                    <option value="diesel">Diesel</option>
-                    <option value="gnc">GNC</option>
-                  </select>
+                  <label for="tipoCombustible">Tipo de Combustible:</label>
+                  <div class="custom-select" id="tipoCombustible" tabindex="0">
+                    <span class="selected-text">Seleccioná Combustible</span>
+                    <div class="custom-options">
+                      <div class="custom-option" data-value="nafta">Nafta</div>
+                      <div class="custom-option" data-value="diesel">Diesel</div>
+                      <div class="custom-option" data-value="gnc">GNC</div>
+                    </div>
+                  </div>
+                  <input type="hidden" name="tipoCombustible" id="tipoCombustibleValue">
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-group">
                   <label for="anio">Año:</label>
-                  <select id="anio" name="anio">
-                    <option value="" hidden>Seleccioná Año</option>
-                    <option value="2024">2024</option>
-                    <option value="2023">2023</option>
-                    <option value="2022">2022</option>
-                    <option value="2021">2021</option>
-                    <option value="2020">2020</option>
-                  </select>
+                  <div class="custom-select" id="anio" tabindex="0">
+                    <span class="selected-text">Seleccioná Año</span>
+                    <div class="custom-options">
+                      <div class="custom-option" data-value="2024">2024</div>
+                      <div class="custom-option" data-value="2023">2023</div>
+                      <div class="custom-option" data-value="2022">2022</div>
+                      <div class="custom-option" data-value="2021">2021</div>
+                      <div class="custom-option" data-value="2020">2020</div>
+                    </div>
+                  </div>
+                  <input type="hidden" name="anio" id="anioValue">
                 </div>
                 <div class="form-group">
                   <label for="plazo">Plazo:</label>
-                  <select id="plazo" name="plazo">
-                    <option value="" hidden>Seleccioná Plazo</option>
-                    <option value="12">12 meses</option>
-                    <option value="24">24 meses</option>
-                    <option value="36">36 meses</option>
-                    <option value="48">48 meses</option>
-                    <option value="60">60 meses</option>
-                  </select>
+                  <div class="custom-select" id="plazo" tabindex="0">
+                    <span class="selected-text">Seleccioná Plazo</span>
+                    <div class="custom-options">
+                      <div class="custom-option" data-value="12">12 meses</div>
+                      <div class="custom-option" data-value="24">24 meses</div>
+                      <div class="custom-option" data-value="36">36 meses</div>
+                      <div class="custom-option" data-value="48">48 meses</div>
+                      <div class="custom-option" data-value="60">60 meses</div>
+                    </div>
+                  </div>
+                  <input type="hidden" name="plazo" id="plazoValue">
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-group full-width">
                   <label for="tasaInteres">Tasa de Interés:</label>
-                  <select id="tasaInteres" name="tasaInteres">
-                    <option value="" hidden>Seleccioná Tasa de Interés</option>
-                    <option value="15">15% anual</option>
-                    <option value="18">18% anual</option>
-                    <option value="20">20% anual</option>
-                    <option value="25">25% anual</option>
-                  </select>
+                  <div class="custom-select" id="tasaInteres" tabindex="0">
+                    <span class="selected-text">Seleccioná Tasa de Interés</span>
+                    <div class="custom-options">
+                      <div class="custom-option" data-value="15">15% anual</div>
+                      <div class="custom-option" data-value="18">18% anual</div>
+                      <div class="custom-option" data-value="20">20% anual</div>
+                      <div class="custom-option" data-value="25">25% anual</div>
+                    </div>
+                  </div>
+                  <input type="hidden" name="tasaInteres" id="tasaInteresValue">
                 </div>
               </div>
               <div class="form-row">
@@ -646,6 +753,194 @@
     document.addEventListener('DOMContentLoaded', function () {
       showSection('calculadora');
     });
+
+    // Custom Select Functionality
+    function initCustomSelects() {
+      const customSelects = document.querySelectorAll('.custom-select');
+
+      customSelects.forEach(select => {
+        const selectedText = select.querySelector('.selected-text');
+        const options = select.querySelector('.custom-options');
+        const hiddenInput = select.parentElement.querySelector('input[type="hidden"]');
+
+        // Toggle dropdown
+        select.addEventListener('click', (e) => {
+          e.stopPropagation();
+
+          // Close other dropdowns
+          customSelects.forEach(otherSelect => {
+            if (otherSelect !== select) {
+              otherSelect.classList.remove('open');
+              otherSelect.querySelector('.custom-options').classList.remove('show');
+            }
+          });          // Toggle current dropdown
+          select.classList.toggle('open');
+          options.classList.toggle('show');
+
+          // Reset keyboard navigation index
+          if (!select.classList.contains('open')) {
+            currentIndex = -1;
+            const optionElements = options.querySelectorAll('.custom-option');
+            optionElements.forEach(opt => opt.classList.remove('highlighted'));
+          }
+        });
+
+        // Handle option selection
+        const optionElements = options.querySelectorAll('.custom-option');
+        optionElements.forEach(option => {
+          option.addEventListener('click', (e) => {
+            e.stopPropagation(); const value = option.getAttribute('data-value');
+            const text = option.textContent;
+
+            selectedText.textContent = text;
+            select.classList.add('has-value'); if (hiddenInput) {
+              hiddenInput.value = value;
+            }
+
+            select.classList.remove('open');
+            options.classList.remove('show');
+
+            // Reset keyboard navigation
+            currentIndex = -1;
+            optionElements.forEach(opt => opt.classList.remove('highlighted'));
+          });
+        });        // Handle keyboard navigation
+        let currentIndex = -1;
+        select.addEventListener('keydown', (e) => {
+          const optionElements = options.querySelectorAll('.custom-option');
+
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (select.classList.contains('open')) {
+              // Si hay una opción seleccionada, simular click
+              if (currentIndex >= 0 && optionElements[currentIndex]) {
+                optionElements[currentIndex].click();
+              }
+            } else {
+              // Abrir el dropdown
+              select.click();
+            }
+          } else if (e.key === 'Escape') {
+            select.classList.remove('open');
+            options.classList.remove('show');
+            currentIndex = -1;
+            // Remover highlight de todas las opciones
+            optionElements.forEach(opt => opt.classList.remove('highlighted'));
+          } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (!select.classList.contains('open')) {
+              select.click();
+            } else {
+              currentIndex = Math.min(currentIndex + 1, optionElements.length - 1);
+              updateHighlight();
+            }
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (select.classList.contains('open')) {
+              currentIndex = Math.max(currentIndex - 1, 0);
+              updateHighlight();
+            }
+          } else if (e.key === 'Tab') {
+            // Si el dropdown está abierto y hay una opción resaltada, seleccionarla
+            if (select.classList.contains('open') && currentIndex >= 0) {
+              e.preventDefault();
+              optionElements[currentIndex].click();
+
+              // Mover automáticamente al siguiente campo
+              setTimeout(() => {
+                const nextElement = getNextTabbableElement(select);
+                if (nextElement) {
+                  nextElement.focus();
+                }
+              }, 50);
+            } else if (select.classList.contains('open')) {
+              // Si está abierto pero no hay selección, cerrarlo
+              select.classList.remove('open');
+              options.classList.remove('show');
+              currentIndex = -1;
+              optionElements.forEach(opt => opt.classList.remove('highlighted'));
+            }
+          }
+        });
+
+        function updateHighlight() {
+          const optionElements = options.querySelectorAll('.custom-option');
+          optionElements.forEach((opt, index) => {
+            opt.classList.toggle('highlighted', index === currentIndex);
+          });
+        }
+
+        // Función para encontrar el siguiente elemento tabulable
+        function getNextTabbableElement(currentElement) {
+          const tabbableElements = document.querySelectorAll(
+            'input:not([disabled]):not([tabindex="-1"]), ' +
+            'select:not([disabled]):not([tabindex="-1"]), ' +
+            '.custom-select:not([tabindex="-1"]), ' +
+            'button:not([disabled]):not([tabindex="-1"]), ' +
+            'textarea:not([disabled]):not([tabindex="-1"]), ' +
+            '[tabindex]:not([tabindex="-1"])'
+          );
+
+          const currentIndex = Array.from(tabbableElements).indexOf(currentElement);
+          return tabbableElements[currentIndex + 1] || null;
+        }        // Handle focus events for Tab navigation
+        select.addEventListener('focus', () => {
+          select.classList.add('focused');
+
+          // Solo limpiar si es foco automático (no manual)
+          if (isAutoFocusing && !select.classList.contains('has-value')) {
+            // Restaurar el placeholder correcto según el ID del select
+            const selectId = select.id;
+            switch (selectId) {
+              case 'tipoVehiculo':
+                selectedText.textContent = 'Seleccioná Vehículo';
+                break;
+              case 'tipoCombustible':
+                selectedText.textContent = 'Seleccioná Combustible';
+                break;
+              case 'anio':
+                selectedText.textContent = 'Seleccioná Año';
+                break;
+              case 'plazo':
+                selectedText.textContent = 'Seleccioná Plazo';
+                break;
+              case 'tasaInteres':
+                selectedText.textContent = 'Seleccioná Tasa de Interés';
+                break;
+            }
+          }
+        });
+
+        select.addEventListener('blur', () => {
+          select.classList.remove('focused');
+          // Close dropdown when losing focus
+          setTimeout(() => {
+            if (!select.contains(document.activeElement)) {
+              select.classList.remove('open');
+              options.classList.remove('show');
+              currentIndex = -1;
+              const optionElements = options.querySelectorAll('.custom-option');
+              optionElements.forEach(opt => opt.classList.remove('highlighted'));
+            }
+          }, 100);
+        });
+      });
+
+      // Close dropdowns when clicking outside
+      document.addEventListener('click', () => {
+        customSelects.forEach(select => {
+          select.classList.remove('open');
+          select.querySelector('.custom-options').classList.remove('show');
+
+          // Reset keyboard navigation for all selects
+          const optionElements = select.querySelectorAll('.custom-option');
+          optionElements.forEach(opt => opt.classList.remove('highlighted'));
+        });
+      });
+    }
+
+    // Inicializar los selects personalizados
+    document.addEventListener('DOMContentLoaded', initCustomSelects);
   </script>
 </body>
 
