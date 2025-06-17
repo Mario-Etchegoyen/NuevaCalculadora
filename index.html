@@ -72,14 +72,25 @@
 
     .contenedor-padre {
       height: 70vh;
-      width: 30vw;
+      width: 26vw;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       background-color: rgba(128, 128, 128, 0.5);
-      padding: 2vh;
-      border-radius: 10px;
+      border-radius: 2vw;
+    }
+
+    .contenedor-form {
+      height: 60vh;
+      width: 22vw;
+      background-color: rgba(128, 128, 128, 0.5);
+      border: 2px solid white;
+      border-radius: 1.5vw;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
 
     section {
@@ -109,7 +120,7 @@
       font-weight: bold;
       font-size: 1.8vh;
       height: 3vh;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s, transform 0.3s;
     }
 
     .nav-button:hover {
@@ -120,6 +131,24 @@
       background-color: red;
       color: white;
       transform: scale(1.15);
+    }
+
+    .form-button {
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 2px solid white;
+      padding: 1vh 2vw;
+      border-radius: 0.8vw;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 2vh;
+      color: #333;
+      margin-top: 2vh;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .form-button:hover {
+      background-color: rgba(255, 255, 255, 1);
+      transform: scale(1.05);
     }
   </style>
 </head>
@@ -139,38 +168,39 @@
   <main>
     <section id="calculadora">
       <div class="contenedor-padre">
-        <form>
+        <form class="contenedor-form">
           <h2>Calculadora de Cuotas</h2>
+          <button type="button" class="form-button">Calcular</button>
         </form>
       </div>
     </section>
-
     <section id="datero">
       <div class="contenedor-padre">
-        <form>
+        <form class="contenedor-form">
           <h2>Envio de Datos</h2>
+          <button type="button" class="form-button" onclick="enviarDatos()">Enviar</button>
         </form>
       </div>
     </section>
     <section id="agradecimiento-datero">
       <div class="contenedor-padre">
-        <form>
+        <form class="contenedor-form">
           <h2>Agradecimiento Datero</h2>
         </form>
       </div>
     </section>
-
     <section id="contacto">
       <div class="contenedor-padre">
-        <form>
+        <form class="contenedor-form">
           <h2>Contacto</h2>
+          <button type="button" class="form-button" onclick="enviarContacto()">Enviar</button>
         </form>
       </div>
     </section>
 
     <section id="agradecimiento-contacto">
       <div class="contenedor-padre">
-        <form>
+        <form class="contenedor-form">
           <h2>Agradecimiento Contacto</h2>
         </form>
       </div>
@@ -205,6 +235,78 @@
       if (activeButton) {
         activeButton.classList.add('active');
       }
+    }    // Variable para almacenar el timeout
+    let agradecimientoTimeout = null;
+
+    // Función para enviar datos del datero
+    function enviarDatos() {
+      // Primero mostrar agradecimiento datero
+      showSection('agradecimiento-datero');
+
+      // Función para ir a calculadora
+      function irACalculadora() {
+        showSection('calculadora');
+        // Remover el event listener del click en main
+        const mainElement = document.querySelector('main');
+        mainElement.removeEventListener('click', clickHandler);
+        agradecimientoTimeout = null;
+      }
+
+      // Handler para el click en main
+      function clickHandler() {
+        if (agradecimientoTimeout) {
+          clearTimeout(agradecimientoTimeout);
+          irACalculadora();
+        }
+      }
+
+      // Agregar event listener al main después de un pequeño delay
+      // para evitar que el click del botón "Enviar" lo active inmediatamente
+      setTimeout(() => {
+        const mainElement = document.querySelector('main');
+        mainElement.addEventListener('click', clickHandler);
+      }, 100);      // Después de 2 segundos, ir a calculadora automáticamente
+      agradecimientoTimeout = setTimeout(() => {
+        irACalculadora();
+      }, 2000);
+    }
+
+    // Variable para almacenar el timeout de contacto
+    let agradecimientoContactoTimeout = null;
+
+    // Función para enviar datos del contacto
+    function enviarContacto() {
+      // Primero mostrar agradecimiento contacto
+      showSection('agradecimiento-contacto');
+
+      // Función para ir a calculadora
+      function irACalculadora() {
+        showSection('calculadora');
+        // Remover el event listener del click en main
+        const mainElement = document.querySelector('main');
+        mainElement.removeEventListener('click', clickHandlerContacto);
+        agradecimientoContactoTimeout = null;
+      }
+
+      // Handler para el click en main
+      function clickHandlerContacto() {
+        if (agradecimientoContactoTimeout) {
+          clearTimeout(agradecimientoContactoTimeout);
+          irACalculadora();
+        }
+      }
+
+      // Agregar event listener al main después de un pequeño delay
+      // para evitar que el click del botón "Enviar" lo active inmediatamente
+      setTimeout(() => {
+        const mainElement = document.querySelector('main');
+        mainElement.addEventListener('click', clickHandlerContacto);
+      }, 100);
+
+      // Después de 2 segundos, ir a calculadora automáticamente
+      agradecimientoContactoTimeout = setTimeout(() => {
+        irACalculadora();
+      }, 2000);
     }
 
     // Mostrar la primera sección por defecto
