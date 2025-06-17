@@ -9,6 +9,7 @@
     html,
     body {
       height: 100vh;
+      width: 100%;
       overflow: hidden;
     }
 
@@ -63,36 +64,153 @@
       width: 100%;
       height: 85vh;
       margin-top: 15vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .contenedor-padre {
+      height: 70vh;
+      width: 30vw;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(128, 128, 128, 0.5);
+      padding: 2vh;
+      border-radius: 10px;
+    }
+
+    section {
+      display: none;
+    }
+
+    section.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .nav-buttons {
+      position: absolute;
+      right: 2vw;
+      display: flex;
+      flex-direction: column;
+      gap: 1vh;
+    }
+
+    .nav-button {
+      background-color: rgba(255, 255, 255, 0.8);
+      border: none;
+      padding: 0.5vh 1.5vw;
+      border-radius: 1.5vh;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.8vh;
+      height: 3vh;
+      transition: background-color 0.3s;
+    }
+
+    .nav-button:hover {
+      background-color: rgba(255, 255, 255, 1);
+    }
+
+    .nav-button.active {
+      background-color: red;
+      color: white;
+      transform: scale(1.15);
     }
   </style>
 </head>
 
 <body>
-  <header> <a href="https://www.tuprendario.com">
+  <header>
+    <a href="https://www.tuprendario.com">
       <h1>TuPrendario.com</h1>
       <p>Préstamos Prendarios para Vos</p>
     </a>
+    <div class="nav-buttons">
+      <button class="nav-button" onclick="showSection('calculadora')">Calculadora</button>
+      <button class="nav-button" onclick="showSection('datero')">Datero</button>
+      <button class="nav-button" onclick="showSection('contacto')">Contacto</button>
+    </div>
   </header>
   <main>
     <section id="calculadora">
-      <h2>Calculadora</h2>
+      <div class="contenedor-padre">
+        <form>
+          <h2>Calculadora de Cuotas</h2>
+        </form>
+      </div>
     </section>
 
     <section id="datero">
-      <h2>Datero</h2>
+      <div class="contenedor-padre">
+        <form>
+          <h2>Envio de Datos</h2>
+        </form>
+      </div>
+    </section>
+    <section id="agradecimiento-datero">
+      <div class="contenedor-padre">
+        <form>
+          <h2>Agradecimiento Datero</h2>
+        </form>
+      </div>
     </section>
 
     <section id="contacto">
-      <h2>Contacto</h2>
+      <div class="contenedor-padre">
+        <form>
+          <h2>Contacto</h2>
+        </form>
+      </div>
+    </section>
+
+    <section id="agradecimiento-contacto">
+      <div class="contenedor-padre">
+        <form>
+          <h2>Agradecimiento Contacto</h2>
+        </form>
+      </div>
     </section>
   </main>
 
   <footer>
     <p>&copy; 2025 Mi Página Web</p>
   </footer>
+  <script>    // SPA functionality
+    function showSection(sectionId) {
+      // Ocultar todas las secciones
+      const sections = document.querySelectorAll('section');
+      sections.forEach(section => {
+        section.classList.remove('active');
+      });
 
-  <script>
+      // Mostrar la sección seleccionada
+      const targetSection = document.getElementById(sectionId);
+      if (targetSection) {
+        targetSection.classList.add('active');
+      }
 
+      // Actualizar botones activos
+      const buttons = document.querySelectorAll('.nav-button');
+      buttons.forEach(button => {
+        button.classList.remove('active');
+      });
+
+      // Marcar botón activo según la sección
+      const activeButton = document.querySelector(`[onclick="showSection('${sectionId}')"]`);
+      if (activeButton) {
+        activeButton.classList.add('active');
+      }
+    }
+
+    // Mostrar la primera sección por defecto
+    document.addEventListener('DOMContentLoaded', function () {
+      showSection('calculadora');
+    });
   </script>
 </body>
 
