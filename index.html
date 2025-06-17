@@ -6,6 +6,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mi Página</title>
   <style>
+    /* === VARIABLES CSS === */
+    :root {
+      /* Colores */
+      --color-white: #ffffff;
+      --color-gray-semi: rgba(128, 128, 128, 0.5);
+      --color-white-08: rgba(255, 255, 255, 0.8);
+      --color-white-09: rgba(255, 255, 255, 0.9);
+      --color-white-1: rgba(255, 255, 255, 1);
+      --color-white-01: rgba(255, 255, 255, 0.1);
+      --color-white-02: rgba(255, 255, 255, 0.2);
+      --color-header-bg: rgba(211, 211, 211, 0.2);
+      --color-active-button: red;
+      --color-card-primary: rgba(41, 112, 143, 0.95);
+      --color-card-secondary: rgba(30, 147, 197, 0.9);
+      --color-shadow-light: rgba(234, 234, 234, 0.5);
+      --color-shadow-dark: rgba(0, 0, 0, 0.2);
+      --color-text-light: #f5f5f5;
+      --color-text-light-alpha: #f5f5f5aa;
+      --color-text-dark: #333;
+
+      /* Dimensiones */
+      --height-element: 3vh;
+      --height-card: 55vh;
+      --height-container: 70vh;
+      --height-form: 66vh;
+      --width-container: 55vh;
+      --width-form: 51vh;
+      --width-card: 47vh;
+
+      /* Espaciados */
+      --spacing-small: 0.5vh;
+      --spacing-medium: 1vh;
+      --spacing-large: 2vh;
+      --spacing-xlarge: 3vh;
+      /* Border radius */
+      --radius-small: 6px;
+      --radius-medium: 12px;
+      --radius-large: 1vw;
+      --radius-xlarge: 0.75vw;
+      --radius-button: 0.8vw;
+      --radius-nav-button: 1.5vh;
+      --radius-info: 0.42vh;
+
+      /* Transiciones */
+      --transition-base: 0.3s ease;
+      --transition-transform: transform 0.3s ease;
+      --transition-all: all 0.3s ease;
+
+      /* Sombras */
+      --shadow-card: 0 8px 32px var(--color-shadow-dark);
+      --shadow-element: 0 2vh 4vh var(--color-shadow-light);
+      --shadow-hover: 0 0 4vh var(--color-shadow-light);
+      --shadow-header: 0 2px 5px var(--color-white-02);
+    }
+
     html,
     body {
       height: 100vh;
@@ -25,14 +80,14 @@
     }
 
     header {
-      background-color: rgba(211, 211, 211, 0.2);
+      background-color: var(--color-header-bg);
       padding: 0px 0px;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       z-index: 1000;
-      box-shadow: 0 2px 5px rgba(255, 255, 255, 0.2);
+      box-shadow: var(--shadow-header);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -42,7 +97,7 @@
     header a {
       text-decoration: none;
       text-align: center;
-      color: #f5f5f5;
+      color: var(--color-text-light);
       font-weight: bold;
     }
 
@@ -57,7 +112,7 @@
       font-size: 3vh;
       line-height: 1;
       text-align: left;
-      color: #f5f5f5aa
+      color: var(--color-text-light-alpha);
     }
 
     main {
@@ -71,26 +126,28 @@
     }
 
     .contenedor-padre {
-      height: 70vh;
-      width: 26vw;
+      height: var(--height-container);
+      width: var(--width-container);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background-color: rgba(128, 128, 128, 0.5);
-      border-radius: 2vw;
+      background-color: var(--color-gray-semi);
+      border-radius: var(--radius-large);
+      box-shadow: var(--shadow-element);
     }
 
     .contenedor-form {
-      height: 60vh;
-      width: 22vw;
-      background-color: rgba(128, 128, 128, 0.5);
-      border: 2px solid white;
-      border-radius: 1.5vw;
+      height: var(--height-form);
+      width: var(--width-form);
+      background-color: var(--color-gray-semi);
+      border: 2px solid var(--color-white);
+      border-radius: var(--radius-xlarge);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      box-shadow: var(--shadow-element);
     }
 
     section {
@@ -112,43 +169,229 @@
     }
 
     .nav-button {
-      background-color: rgba(255, 255, 255, 0.8);
+      background-color: var(--color-white-08);
       border: none;
-      padding: 0.5vh 1.5vw;
-      border-radius: 1.5vh;
+      padding: var(--spacing-small) 1.5vw;
+      border-radius: var(--radius-nav-button);
       cursor: pointer;
       font-weight: bold;
       font-size: 1.8vh;
-      height: 3vh;
-      transition: background-color 0.3s, transform 0.3s;
+      height: var(--height-element);
+      transition: var(--transition-all), var(--transition-transform);
     }
 
     .nav-button:hover {
-      background-color: rgba(255, 255, 255, 1);
+      background-color: var(--color-white-1);
     }
 
     .nav-button.active {
-      background-color: red;
-      color: white;
+      background-color: var(--color-active-button);
+      color: var(--color-white);
       transform: scale(1.15);
     }
 
     .form-button {
-      background-color: rgba(255, 255, 255, 0.9);
-      border: 2px solid white;
-      padding: 1vh 2vw;
-      border-radius: 0.8vw;
+      background-color: var(--color-white-09);
+      border: 2px solid var(--color-white);
+      padding: 0 2vw;
+      border-radius: var(--radius-button);
       cursor: pointer;
       font-weight: bold;
       font-size: 2vh;
-      color: #333;
-      margin-top: 2vh;
-      transition: background-color 0.3s, transform 0.2s;
+      color: var(--color-text-dark);
+      margin-top: 3vh;
+      height: var(--height-element);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-all), var(--transition-transform);
+      box-shadow: var(--shadow-element);
     }
 
     .form-button:hover {
-      background-color: rgba(255, 255, 255, 1);
+      background-color: var(--color-white-1);
       transform: scale(1.05);
+      box-shadow: var(--shadow-hover);
+    }
+
+    /* === ESTILOS PARA TARJETAS MODERNAS DEL FORMULARIO === */
+    .form-card {
+      height: var(--height-card);
+      max-height: var(--height-card);
+      width: var(--width-card);
+      background: linear-gradient(135deg, var(--color-card-primary), var(--color-card-secondary));
+      border-radius: var(--radius-medium);
+      margin-bottom: 0;
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--color-white-01);
+      backdrop-filter: blur(10px);
+      overflow: visible;
+      transition: var(--transition-transform), box-shadow var(--transition-base);
+      min-height: fit-content;
+    }
+
+    .form-card:hover {
+      transform: translateY(-0px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+      padding: 2vh 5vh;
+      border-bottom: 1px solid var(--color-white-01);
+      text-align: left;
+    }
+
+    .card-title {
+      color: var(--color-white);
+      font-size: 1em;
+      font-weight: 600;
+      margin: 0;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-small);
+    }
+
+    .card-content {
+      padding: var(--spacing-xlarge) var(--spacing-xlarge) 0.2vh var(--spacing-xlarge);
+      display: block;
+      visibility: visible;
+      min-height: 100px;
+      overflow: visible;
+    }
+
+    .form-row {
+      display: flex;
+      gap: var(--spacing-medium);
+      align-items: flex-start;
+      visibility: visible;
+      min-height: 8vh;
+    }
+
+    .form-group {
+      flex: 1;
+      min-width: 0;
+      display: block;
+      visibility: visible;
+    }
+
+    .form-group.full-width {
+      flex: 1 1 100%;
+    }
+
+    .form-group label {
+      color: var(--color-white);
+      font-weight: bold;
+      font-size: 0.7em;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      height: var(--height-element);
+      padding: 0;
+      border: 1px solid var(--color-white-02);
+      border-radius: var(--radius-small);
+      background: var(--color-white-09);
+      color: var(--color-white);
+      font-size: 0.8em;
+      backdrop-filter: blur(5px);
+      transition: var(--transition-all);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      text-align: center;
+    }
+
+    /* Estilos para las opciones de los selects */
+    .form-group select option {
+      background:  rgba(55, 151, 210, 0.514);
+      color: var(--color-text-dark);
+      padding: 8px 12px;
+      font-size: 0.8em;
+      border: none;
+      outline: none;
+      text-align: center;
+    }
+
+    .form-group select option:hover,
+    .form-group select option:focus {
+      background: rgba(255, 255, 255, 0.2);
+      color: var(--color-text-dark);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 0 2px var(--color-white-01);
+    }
+
+    /* === ESTILOS PARA TASA UVA === */
+    .frase-moto-info {
+      display: block;
+      margin: 0.1vh auto;
+      padding: 0.42vh var(--spacing-small);
+      color: var(--color-white);
+      background: var(--color-card-secondary);
+      font-weight: normal;
+      border-radius: var(--radius-info);
+      min-width: 100px;
+      width: 90%;
+      max-width: 100%;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: clip;
+      font-size: 0.7em;
+    }
+
+    .frase-moto-info>div {
+      display: block;
+      width: 100%;
+      font-size: inherit;
+      color: inherit;
+      font-weight: inherit;
+    }
+
+    #frase-uva-info {
+      background: var(--color-white-09);
+      color: var(--color-card-primary);
+    }
+
+    .lista-vehiculos {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      color: var(--color-white);
+      text-align: left;
+      font-size: 0.7em;
+      margin-left: 1ch;
+    }
+
+    .lista-vehiculos li {
+      margin-bottom: 0;
+      display: block;
+      color: var(--color-card-primary);
+    }
+
+    .lista-vehiculos li div {
+      margin-left: 2.5ch;
+      display: block;
+    }
+
+    .lista-vehiculos li::before {
+      content: none;
     }
   </style>
 </head>
@@ -169,7 +412,97 @@
     <section id="calculadora">
       <div class="contenedor-padre">
         <form class="contenedor-form">
-          <h2>Calculadora de Cuotas</h2>
+          <!-- Tarjeta: Calculadora de Préstamos -->
+          <div class="form-card">
+            <div class="card-header">
+              <h3 class="card-title">🧮 Calculadora de Préstamos</h3>
+            </div>
+            <div class="card-content">
+              <div class="form-row">
+                <div class="form-group full-width">
+                  <label for="montoPrestamo">Monto del Préstamo:</label>
+                  <input type="text" id="montoPrestamo" name="montoPrestamo" placeholder="Ingresá Monto (Mín. $500000)"
+                    required />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="tipoVehiculo">Tipo de Vehículo:</label> <select id="tipoVehiculo" name="tipoVehiculo">
+                    <option value="" hidden>Seleccioná Vehículo</option>
+                    <option value="auto">Auto/Camioneta</option>
+                    <option value="utilitario">Utilitario</option>
+                    <option value="moto">Moto</option>
+                    <option value="cuatriciclo">Cuatriciclo/Quad/SSV</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="tipoCombustible">Tipo de Combustible:</label> <select id="tipoCombustible"
+                    name="tipoCombustible">
+                    <option value="" hidden>Seleccioná Combustible</option>
+                    <option value="nafta">Nafta</option>
+                    <option value="diesel">Diesel</option>
+                    <option value="gnc">GNC</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="anio">Año:</label>
+                  <select id="anio" name="anio">
+                    <option value="" hidden>Seleccioná Año</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                    <option value="2020">2020</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="plazo">Plazo:</label>
+                  <select id="plazo" name="plazo">
+                    <option value="" hidden>Seleccioná Plazo</option>
+                    <option value="12">12 meses</option>
+                    <option value="24">24 meses</option>
+                    <option value="36">36 meses</option>
+                    <option value="48">48 meses</option>
+                    <option value="60">60 meses</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group full-width">
+                  <label for="tasaInteres">Tasa de Interés:</label>
+                  <select id="tasaInteres" name="tasaInteres">
+                    <option value="" hidden>Seleccioná Tasa de Interés</option>
+                    <option value="15">15% anual</option>
+                    <option value="18">18% anual</option>
+                    <option value="20">20% anual</option>
+                    <option value="25">25% anual</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group full-width">
+                  <!-- Frase Tasa UVA, AUTOS y MOTOS en tres líneas independientes -->
+                  <div class="frase-moto-info" id="frase-uva-info">
+                    <div><b>Tasa UVA</b></div>
+                    <ul class="lista-vehiculos">
+                      <li>
+                        <b>AUTOS:</b>
+                        <div>desde <span id="autos-anio"></span> / hasta <span id="autos-meses"></span> meses</div>
+                      </li>
+                      <li>
+                        <b>MOTOS:</b>
+                        <div>desde <span id="motos-cilindrada"></span>cc / desde <span id="motos-anio"></span> / hasta
+                          <span id="motos-meses"></span> meses
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <button type="button" class="form-button">Calcular</button>
         </form>
       </div>
