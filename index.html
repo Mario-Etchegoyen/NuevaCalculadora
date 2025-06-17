@@ -251,7 +251,7 @@
     }
 
     .card-content {
-      padding: var(--space-lg) var(--space-lg) 0.2vh var(--space-lg);
+      padding: var(--space-lg) var(--space-md) 0.2vh var(--space-lg);
       display: block;
       min-height: 100px;
       overflow: visible;
@@ -315,6 +315,46 @@
       color: #000000;
       font-weight: bold;
       background: var(--success-green);
+    }
+
+    /* Estilos para textarea */
+    .form-group textarea {
+      width: 100%;
+      min-height: 8vh;
+      padding: 1vh;
+      border: 1px solid var(--white-20);
+      border-radius: var(--radius-xs);
+      background: var(--white-90);
+      color: var(--white);
+      font-size: 0.8em;
+      backdrop-filter: blur(5px);
+      transition: var(--transition);
+      box-sizing: border-box;
+      text-align: left;
+      resize: vertical;
+      font-family: Arial, sans-serif;
+    }
+
+    .form-group textarea:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 0 2px var(--white-10);
+    }
+
+    .form-group textarea:not(:placeholder-shown) {
+      color: #000000;
+      font-weight: bold;
+      background: var(--success-green);
+    }
+
+    /* Espaciado específico para la card de contacto */
+    #contacto .form-row {
+      margin-bottom: var(--space-md);
+    }
+
+    #contacto .form-row:last-child {
+      margin-bottom: 0;
     }
 
     /* === SECCIÓN TASA UVA === */
@@ -406,7 +446,7 @@
       content: '▼';
       position: absolute;
       right: 2px;
-      color: var(--white);
+      color: rgba(100, 100, 100, 0.9);
       font-size: 0.7em;
       pointer-events: none;
     }
@@ -445,10 +485,32 @@
       border: 1px solid var(--white-20);
       border-radius: var(--radius-xs);
       border-top: none;
-      max-height: 200px;
-      overflow-y: auto;
+      /* max-height será controlado dinámicamente por JavaScript */
       z-index: 1000;
       display: none;
+      /* Estilos mejorados para la barra de scroll */
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.6) transparent;
+    }
+
+    /* Estilos personalizados para la barra de scroll en navegadores WebKit */
+    .custom-options::-webkit-scrollbar {
+      width: 0.375em;
+      /* 6px equivalente en em (6px / 16px base) */
+    }
+
+    .custom-options::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .custom-options::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 0.1875em;
+      /* 3px equivalente en em */
+    }
+
+    .custom-options::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.8);
     }
 
     .custom-options.show {
@@ -456,11 +518,18 @@
     }
 
     .custom-option {
-      padding: 8px 12px;
+      padding: 0.5em 0.75em;
+      /* 8px 12px convertido a em */
       color: var(--text-dark);
       cursor: pointer;
       text-align: center;
       transition: var(--transition);
+      min-height: 2.1em;
+      /* Altura mínima para consistencia y evitar cortes */
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .custom-option:hover {
@@ -511,16 +580,16 @@
             <div class="card-content">
               <div class="form-row">
                 <div class="form-group full-width">
-                  <label for="montoPrestamo">Monto del Préstamo:</label>
+                  <label for="montoPrestamo">Monto del Préstamo</label>
                   <input type="text" id="montoPrestamo" name="montoPrestamo" placeholder="Ingresá Monto (Mín. $500000)"
                     required />
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-group">
-                  <label for="tipoVehiculo">Tipo de Vehículo:</label>
+                  <label for="tipoVehiculo">Tipo de Vehículo</label>
                   <div class="custom-select" id="tipoVehiculo" tabindex="0">
-                    <span class="selected-text">Seleccioná Vehículo</span>
+                    <span class="selected-text">Vehículo</span>
                     <div class="custom-options">
                       <div class="custom-option" data-value="auto">Auto/Camioneta</div>
                       <div class="custom-option" data-value="utilitario">Utilitario</div>
@@ -531,9 +600,9 @@
                   <input type="hidden" name="tipoVehiculo" id="tipoVehiculoValue">
                 </div>
                 <div class="form-group">
-                  <label for="tipoCombustible">Tipo de Combustible:</label>
+                  <label for="tipoCombustible">Tipo de Combustible</label>
                   <div class="custom-select" id="tipoCombustible" tabindex="0">
-                    <span class="selected-text">Seleccioná Combustible</span>
+                    <span class="selected-text">Combustible</span>
                     <div class="custom-options">
                       <div class="custom-option" data-value="nafta">Nafta</div>
                       <div class="custom-option" data-value="diesel">Diesel</div>
@@ -545,23 +614,28 @@
               </div>
               <div class="form-row">
                 <div class="form-group">
-                  <label for="anio">Año:</label>
+                  <label for="anio">Año</label>
                   <div class="custom-select" id="anio" tabindex="0">
-                    <span class="selected-text">Seleccioná Año</span>
+                    <span class="selected-text">Año</span>
                     <div class="custom-options">
                       <div class="custom-option" data-value="2024">2024</div>
                       <div class="custom-option" data-value="2023">2023</div>
                       <div class="custom-option" data-value="2022">2022</div>
                       <div class="custom-option" data-value="2021">2021</div>
                       <div class="custom-option" data-value="2020">2020</div>
+                      <div class="custom-option" data-value="2019">2019</div>
+                      <div class="custom-option" data-value="2018">2018</div>
+                      <div class="custom-option" data-value="2017">2017</div>
+                      <div class="custom-option" data-value="2016">2016</div>
+                      <div class="custom-option" data-value="2015">2015</div>
                     </div>
                   </div>
                   <input type="hidden" name="anio" id="anioValue">
                 </div>
                 <div class="form-group">
-                  <label for="plazo">Plazo:</label>
+                  <label for="plazo">Plazo</label>
                   <div class="custom-select" id="plazo" tabindex="0">
-                    <span class="selected-text">Seleccioná Plazo</span>
+                    <span class="selected-text">Plazo</span>
                     <div class="custom-options">
                       <div class="custom-option" data-value="12">12 meses</div>
                       <div class="custom-option" data-value="24">24 meses</div>
@@ -575,14 +649,18 @@
               </div>
               <div class="form-row">
                 <div class="form-group full-width">
-                  <label for="tasaInteres">Tasa de Interés:</label>
+                  <label for="tasaInteres">Tasa de Interés</label>
                   <div class="custom-select" id="tasaInteres" tabindex="0">
-                    <span class="selected-text">Seleccioná Tasa de Interés</span>
+                    <span class="selected-text">Tasa de Interés</span>
                     <div class="custom-options">
+                      <div class="custom-option" data-value="12">12% anual</div>
                       <div class="custom-option" data-value="15">15% anual</div>
                       <div class="custom-option" data-value="18">18% anual</div>
                       <div class="custom-option" data-value="20">20% anual</div>
+                      <div class="custom-option" data-value="22">22% anual</div>
                       <div class="custom-option" data-value="25">25% anual</div>
+                      <div class="custom-option" data-value="28">28% anual</div>
+                      <div class="custom-option" data-value="30">30% anual</div>
                     </div>
                   </div>
                   <input type="hidden" name="tasaInteres" id="tasaInteresValue">
@@ -595,11 +673,11 @@
                     <div><b>Tasa UVA</b></div>
                     <ul class="lista-vehiculos">
                       <li>
-                        <b>AUTOS:</b>
+                        <b>AUTOS</b>
                         <div>desde <span id="autos-anio"></span> / hasta <span id="autos-meses"></span> meses</div>
                       </li>
                       <li>
-                        <b>MOTOS:</b>
+                        <b>MOTOS</b>
                         <div>desde <span id="motos-cilindrada"></span>cc / desde <span id="motos-anio"></span> / hasta
                           <span id="motos-meses"></span> meses
                         </div>
@@ -632,8 +710,40 @@
     <section id="contacto">
       <div class="contenedor-padre">
         <form class="contenedor-form">
-          <h2>Contacto</h2>
-          <button type="button" class="form-button" onclick="enviarContacto()">Enviar</button>
+          <!-- Tarjeta: Formulario de Contacto -->
+          <div class="form-card">
+            <div class="card-header">
+              <h3 class="card-title">📞 Formulario de Contacto</h3>
+            </div>
+            <div class="card-content">
+              <div class="form-row">
+                <div class="form-group full-width">
+                  <label for="nombre">Nombre</label>
+                  <input type="text" id="nombre" name="nombre" placeholder="Ingresá tu nombre completo" required />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group full-width">
+                  <label for="email">Email</label>
+                  <input type="email" id="email" name="email" placeholder="tu@email.com" required />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group full-width">
+                  <label for="telefono">Teléfono</label>
+                  <input type="tel" id="telefono" name="telefono" placeholder="Ej +54 11 1234-5678" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group full-width">
+                  <label for="mensaje">Mensaje</label>
+                  <textarea id="mensaje" name="mensaje" placeholder="Escribí tu consulta aquí..." rows="2"
+                    required></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="form-button" onclick="enviarContacto()">Enviar Consulta</button>
         </form>
       </div>
     </section>
@@ -681,10 +791,9 @@
     // Función para enviar datos del datero
     function enviarDatos() {
       // Primero mostrar agradecimiento datero
-      showSection('agradecimiento-datero');
-
-      // Función para ir a calculadora
+      showSection('agradecimiento-datero');      // Función para ir a calculadora
       function irACalculadora() {
+        limpiarCalculadora(); // Limpiar calculadora antes de mostrarla
         showSection('calculadora');
         // Remover el event listener del click en main
         const mainElement = document.querySelector('main');
@@ -717,10 +826,9 @@
     // Función para enviar datos del contacto
     function enviarContacto() {
       // Primero mostrar agradecimiento contacto
-      showSection('agradecimiento-contacto');
-
-      // Función para ir a calculadora
+      showSection('agradecimiento-contacto');      // Función para ir a calculadora
       function irACalculadora() {
+        limpiarCalculadora(); // Limpiar calculadora antes de mostrarla
         showSection('calculadora');
         // Remover el event listener del click en main
         const mainElement = document.querySelector('main');
@@ -752,16 +860,27 @@
     // Mostrar la primera sección por defecto
     document.addEventListener('DOMContentLoaded', function () {
       showSection('calculadora');
-    });
-
-    // Custom Select Functionality
+    });    // Custom Select Functionality
     function initCustomSelects() {
       const customSelects = document.querySelectorAll('.custom-select');
 
       customSelects.forEach(select => {
         const selectedText = select.querySelector('.selected-text');
         const options = select.querySelector('.custom-options');
-        const hiddenInput = select.parentElement.querySelector('input[type="hidden"]');
+        const hiddenInput = select.parentElement.querySelector('input[type="hidden"]'); const optionsList = options.querySelectorAll('.custom-option');        // Calcular altura dinámica basada en el número de opciones
+        const optionCount = optionsList.length;
+        const maxVisibleOptions = 5;
+        const optionHeight = 2.1; // Altura por opción en em (un poco más que min-height para evitar cortes)
+
+        if (optionCount <= maxVisibleOptions) {
+          // Si hay 5 opciones o menos, mostrar altura exacta sin scroll
+          options.style.maxHeight = `${optionCount * optionHeight}em`;
+          options.style.overflowY = 'hidden';
+        } else {
+          // Si hay más de 5 opciones, mostrar máximo 5 con scroll
+          options.style.maxHeight = `${maxVisibleOptions * optionHeight}em`;
+          options.style.overflowY = 'auto';
+        }
 
         // Toggle dropdown
         select.addEventListener('click', (e) => {
@@ -893,19 +1012,19 @@
             const selectId = select.id;
             switch (selectId) {
               case 'tipoVehiculo':
-                selectedText.textContent = 'Seleccioná Vehículo';
+                selectedText.textContent = 'Vehículo';
                 break;
               case 'tipoCombustible':
-                selectedText.textContent = 'Seleccioná Combustible';
+                selectedText.textContent = 'Combustible';
                 break;
               case 'anio':
-                selectedText.textContent = 'Seleccioná Año';
+                selectedText.textContent = 'Año';
                 break;
               case 'plazo':
-                selectedText.textContent = 'Seleccioná Plazo';
+                selectedText.textContent = 'Plazo';
                 break;
               case 'tasaInteres':
-                selectedText.textContent = 'Seleccioná Tasa de Interés';
+                selectedText.textContent = 'Tasa de Interés';
                 break;
             }
           }
@@ -941,6 +1060,66 @@
 
     // Inicializar los selects personalizados
     document.addEventListener('DOMContentLoaded', initCustomSelects);
+
+    // Función para limpiar completamente la calculadora
+    function limpiarCalculadora() {
+      // Limpiar input de monto
+      const montoInput = document.getElementById('montoPrestamo');
+      if (montoInput) {
+        montoInput.value = '';
+        montoInput.classList.remove('has-value');
+      }
+
+      // Limpiar todos los custom selects
+      const customSelects = document.querySelectorAll('.custom-select');
+      customSelects.forEach(select => {
+        // Remover clase has-value
+        select.classList.remove('has-value');
+
+        // Restaurar texto placeholder
+        const selectedText = select.querySelector('.selected-text');
+        const selectId = select.id;
+
+        if (selectedText) {
+          switch (selectId) {
+            case 'tipoVehiculo':
+              selectedText.textContent = 'Vehículo';
+              break;
+            case 'tipoCombustible':
+              selectedText.textContent = 'Combustible';
+              break;
+            case 'anio':
+              selectedText.textContent = 'Año';
+              break;
+            case 'plazo':
+              selectedText.textContent = 'Plazo';
+              break;
+            case 'tasaInteres':
+              selectedText.textContent = 'Tasa de Interés';
+              break;
+          }
+        }
+
+        // Limpiar el input hidden correspondiente
+        const hiddenInput = select.parentElement.querySelector('input[type="hidden"]');
+        if (hiddenInput) {
+          hiddenInput.value = '';
+        }
+
+        // Cerrar dropdown si está abierto
+        select.classList.remove('open');
+        const options = select.querySelector('.custom-options');
+        if (options) {
+          options.classList.remove('show');
+        }
+      });
+
+      // Limpiar cualquier estado de feedback visual
+      const allInputs = document.querySelectorAll('#calculadora input, #calculadora .custom-select');
+      allInputs.forEach(element => {
+        element.classList.remove('has-value');
+      });
+    }
   </script>
 </body>
 
