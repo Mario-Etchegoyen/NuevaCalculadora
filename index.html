@@ -16,17 +16,28 @@
       --white-20: rgba(255, 255, 255, 0.2);
       --white-80: rgba(255, 255, 255, 0.8);
       --white-90: rgba(255, 255, 255, 0.9);
+      --white-05: rgba(255, 255, 255, 0.05);
+      --white-15: rgba(255, 255, 255, 0.15);
+      --white-30: rgba(255, 255, 255, 0.3);
+      --white-50: rgba(255, 255, 255, 0.5);
       --gray-50: rgba(128, 128, 128, 0.5);
+      --gray-dark: rgba(100, 100, 100, 0.9);
+      --black: #000000;
       --blue-primary: rgba(41, 112, 143, 0.95);
       --blue-secondary: rgba(30, 147, 197, 0.9);
       --blue-hover: rgba(95, 172, 220);
       --blue-active: rgba(36, 130, 170, 0.925);
+      --blue-option: rgba(60, 140, 180, 0.85);
       --text-light: #f5f5f5;
       --text-light-alpha: #f5f5f5aa;
       --text-dark: #333;
+      --text-gray: #666666;
       --shadow-light: rgba(234, 234, 234, 0.5);
       --shadow-dark: rgba(0, 0, 0, 0.2);
       --success-green: #009E4F;
+
+      /* Gradientes comunes */
+      --gradient-header: linear-gradient(135deg, var(--white-15), var(--white-05));
 
       /* Dimensiones */
       --element-height: 3vh;
@@ -50,13 +61,19 @@
       --radius-lg: 1vw;
       --radius-nav: 1.5vh;
       --radius-info: 0.42vh;
-
       /* Transiciones y sombras */
-      --transition: all 0.3s ease;
+      --transition-base: all 0.3s ease;
+      --transition-smooth: all 0.3s ease-in-out;
       --shadow-card: 0 8px 32px var(--shadow-dark);
       --shadow-element: 0 2vh 4vh var(--shadow-light);
       --shadow-hover: 0 0 4vh var(--shadow-light);
       --shadow-header: 0 2px 5px var(--white-20);
+      --shadow-header-hover: 0 4px 15px rgba(255, 255, 255, 0.4);
+
+      /* Efectos de texto */
+      --text-shadow-light: 0 0 8px rgba(255, 255, 255, 0.3);
+      --text-shadow-medium: 0 0 10px rgba(255, 255, 255, 0.5);
+      --text-stroke: 1px #f5f5f5;
     }
 
     /* === ESTILOS BASE === */
@@ -73,7 +90,8 @@
       background: url('Imagenes/Agencia.png') top center / cover no-repeat fixed;
     }
 
-    /* === HEADER === */    header {
+    /* === HEADER === */
+    header {
       position: fixed;
       top: 0;
       left: 0;
@@ -85,12 +103,12 @@
       justify-content: center;
       align-items: center;
       z-index: 1000;
-      transition: all 0.3s ease;
+      transition: var(--transition-base);
     }
 
     header.logo-hover {
       background-color: rgba(255, 255, 255, 0.3);
-      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.4);
+      box-shadow: var(--shadow-header-hover);
     }
 
     header a {
@@ -98,7 +116,7 @@
       text-align: center;
       color: var(--text-light);
       font-weight: bold;
-      transition: all 0.3s ease;
+      transition: var(--transition-base);
     }
 
     header a:hover {
@@ -109,15 +127,15 @@
       margin: 0;
       font-size: 7vh;
       line-height: 1;
-      transition: all 0.3s ease;
+      transition: var(--transition-base);
     }
 
     header a:hover h1 {
       font-size: 7.5vh;
       letter-spacing: 0.15em;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      text-shadow: var(--text-shadow-medium);
       color: #666666;
-      -webkit-text-stroke: 1px #f5f5f5;
+      -webkit-text-stroke: var(--text-stroke);
     }
 
     header a p {
@@ -126,13 +144,15 @@
       line-height: 1;
       text-align: left;
       color: var(--text-light-alpha);
-      transition: all 0.3s ease;
+      transition: var(--transition-base);
       letter-spacing: 0.05em;
-    }    header a:hover p {
+    }
+
+    header a:hover p {
       font-size: 3.214vh;
       letter-spacing: 0.158em;
       color: #666666;
-      text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+      text-shadow: var(--text-shadow-light);
       transform: translateY(-2px);
     }
 
@@ -201,7 +221,7 @@
       font-weight: bold;
       font-size: 1.8vh;
       height: var(--element-height);
-      transition: var(--transition);
+      transition: var(--transition-base);
     }
 
     .nav-button:hover {
@@ -232,7 +252,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: var(--transition);
+      transition: var(--transition-base);
       box-shadow: var(--shadow-element);
     }
 
@@ -252,7 +272,7 @@
       border: 1px solid var(--white-10);
       backdrop-filter: blur(10px);
       box-shadow: var(--shadow-card);
-      transition: var(--transition);
+      transition: var(--transition-base);
       overflow: visible;
       min-height: fit-content;
     }
@@ -262,7 +282,7 @@
     }
 
     .card-header {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+      background: var(--gradient-header);
       padding: var(--space-md) 5vh;
       border-bottom: 1px solid var(--white-10);
       border-top-left-radius: var(--radius-sm);
@@ -387,7 +407,7 @@
       min-height: 0;
       padding: 0;
       overflow: hidden;
-      transition: all 0.3s ease-in-out;
+      transition: var(--transition-smooth);
       background: transparent;
     }
 
@@ -398,13 +418,13 @@
       min-height: auto;
       padding: var(--space-lg) var(--space-md) 0.2vh var(--space-lg);
       overflow: visible;
-      transition: all 0.3s ease-in-out;
+      transition: var(--transition-smooth);
       background: transparent;
     }
 
     /* Headers clickeables del datero */
     #datero .card-header {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+      background: var(--gradient-header);
       padding: var(--space-md) var(--space-lg);
       border-top-left-radius: var(--radius-sm);
       border-top-right-radius: var(--radius-sm);
@@ -465,7 +485,7 @@
 
     /* Corregir esquinas del header cuando la card está colapsada */
     #datero .form-card.collapsed .card-header {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+      background: var(--gradient-header);
       padding: var(--space-md) 5vh;
       border-bottom-left-radius: var(--radius-sm);
       border-bottom-right-radius: var(--radius-sm);
@@ -474,7 +494,7 @@
 
     /* Header para card expandida - colores originales exactos */
     #datero .form-card.expanded .card-header {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+      background: var(--gradient-header);
       padding: var(--space-md) 5vh;
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
@@ -486,7 +506,7 @@
 
     /* Headers de calculadora - SIN flecha */
     #calculadora .card-header {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+      background: var(--gradient-header);
       padding: var(--space-md) 5vh;
       border-bottom: 1px solid var(--white-10);
       border-top-left-radius: var(--radius-sm);
@@ -508,7 +528,7 @@
       border: 1px solid var(--white-10);
       backdrop-filter: blur(10px);
       box-shadow: var(--shadow-card);
-      transition: var(--transition);
+      transition: var(--transition-base);
       overflow-y: auto;
       overflow-x: hidden;
       display: flex;
@@ -617,7 +637,7 @@
       color: var(--white);
       font-size: 0.8em;
       backdrop-filter: blur(5px);
-      transition: var(--transition);
+      transition: var(--transition-base);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -628,16 +648,28 @@
 
     .form-group input:focus {
       outline: none;
-      border-color: rgba(255, 255, 255, 0.5);
-      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--white-50);
+      background: var(--white-15);
       box-shadow: 0 0 0 2px var(--white-10);
     }
 
-    /* Estilos para texto ingresado en inputs */
-    .form-group input:not(:placeholder-shown) {
+    /* Estilos para texto ingresado en inputs (excluye inputs tipo date) */
+    .form-group input:not([type="date"]):not(:placeholder-shown) {
       color: #000000;
       font-weight: bold;
       background: var(--success-green);
+    }
+
+    /* Estilos para inputs tipo date - solo con clase valid aplicada por JavaScript */
+    .form-group input[type="date"].valid {
+      color: #000000;
+      font-weight: bold;
+      background: var(--success-green);
+    }
+
+    /* Campo fecha de nacimiento con mismo color que select estado civil */
+    .form-group input[type="date"]:not(.valid) {
+      color: var(--gray-dark);
     }
 
     /* Estilos para textarea */
@@ -651,7 +683,7 @@
       color: var(--white);
       font-size: 0.8em;
       backdrop-filter: blur(5px);
-      transition: var(--transition);
+      transition: var(--transition-base);
       box-sizing: border-box;
       text-align: left;
       resize: vertical;
@@ -660,8 +692,8 @@
 
     .form-group textarea:focus {
       outline: none;
-      border-color: rgba(255, 255, 255, 0.5);
-      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--white-50);
+      background: var(--white-15);
       box-shadow: 0 0 0 2px var(--white-10);
     }
 
@@ -751,17 +783,17 @@
       justify-content: center;
       text-align: center;
       box-sizing: border-box;
-      transition: var(--transition);
+      transition: var(--transition-base);
     }
 
     /* Estilo específico para el texto seleccionado */
     .custom-select .selected-text {
-      color: rgba(100, 100, 100, 0.9);
+      color: var(--gray-dark);
     }
 
     /* Estilos para cuando hay un valor seleccionado en el select */
     .custom-select.has-value .selected-text {
-      color: #000000;
+      color: var(--black);
       font-weight: bold;
     }
 
@@ -769,7 +801,7 @@
       content: '▼';
       position: absolute;
       right: 2px;
-      color: rgba(100, 100, 100, 0.9);
+      color: var(--gray-dark);
       font-size: 0.7em;
       pointer-events: none;
     }
@@ -805,8 +837,8 @@
 
     .custom-select:focus {
       outline: none;
-      border-color: rgba(255, 255, 255, 0.5);
-      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--white-50);
+      background: var(--white-15);
       box-shadow: 0 0 0 2px var(--white-10);
     }
 
@@ -815,7 +847,9 @@
       border-color: rgba(255, 255, 255, 0.7);
       background: rgba(255, 255, 255, 0.2);
       box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
-    }    /* El verde debe tener prioridad sobre focus y focused */
+    }
+
+    /* El verde debe tener prioridad sobre focus y focused */
     .custom-select.has-value,
     .custom-select.has-value:focus,
     .custom-select.has-value.focused,
@@ -885,7 +919,7 @@
       color: var(--text-dark);
       cursor: pointer;
       text-align: center;
-      transition: var(--transition);
+      transition: var(--transition-base);
       min-height: 2.1em;
       /* Altura mínima para consistencia y evitar cortes */
       box-sizing: border-box;
@@ -895,7 +929,7 @@
     }
 
     .custom-option:hover {
-      background: rgba(60, 140, 180, 0.85);
+      background: var(--blue-option);
       color: black;
       font-weight: bold;
     }
@@ -951,9 +985,11 @@
                 <div class="form-group">
                   <label for="tipoVehiculo">Tipo de Vehículo</label>
                   <div class="custom-select" id="tipoVehiculo" tabindex="0">
-                    <span class="selected-text">Vehículo</span>                    <div class="custom-options">
+                    <span class="selected-text">Vehículo</span>
+                    <div class="custom-options">
                       <div class="custom-option" data-value="auto">Auto/Camioneta</div>
-                      <div class="custom-option" data-value="utilitario">Utilitario</div>                      <div class="custom-option" data-value="moto">Moto</div>
+                      <div class="custom-option" data-value="utilitario">Utilitario</div>
+                      <div class="custom-option" data-value="moto">Moto</div>
                       <div class="custom-option" data-value="cuatri">Cuatri/Quad</div>
                     </div>
                   </div>
@@ -1276,9 +1312,11 @@
                   <div class="form-group">
                     <label for="tipoVehiculoFormulario">Tipo de Vehículo</label>
                     <div class="custom-select" id="tipoVehiculoFormulario" tabindex="0">
-                      <span class="selected-text">Tipo de Vehículo</span>                      <div class="custom-options">
+                      <span class="selected-text">Tipo de Vehículo</span>
+                      <div class="custom-options">
                         <div class="custom-option" data-value="auto">Auto/Camioneta</div>
-                        <div class="custom-option" data-value="utilitario">Utilitario</div>                        <div class="custom-option" data-value="moto">Moto</div>
+                        <div class="custom-option" data-value="utilitario">Utilitario</div>
+                        <div class="custom-option" data-value="moto">Moto</div>
                         <div class="custom-option" data-value="cuatri">Cuatri/Quad</div>
                       </div>
                     </div>
@@ -1985,7 +2023,8 @@
         card.classList.remove('collapsed');
         card.classList.add('expanded');
         // Agregar clase al contenedor para indicar que hay una card expandida
-        formCard.classList.add('has-expanded-card');      } else {
+        formCard.classList.add('has-expanded-card');
+      } else {
         // Colapsar la card actual
         card.classList.remove('expanded');
         card.classList.add('collapsed');
@@ -1993,19 +2032,17 @@
         // Como solo puede haber una card abierta, al cerrarla quitamos la clase
         formCard.classList.remove('has-expanded-card');
       }
-    }
-
-    // Validación de inputs
+    }    // Validación de inputs
     function initInputValidation() {
-      const inputs = document.querySelectorAll('input[type="text"], input[type="email"], textarea');
-      
+      const inputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="date"], textarea');
+
       inputs.forEach(input => {
-        input.addEventListener('blur', function() {
+        input.addEventListener('blur', function () {
           validateInput(this);
         });
-        
+
         // También validar cuando cambia el contenido
-        input.addEventListener('input', function() {
+        input.addEventListener('input', function () {
           if (this.value.trim() !== '') {
             validateInput(this);
           } else {
@@ -2017,12 +2054,13 @@
 
     function validateInput(input) {
       const value = input.value.trim();
-      let isValid = false;
-
-      if (input.type === 'email') {
+      let isValid = false; if (input.type === 'email') {
         // Validación de email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         isValid = emailRegex.test(value);
+      } else if (input.type === 'date') {
+        // Para campos de fecha, validar que tenga un valor válido
+        isValid = value !== '' && !isNaN(Date.parse(value));
       } else if (input.type === 'text') {
         // Para campos de texto, validar que no esté vacío y tenga al menos 2 caracteres
         isValid = value.length >= 2;
@@ -2041,12 +2079,12 @@
     // Validación de selects
     function initSelectValidation() {
       const selects = document.querySelectorAll('.custom-select');
-      
+
       selects.forEach(select => {
         const options = select.querySelectorAll('.custom-option');
-        
+
         options.forEach(option => {
-          option.addEventListener('click', function() {
+          option.addEventListener('click', function () {
             // Agregar clase valid al select cuando se selecciona una opción
             select.classList.add('valid');
           });
@@ -2058,13 +2096,13 @@
     function initLogoHoverEffect() {
       const header = document.querySelector('header');
       const logo = document.querySelector('header a');
-      
+
       if (header && logo) {
-        logo.addEventListener('mouseenter', function() {
+        logo.addEventListener('mouseenter', function () {
           header.classList.add('logo-hover');
         });
-        
-        logo.addEventListener('mouseleave', function() {
+
+        logo.addEventListener('mouseleave', function () {
           header.classList.remove('logo-hover');
         });
       }
@@ -2168,14 +2206,14 @@
         conyugeContainer.style.display = 'none';
       }
     }    // Inicializar validaciones y limpiar datos cuando el DOM esté listo
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       // Primero limpiar todos los datos
       limpiarTodosLosDatos();
-      
+
       // Luego inicializar las validaciones
       initInputValidation();
       initSelectValidation();
-      
+
       // Inicializar el efecto hover del logo
       initLogoHoverEffect();
     });
