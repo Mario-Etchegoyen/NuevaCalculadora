@@ -73,8 +73,7 @@
       background: url('Imagenes/Agencia.png') top center / cover no-repeat fixed;
     }
 
-    /* === HEADER === */
-    header {
+    /* === HEADER === */    header {
       position: fixed;
       top: 0;
       left: 0;
@@ -86,6 +85,12 @@
       justify-content: center;
       align-items: center;
       z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    header.logo-hover {
+      background-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.4);
     }
 
     header a {
@@ -93,12 +98,26 @@
       text-align: center;
       color: var(--text-light);
       font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    header a:hover {
+      transform: scale(1.05);
     }
 
     header a h1 {
       margin: 0;
       font-size: 7vh;
       line-height: 1;
+      transition: all 0.3s ease;
+    }
+
+    header a:hover h1 {
+      font-size: 7.5vh;
+      letter-spacing: 0.15em;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      color: #666666;
+      -webkit-text-stroke: 1px #f5f5f5;
     }
 
     header a p {
@@ -107,6 +126,14 @@
       line-height: 1;
       text-align: left;
       color: var(--text-light-alpha);
+      transition: all 0.3s ease;
+      letter-spacing: 0.05em;
+    }    header a:hover p {
+      font-size: 3.214vh;
+      letter-spacing: 0.158em;
+      color: #666666;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
     }
 
     /* === LAYOUT PRINCIPAL === */
@@ -191,7 +218,8 @@
     .form-button {
       background-color: var(--white-90);
       border: 2px solid var(--white);
-      padding: 0 2vw;
+      padding: 0 1.5vw;
+      /* Padding reducido para mejor ajuste */
       border-radius: var(--radius-md);
       cursor: pointer;
       font-weight: bold;
@@ -199,6 +227,8 @@
       color: var(--text-dark);
       margin-top: var(--space-lg);
       height: var(--element-height);
+      width: 160px;
+      /* Width fijo para que todos los botones tengan el mismo tamaño */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -235,7 +265,11 @@
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
       padding: var(--space-md) 5vh;
       border-bottom: 1px solid var(--white-10);
+      border-top-left-radius: var(--radius-sm);
+      border-top-right-radius: var(--radius-sm);
       text-align: left;
+      position: relative;
+      overflow: hidden;
     }
 
     .card-title {
@@ -250,11 +284,300 @@
       gap: var(--space-xs);
     }
 
+    .card-subtitle {
+      color: var(--white-80);
+      font-size: 0.8em;
+      font-weight: 400;
+      margin: 0.5vh 0 0 0;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      font-style: italic;
+      display: block;
+      text-align: center;
+    }
+
+    /* Estilos específicos para la card de cónyuge */
+    .conyuge-container {
+      background: linear-gradient(135deg, rgba(120, 120, 120, 0.9), rgba(80, 80, 80, 0.9));
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .conyuge-container .card-header {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+    }
+
+    /* === ESTILOS PARA CARDS COLAPSABLES === */
+    .form-card.collapsed {
+      height: auto;
+      max-height: none;
+      min-height: auto;
+    }
+
+    /* Sub-cards dentro del contenedor datero - posicionamiento fijo */
+    #datero .form-card .form-card.collapsed {
+      height: auto;
+      max-height: none;
+      min-height: auto;
+      width: var(--card-width);
+      margin: var(--space-md) 0 var(--space-xs) 0;
+      background: linear-gradient(135deg, var(--blue-primary), var(--blue-secondary));
+      border: 1px solid var(--white-10);
+      border-radius: var(--radius-sm);
+      flex: 0 0 auto;
+      position: relative;
+    }
+
+    #datero .form-card .form-card.expanded {
+      height: auto;
+      max-height: 80vh;
+      min-height: auto;
+      width: var(--card-width);
+      background: linear-gradient(135deg, var(--blue-primary), var(--blue-secondary));
+      border: 1px solid var(--white-10);
+      border-radius: var(--radius-sm);
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 102;
+      overflow-y: auto;
+    }
+
+    /* Overlay difuso para el fondo cuando hay una card expandida */
+    #datero .form-card .form-card.expanded::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(2px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Primera sub-card sin margen superior */
+    #datero .form-card .form-card:first-child {
+      margin-top: 0;
+    }
+
+    /* Última sub-card sin margen inferior */
+    #datero .form-card .form-card:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Cards colapsadas se ven difusas cuando hay una card expandida */
+    #datero .form-card:has(.form-card.expanded) .form-card.collapsed {
+      filter: blur(2px);
+      opacity: 0.5;
+      transition: filter 0.3s ease, opacity 0.3s ease;
+    }
+
+    /* Alternativa para navegadores que no soportan :has() usando clase JavaScript */
+    #datero .form-card.has-expanded-card .form-card.collapsed {
+      filter: blur(2px);
+      opacity: 0.5;
+      transition: filter 0.3s ease, opacity 0.3s ease;
+    }
+
+    .form-card.collapsed .card-content {
+      display: none;
+      opacity: 0;
+      max-height: 0;
+      min-height: 0;
+      padding: 0;
+      overflow: hidden;
+      transition: all 0.3s ease-in-out;
+      background: transparent;
+    }
+
+    .form-card.expanded .card-content {
+      display: block;
+      opacity: 1;
+      max-height: none;
+      min-height: auto;
+      padding: var(--space-lg) var(--space-md) 0.2vh var(--space-lg);
+      overflow: visible;
+      transition: all 0.3s ease-in-out;
+      background: transparent;
+    }
+
+    /* Headers clickeables del datero */
+    #datero .card-header {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+      padding: var(--space-md) var(--space-lg);
+      border-top-left-radius: var(--radius-sm);
+      border-top-right-radius: var(--radius-sm);
+      text-align: left;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      position: relative;
+      border-bottom: none;
+    }
+
+    /* Eliminar pseudo-elemento específicamente para datero con mayor especificidad */
+    #datero .form-card .card-header::before {
+      display: none;
+      content: none;
+    }
+
+    #datero .card-header::after {
+      box-shadow: none !important;
+    }
+
+    /* Solo mantener la flecha indicadora */
+    #datero .card-header::after {
+      content: '▼';
+      position: absolute;
+      right: 2vh;
+      top: 50%;
+      transform: translateY(-50%);
+      transition: transform 0.3s ease;
+      color: var(--white);
+      font-size: 0.8em;
+      z-index: 11;
+      transform: translateY(-50%) translateZ(0);
+    }
+
+    #datero .card-header:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+    }
+
+    /* Flecha indicadora solo para datero */
+    #datero .card-header::after {
+      content: '▼';
+      position: absolute;
+      right: 2vh;
+      top: 50%;
+      transform: translateY(-50%);
+      transition: transform 0.3s ease;
+      color: var(--white);
+      font-size: 0.8em;
+    }
+
+    #datero .form-card.collapsed .card-header::after {
+      transform: translateY(-50%) rotate(-90deg);
+    }
+
+    #datero .form-card.expanded .card-header::after {
+      transform: translateY(-50%) rotate(0deg);
+    }
+
+    /* Corregir esquinas del header cuando la card está colapsada */
+    #datero .form-card.collapsed .card-header {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+      padding: var(--space-md) 5vh;
+      border-bottom-left-radius: var(--radius-sm);
+      border-bottom-right-radius: var(--radius-sm);
+      border-bottom: none;
+    }
+
+    /* Header para card expandida - colores originales exactos */
+    #datero .form-card.expanded .card-header {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+      padding: var(--space-md) 5vh;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      border-bottom: 1px solid var(--white-10);
+      position: sticky;
+      top: 0;
+      z-index: 103;
+    }
+
+    /* Headers de calculadora - SIN flecha */
+    #calculadora .card-header {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+      padding: var(--space-md) 5vh;
+      border-bottom: 1px solid var(--white-10);
+      border-top-left-radius: var(--radius-sm);
+      border-top-right-radius: var(--radius-sm);
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* === CONTENEDOR PRINCIPAL DEL DATERO === */
+    /* Contenedor principal del datero - contexto de posicionamiento */
+    #datero .form-card {
+      height: var(--card-height);
+      max-height: var(--card-height);
+      min-height: fit-content;
+      width: var(--card-width);
+      background: linear-gradient(135deg, var(--blue-primary), var(--blue-secondary));
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--white-10);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-card);
+      transition: var(--transition);
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    #datero .form-card:hover {
+      box-shadow: var(--shadow-hover);
+    }
+
+    /* Scroll personalizado para el contenedor principal del datero */
+    #datero .form-card::-webkit-scrollbar {
+      width: 0.5vh;
+    }
+
+    #datero .form-card::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-xs);
+    }
+
+    #datero .form-card::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: var(--radius-xs);
+    }
+
+    #datero .form-card::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Ajustar el contenedor padre del datero */
+    #datero .contenedor-padre {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Asegurar que no haya background gris en las esquinas */
+    .form-card.collapsed {
+      background: linear-gradient(135deg, var(--blue-primary), var(--blue-secondary));
+      border-radius: var(--radius-sm);
+    }
+
+    /* Forzar que las esquinas del header tengan el color correcto */
+    .form-card .card-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: inherit;
+      border-radius: inherit;
+      z-index: -1;
+    }
+
+    /* Eliminar cualquier background color que pueda estar causando las esquinas grises */
+    .form-card .card-header {
+      background-clip: padding-box;
+    }
+
     .card-content {
       padding: var(--space-lg) var(--space-md) 0.2vh var(--space-lg);
       display: block;
       min-height: 100px;
       overflow: visible;
+      border-bottom-left-radius: var(--radius-sm);
+      border-bottom-right-radius: var(--radius-sm);
     }
 
     /* === FORMULARIOS === */
@@ -455,6 +778,31 @@
       content: '▲';
     }
 
+    /* Asegurar que el select abierto esté por encima de todo */
+    .custom-select.open {
+      z-index: 9998;
+      position: relative;
+    }
+
+    /* Forzar que las opciones de los selects escapen de cualquier overflow */
+    .custom-select.open .custom-options {
+      position: absolute !important;
+      z-index: 99999 !important;
+    }
+
+    /* Asegurar que las cards expandidas con selects abiertos tengan prioridad */
+    .form-card.expanded:has(.custom-select.open),
+    .form-card.expanded.has-open-select {
+      z-index: 9990 !important;
+      overflow: visible !important;
+    }
+
+    .form-card.expanded .card-content:has(.custom-select.open),
+    .form-card.expanded .card-content.has-open-select {
+      overflow: visible !important;
+      z-index: 9990 !important;
+    }
+
     .custom-select:focus {
       outline: none;
       border-color: rgba(255, 255, 255, 0.5);
@@ -467,13 +815,26 @@
       border-color: rgba(255, 255, 255, 0.7);
       background: rgba(255, 255, 255, 0.2);
       box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
-    }
-
-    /* El verde debe tener prioridad sobre focus y focused */
+    }    /* El verde debe tener prioridad sobre focus y focused */
     .custom-select.has-value,
     .custom-select.has-value:focus,
-    .custom-select.has-value.focused {
+    .custom-select.has-value.focused,
+    .custom-select.valid {
       background: var(--success-green);
+    }
+
+    /* Estilos para inputs válidos */
+    .form-group input.valid {
+      background: var(--success-green);
+      color: #000000;
+      font-weight: bold;
+    }
+
+    /* Estilos para textarea válidos */
+    .form-group textarea.valid {
+      background: var(--success-green);
+      color: #000000;
+      font-weight: bold;
     }
 
     .custom-options {
@@ -486,7 +847,7 @@
       border-radius: var(--radius-xs);
       border-top: none;
       /* max-height será controlado dinámicamente por JavaScript */
-      z-index: 1000;
+      z-index: 9999;
       display: none;
       /* Estilos mejorados para la barra de scroll */
       scrollbar-width: thin;
@@ -515,6 +876,7 @@
 
     .custom-options.show {
       display: block;
+      z-index: 9999 !important;
     }
 
     .custom-option {
@@ -589,12 +951,10 @@
                 <div class="form-group">
                   <label for="tipoVehiculo">Tipo de Vehículo</label>
                   <div class="custom-select" id="tipoVehiculo" tabindex="0">
-                    <span class="selected-text">Vehículo</span>
-                    <div class="custom-options">
+                    <span class="selected-text">Vehículo</span>                    <div class="custom-options">
                       <div class="custom-option" data-value="auto">Auto/Camioneta</div>
-                      <div class="custom-option" data-value="utilitario">Utilitario</div>
-                      <div class="custom-option" data-value="moto">Moto</div>
-                      <div class="custom-option" data-value="cuatriciclo">Cuatriciclo/Quad/SSV</div>
+                      <div class="custom-option" data-value="utilitario">Utilitario</div>                      <div class="custom-option" data-value="moto">Moto</div>
+                      <div class="custom-option" data-value="cuatri">Cuatri/Quad</div>
                     </div>
                   </div>
                   <input type="hidden" name="tipoVehiculo" id="tipoVehiculoValue">
@@ -694,9 +1054,347 @@
     </section>
     <section id="datero">
       <div class="contenedor-padre">
-        <form class="contenedor-form">
-          <h2>Envio de Datos</h2>
-          <button type="button" class="form-button" onclick="enviarDatos()">Enviar</button>
+        <form class="contenedor-form" id="formEnviarDatos">
+          <div class="form-card"> <!-- Card: Datos Personales -->
+            <div class="form-card collapsed">
+              <div class="card-header" onclick="toggleCard(this)">
+                <h3 class="card-title">📋 Datos Personales</h3>
+              </div>
+              <div class="card-content">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" id="apellido" name="apellido" placeholder="Apellido">
+                  </div>
+                  <div class="form-group">
+                    <label for="nombre-datero">Nombre</label>
+                    <input type="text" id="nombre-datero" name="nombre" placeholder="Nombre">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="fechaNacimiento">Fecha de Nacimiento</label>
+                    <input type="date" id="fechaNacimiento" name="fechaNacimiento">
+                  </div>
+                  <div class="form-group">
+                    <label for="paisOrigen">Nacionalidad</label>
+                    <input type="text" id="paisOrigen" name="paisOrigen" placeholder="País de Origen">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="dni">DNI</label>
+                    <input type="text" id="dni" name="dni" placeholder="Número" maxlength="8">
+                  </div>
+                  <div class="form-group">
+                    <label for="cuit">CUIT/CUIL</label>
+                    <input type="text" id="cuit" name="cuit" placeholder="Número" maxlength="13">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group full-width">
+                    <label for="estadoCivil">Estado Civil</label>
+                    <div class="custom-select" id="estadoCivil" tabindex="0">
+                      <span class="selected-text">Estado Civil</span>
+                      <div class="custom-options">
+                        <div class="custom-option" data-value="Soltero">Soltero</div>
+                        <div class="custom-option" data-value="Concubinato">Concubinato</div>
+                        <div class="custom-option" data-value="Casado">Casado</div>
+                        <div class="custom-option" data-value="Divorciado">Divorciado</div>
+                        <div class="custom-option" data-value="Viudo">Viudo</div>
+                      </div>
+                    </div>
+                    <input type="hidden" name="estadoCivil" id="estadoCivilValue">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Card: Información Laboral -->
+            <div class="form-card collapsed">
+              <div class="card-header" onclick="toggleCard(this)">
+                <h3 class="card-title">💼 Información Laboral</h3>
+              </div>
+              <div class="card-content">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="situacionLaboral">Situación Laboral</label>
+                    <div class="custom-select" id="situacionLaboral" tabindex="0">
+                      <span class="selected-text">Situación Laboral</span>
+                      <div class="custom-options">
+                        <div class="custom-option" data-value="Autónomo">Autónomo</div>
+                        <div class="custom-option" data-value="Rel. Dependencia">Rel. Dependencia</div>
+                        <div class="custom-option" data-value="Otro">Otro</div>
+                      </div>
+                    </div>
+                    <input type="hidden" name="situacionLaboral" id="situacionLaboralValue">
+                  </div>
+                  <div class="form-group">
+                    <label for="nombreEmpresa">Nombre Empresa</label>
+                    <input type="text" id="nombreEmpresa" name="nombreEmpresa"
+                      placeholder="Empresa o Apellido (si es autónomo)">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group full-width">
+                    <label for="telefLaboral">Teléf. Laboral</label>
+                    <input type="text" id="telefLaboral" name="telefLaboral" placeholder="Teléf. Empresa">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Card: Información de Contacto -->
+            <div class="form-card collapsed">
+              <div class="card-header" onclick="toggleCard(this)">
+                <h3 class="card-title">📞 Información de Contacto</h3>
+              </div>
+              <div class="card-content">
+                <div class="form-row">
+                  <div class="form-group full-width">
+                    <label for="domicilioParticular">Domic. Particular</label>
+                    <input type="text" id="domicilioParticular" name="domicilioParticular"
+                      placeholder="Domicilio según DNI">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="ciudad">Ciudad</label>
+                    <input type="text" id="ciudad" name="ciudad" placeholder="Ciudad">
+                  </div>
+                  <div class="form-group">
+                    <label for="provincia">Provincia</label>
+                    <div class="custom-select" id="provincia" tabindex="0">
+                      <span class="selected-text">Provincia</span>
+                      <div class="custom-options">
+                        <div class="custom-option" data-value="Buenos Aires">Buenos Aires</div>
+                        <div class="custom-option" data-value="Catamarca">Catamarca</div>
+                        <div class="custom-option" data-value="Chaco">Chaco</div>
+                        <div class="custom-option" data-value="Chubut">Chubut</div>
+                        <div class="custom-option" data-value="CABA">CABA</div>
+                        <div class="custom-option" data-value="Córdoba">Córdoba</div>
+                        <div class="custom-option" data-value="Corrientes">Corrientes</div>
+                        <div class="custom-option" data-value="Entre Ríos">Entre Ríos</div>
+                        <div class="custom-option" data-value="Formosa">Formosa</div>
+                        <div class="custom-option" data-value="Jujuy">Jujuy</div>
+                        <div class="custom-option" data-value="La Pampa">La Pampa</div>
+                        <div class="custom-option" data-value="La Rioja">La Rioja</div>
+                        <div class="custom-option" data-value="Mendoza">Mendoza</div>
+                        <div class="custom-option" data-value="Misiones">Misiones</div>
+                        <div class="custom-option" data-value="Neuquén">Neuquén</div>
+                        <div class="custom-option" data-value="Río Negro">Río Negro</div>
+                        <div class="custom-option" data-value="Salta">Salta</div>
+                        <div class="custom-option" data-value="San Juan">San Juan</div>
+                        <div class="custom-option" data-value="San Luis">San Luis</div>
+                        <div class="custom-option" data-value="Santa Cruz">Santa Cruz</div>
+                        <div class="custom-option" data-value="Santa Fe">Santa Fe</div>
+                        <div class="custom-option" data-value="Stgo. del Estero">Stgo. del Estero</div>
+                        <div class="custom-option" data-value="T. del Fuego">T. del Fuego</div>
+                        <div class="custom-option" data-value="Tucumán">Tucumán</div>
+                      </div>
+                    </div>
+                    <input type="hidden" name="provincia" id="provinciaValue">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="telefParticular">Teléf. Particular</label>
+                    <input type="text" id="telefParticular" name="telefParticular" placeholder="Nro. Celular">
+                  </div>
+                  <div class="form-group">
+                    <label for="emailFormulario">Mail</label>
+                    <input type="email" id="emailFormulario" name="email" placeholder="Dirección de Mail">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Card Condicional: Datos de Cónyuge/Pareja -->
+            <div id="conyuge-container" class="form-card conyuge-container collapsed" style="display: none;">
+              <div class="card-header" onclick="toggleCard(this)">
+                <h3 class="card-title">💑 Datos de Cónyuge/Pareja</h3>
+                <span class="card-subtitle">(solamente en la zona gris)</span>
+              </div>
+              <div class="card-content">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="conyugeApellido">Apellido (Cónyuge/Pareja)</label>
+                    <input type="text" id="conyugeApellido" name="conyugeApellido"
+                      placeholder="Apellido (Cónyuge/Pareja)">
+                  </div>
+                  <div class="form-group">
+                    <label for="conyugeNombre">Nombre (Cónyuge/Pareja)</label>
+                    <input type="text" id="conyugeNombre" name="conyugeNombre" placeholder="Nombre (Cónyuge/Pareja)">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="conyugeFechaNacimiento">Fecha de Nacimiento (Cónyuge/Pareja)</label>
+                    <input type="date" id="conyugeFechaNacimiento" name="conyugeFechaNacimiento">
+                  </div>
+                  <div class="form-group">
+                    <label for="conyugePaisOrigen">Nacionalidad (Cónyuge/Pareja)</label>
+                    <input type="text" id="conyugePaisOrigen" name="conyugePaisOrigen" placeholder="País de Origen">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="conyugeDni">DNI (Cónyuge/Pareja)</label>
+                    <input type="text" id="conyugeDni" name="conyugeDni" placeholder="DNI (sin puntos)" maxlength="8">
+                  </div>
+                  <div class="form-group">
+                    <label for="conyugeCuit">CUIT/CUIL (Cónyuge/Pareja)</label>
+                    <input type="text" id="conyugeCuit" name="conyugeCuit" placeholder="CUIT/CUIL (sin guiones)"
+                      maxlength="13">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="conyugeSituacionLaboral">Situación Laboral (Cónyuge/Pareja)</label>
+                    <div class="custom-select" id="conyugeSituacionLaboral" tabindex="0">
+                      <span class="selected-text">Situación Laboral</span>
+                      <div class="custom-options">
+                        <div class="custom-option" data-value="Autónomo">Autónomo</div>
+                        <div class="custom-option" data-value="Rel. Dependencia">Rel. Dependencia</div>
+                        <div class="custom-option" data-value="Otro">Otro</div>
+                      </div>
+                    </div>
+                    <input type="hidden" name="conyugeSituacionLaboral" id="conyugeSituacionLaboralValue">
+                  </div>
+                  <div class="form-group">
+                    <label for="conyugeNombreEmpresa">Nombre Empresa (Cónyuge/Pareja)</label>
+                    <input type="text" id="conyugeNombreEmpresa" name="conyugeNombreEmpresa"
+                      placeholder="Empresa o Apellido (si es autónomo)">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Card: Información del Vehículo -->
+            <div class="form-card collapsed">
+              <div class="card-header" onclick="toggleCard(this)">
+                <h3 class="card-title">🚗 Información del Vehículo</h3>
+              </div>
+              <div class="card-content">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="tipoVehiculoFormulario">Tipo de Vehículo</label>
+                    <div class="custom-select" id="tipoVehiculoFormulario" tabindex="0">
+                      <span class="selected-text">Tipo de Vehículo</span>                      <div class="custom-options">
+                        <div class="custom-option" data-value="auto">Auto/Camioneta</div>
+                        <div class="custom-option" data-value="utilitario">Utilitario</div>                        <div class="custom-option" data-value="moto">Moto</div>
+                        <div class="custom-option" data-value="cuatri">Cuatri/Quad</div>
+                      </div>
+                    </div>
+                    <input type="hidden" name="tipoVehiculo" id="tipoVehiculoFormularioValue">
+                  </div>
+                  <div class="form-group">
+                    <label for="combustible">Combustible</label>
+                    <div class="custom-select" id="combustible" tabindex="0">
+                      <span class="selected-text">Combustible</span>
+                      <div class="custom-options">
+                        <div class="custom-option" data-value="nafta">Nafta/Diesel</div>
+                        <div class="custom-option" data-value="electrico">Eléctrico</div>
+                      </div>
+                    </div>
+                    <input type="hidden" name="combustible" id="combustibleValue">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="patentado">Patentado</label>
+                    <div class="custom-select" id="patentado" tabindex="0">
+                      <span class="selected-text">Patentado</span>
+                      <div class="custom-options">
+                        <div class="custom-option" data-value="si">SI</div>
+                        <div class="custom-option" data-value="no">NO</div>
+                      </div>
+                    </div>
+                    <input type="hidden" name="patentado" id="patentadoValue">
+                  </div>
+                  <div class="form-group">
+                    <label for="anioModelo">Año/Modelo</label>
+                    <div class="custom-select" id="anioModelo" tabindex="0">
+                      <span class="selected-text">Año/Modelo</span>
+                      <div class="custom-options">
+                        <div class="custom-option" data-value="2025">2025</div>
+                        <div class="custom-option" data-value="2024">2024</div>
+                        <div class="custom-option" data-value="2023">2023</div>
+                        <div class="custom-option" data-value="2022">2022</div>
+                        <div class="custom-option" data-value="2021">2021</div>
+                        <div class="custom-option" data-value="2020">2020</div>
+                        <div class="custom-option" data-value="2019">2019</div>
+                        <div class="custom-option" data-value="2018">2018</div>
+                        <div class="custom-option" data-value="2017">2017</div>
+                        <div class="custom-option" data-value="2016">2016</div>
+                      </div>
+                    </div>
+                    <input type="hidden" name="anioModelo" id="anioModeloValue">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="marca">Marca</label>
+                    <input type="text" id="marca" name="marca" placeholder="Marca Vehículo">
+                  </div>
+                  <div class="form-group">
+                    <label for="modelo">Modelo</label>
+                    <input type="text" id="modelo" name="modelo" placeholder="Modelo Vehículo">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group full-width">
+                    <label for="version">Versión</label>
+                    <input type="text" id="version" name="version" placeholder="Versión Vehículo">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Card: Información del Préstamo -->
+            <div class="form-card collapsed">
+              <div class="card-header" onclick="toggleCard(this)">
+                <h3 class="card-title">💰 Información del Préstamo</h3>
+              </div>
+              <div class="card-content">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="montoSolicitado">Monto Solicitado</label>
+                    <input type="text" id="montoSolicitado" name="montoSolicitado"
+                      placeholder="Escriba el número sin símbolos ni puntos">
+                  </div>
+                  <div class="form-group"> <label for="plazoDeseado">Plazo Deseado</label>
+                    <div class="custom-select" id="plazoDeseado" tabindex="0">
+                      <span class="selected-text">Plazo Deseado</span>
+                      <div class="custom-options">
+                        <div class="custom-option" data-value="12">12 Meses</div>
+                        <div class="custom-option" data-value="18">18 Meses</div>
+                        <div class="custom-option" data-value="24">24 Meses</div>
+                        <div class="custom-option" data-value="36">36 Meses</div>
+                        <div class="custom-option" data-value="48">48 Meses</div>
+                      </div>
+                    </div><input type="hidden" name="plazoDeseado" id="plazoDeseadoValue">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="tipoTasa">Tipo de Tasa</label>
+                    <div class="custom-select" id="tipoTasa" tabindex="0">
+                      <span class="selected-text">Tipo de Tasa</span>
+                      <div class="custom-options">
+                        <div class="custom-option" data-value="UVA">UVA</div>
+                        <div class="custom-option" data-value="Fija">Fija</div>
+                      </div>
+                    </div><input type="hidden" name="tipoTasa" id="tipoTasaValue">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group full-width">
+                    <label for="comentarios">Comentarios</label>
+                    <textarea id="comentarios" name="comentarios" placeholder="Comentarios" maxlength="250"
+                      rows="3"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="form-button" onclick="enviarDatos()">Enviar Datos</button>
         </form>
       </div>
     </section>
@@ -760,13 +1458,19 @@
   <footer>
     <p>&copy; 2025 Mi Página Web</p>
   </footer>
-  <script>    // SPA functionality
+  <script>
+    // SPA functionality
     function showSection(sectionId) {
       // Ocultar todas las secciones
       const sections = document.querySelectorAll('section');
       sections.forEach(section => {
         section.classList.remove('active');
       });
+
+      // Limpiar formularios específicos al acceder a ciertas secciones
+      if (sectionId === 'datero') {
+        limpiarFormularioDataro();
+      }
 
       // Mostrar la sección seleccionada
       const targetSection = document.getElementById(sectionId);
@@ -785,13 +1489,15 @@
       if (activeButton) {
         activeButton.classList.add('active');
       }
-    }    // Variable para almacenar el timeout
-    let agradecimientoTimeout = null;
+    }
 
-    // Función para enviar datos del datero
+    // Variable para almacenar el timeout
+    let agradecimientoTimeout = null;    // Función para enviar datos del datero
     function enviarDatos() {
       // Primero mostrar agradecimiento datero
-      showSection('agradecimiento-datero');      // Función para ir a calculadora
+      showSection('agradecimiento-datero');
+
+      // Función para ir a calculadora
       function irACalculadora() {
         limpiarCalculadora(); // Limpiar calculadora antes de mostrarla
         showSection('calculadora');
@@ -884,19 +1590,33 @@
 
         // Toggle dropdown
         select.addEventListener('click', (e) => {
-          e.stopPropagation();
-
-          // Close other dropdowns
+          e.stopPropagation();          // Close other dropdowns
           customSelects.forEach(otherSelect => {
             if (otherSelect !== select) {
               otherSelect.classList.remove('open');
-              otherSelect.querySelector('.custom-options').classList.remove('show');
+              const otherOptions = otherSelect.querySelector('.custom-options');
+              otherOptions.classList.remove('show');
+              // Limpiar clases de overflow
+              const otherParentCard = otherSelect.closest('.form-card.expanded');
+              const otherParentCardContent = otherSelect.closest('.card-content');
+              if (otherParentCard) otherParentCard.classList.remove('has-open-select');
+              if (otherParentCardContent) otherParentCardContent.classList.remove('has-open-select');
             }
-          });          // Toggle current dropdown
+          });// Toggle current dropdown
           select.classList.toggle('open');
           options.classList.toggle('show');
 
-          // Reset keyboard navigation index
+          // Gestionar clases de overflow para compatibilidad
+          const parentCard = select.closest('.form-card.expanded');
+          const parentCardContent = select.closest('.card-content');
+
+          if (select.classList.contains('open')) {
+            if (parentCard) parentCard.classList.add('has-open-select');
+            if (parentCardContent) parentCardContent.classList.add('has-open-select');
+          } else {
+            if (parentCard) parentCard.classList.remove('has-open-select');
+            if (parentCardContent) parentCardContent.classList.remove('has-open-select');
+          }          // Reset keyboard navigation index
           if (!select.classList.contains('open')) {
             currentIndex = -1;
             const optionElements = options.querySelectorAll('.custom-option');
@@ -914,9 +1634,7 @@
             selectedText.textContent = text;
             select.classList.add('has-value'); if (hiddenInput) {
               hiddenInput.value = value;
-            }
-
-            select.classList.remove('open');
+            } select.classList.remove('open');
             options.classList.remove('show');
 
             // Reset keyboard navigation
@@ -977,6 +1695,10 @@
               select.classList.remove('open');
               options.classList.remove('show');
               currentIndex = -1;
+              // Limpiar estilos de posicionamiento fixed
+              options.style.left = '';
+              options.style.top = '';
+              options.style.width = '';
               optionElements.forEach(opt => opt.classList.remove('highlighted'));
             }
           }
@@ -1026,6 +1748,12 @@
               case 'tasaInteres':
                 selectedText.textContent = 'Tasa de Interés';
                 break;
+              case 'estadoCivil':
+                selectedText.textContent = 'Estado Civil';
+                break;
+              case 'situacionLaboral':
+                selectedText.textContent = 'Situación Laboral';
+                break;
             }
           }
         });
@@ -1043,23 +1771,31 @@
             }
           }, 100);
         });
-      });
-
-      // Close dropdowns when clicking outside
+      });      // Close dropdowns when clicking outside
       document.addEventListener('click', () => {
         customSelects.forEach(select => {
           select.classList.remove('open');
-          select.querySelector('.custom-options').classList.remove('show');
+          const options = select.querySelector('.custom-options');
+          options.classList.remove('show');
 
           // Reset keyboard navigation for all selects
           const optionElements = select.querySelectorAll('.custom-option');
           optionElements.forEach(opt => opt.classList.remove('highlighted'));
         });
       });
-    }
+    }    // Inicializar los selects personalizados
+    document.addEventListener('DOMContentLoaded', () => {
+      initCustomSelects();
 
-    // Inicializar los selects personalizados
-    document.addEventListener('DOMContentLoaded', initCustomSelects);
+      // Agregar listener para el estado civil después de la inicialización
+      const estadoCivilOptions = document.querySelectorAll('#estadoCivil .custom-option');
+      estadoCivilOptions.forEach(option => {
+        option.addEventListener('click', () => {
+          // Usar timeout para permitir que el valor se actualice primero
+          setTimeout(toggleConyugeContainer, 50);
+        });
+      });
+    });
 
     // Función para limpiar completamente la calculadora
     function limpiarCalculadora() {
@@ -1097,6 +1833,12 @@
             case 'tasaInteres':
               selectedText.textContent = 'Tasa de Interés';
               break;
+            case 'estadoCivil':
+              selectedText.textContent = 'Estado Civil';
+              break;
+            case 'situacionLaboral':
+              selectedText.textContent = 'Situación Laboral';
+              break;
           }
         }
 
@@ -1104,9 +1846,7 @@
         const hiddenInput = select.parentElement.querySelector('input[type="hidden"]');
         if (hiddenInput) {
           hiddenInput.value = '';
-        }
-
-        // Cerrar dropdown si está abierto
+        }        // Cerrar dropdown si está abierto
         select.classList.remove('open');
         const options = select.querySelector('.custom-options');
         if (options) {
@@ -1119,7 +1859,326 @@
       allInputs.forEach(element => {
         element.classList.remove('has-value');
       });
+    }    // Función para limpiar formulario del datero
+    function limpiarFormularioDataro() {
+      // Limpiar todos los inputs del datero
+      const dateroInputs = document.querySelectorAll('#datero input[type="text"], #datero input[type="date"], #datero input[type="email"], #datero textarea');
+      dateroInputs.forEach(input => {
+        input.value = '';
+        input.classList.remove('has-value');
+      });
+
+      // Limpiar custom selects del datero
+      const dateroSelects = document.querySelectorAll('#datero .custom-select');
+      dateroSelects.forEach(select => {
+        select.classList.remove('has-value');
+
+        const selectedText = select.querySelector('.selected-text');
+        const selectId = select.id;
+
+        if (selectedText) {
+          switch (selectId) {
+            case 'estadoCivil':
+              selectedText.textContent = 'Estado Civil';
+              break;
+            case 'situacionLaboral':
+              selectedText.textContent = 'Situación Laboral';
+              break;
+            case 'provincia':
+              selectedText.textContent = 'Provincia';
+              break;
+            case 'tipoVehiculoFormulario':
+              selectedText.textContent = 'Tipo de Vehículo';
+              break;
+            case 'combustible':
+              selectedText.textContent = 'Combustible';
+              break;
+            case 'patentado':
+              selectedText.textContent = 'Patentado';
+              break;
+            case 'anioModelo':
+              selectedText.textContent = 'Año/Modelo';
+              break;
+            case 'plazoDeseado':
+              selectedText.textContent = 'Plazo Deseado';
+              break;
+            case 'conyugeSituacionLaboral':
+              selectedText.textContent = 'Situación Laboral';
+              break;
+          }
+        }
+
+        const hiddenInput = select.parentElement.querySelector('input[type="hidden"]');
+        if (hiddenInput) {
+          hiddenInput.value = '';
+        } select.classList.remove('open');
+        const options = select.querySelector('.custom-options');
+        if (options) {
+          options.classList.remove('show');
+        }
+      });
+
+      // Colapsar todas las cards del datero
+      const dateroCards = document.querySelectorAll('#datero .form-card');
+      dateroCards.forEach(card => {
+        card.classList.remove('expanded');
+        card.classList.add('collapsed');
+      });
+
+      // Ocultar la card de cónyuge/pareja
+      const conyugeContainer = document.getElementById('conyuge-container');
+      if (conyugeContainer) {
+        conyugeContainer.style.display = 'none';
+      }
     }
+
+    // Función para mostrar/ocultar la card de Cónyuge/Pareja basada en el estado civil
+    function toggleConyugeContainer() {
+      const estadoCivilSelect = document.getElementById('estadoCivil');
+      const conyugeContainer = document.getElementById('conyuge-container');
+      const estadoCivilValue = document.getElementById('estadoCivilValue');
+
+      if (estadoCivilSelect && conyugeContainer && estadoCivilValue) {
+        const valor = estadoCivilValue.value;
+
+        // Mostrar la card si el estado civil es "Concubinato" o "Casado"
+        if (valor === 'Concubinato' || valor === 'Casado') {
+          conyugeContainer.style.display = 'block';
+        } else {
+          conyugeContainer.style.display = 'none';
+
+          // Limpiar campos de cónyuge cuando se oculta
+          const conyugeInputs = conyugeContainer.querySelectorAll('input[type="text"], input[type="date"]');
+          conyugeInputs.forEach(input => {
+            input.value = '';
+          });
+
+          // Limpiar select de situación laboral del cónyuge
+          const conyugeSelect = document.getElementById('conyugeSituacionLaboral');
+          const conyugeHiddenInput = document.getElementById('conyugeSituacionLaboralValue');
+          if (conyugeSelect && conyugeHiddenInput) {
+            conyugeSelect.classList.remove('has-value');
+            const selectedText = conyugeSelect.querySelector('.selected-text');
+            if (selectedText) {
+              selectedText.textContent = 'Situación Laboral';
+            }
+            conyugeHiddenInput.value = '';
+          }
+        }
+      }
+    }    // Función para expandir/colapsar cards del formulario datero (acordeón - solo una abierta)
+    function toggleCard(headerElement) {
+      const card = headerElement.parentElement;
+      const formCard = document.querySelector('#datero .form-card');
+      const allCards = formCard.querySelectorAll('.form-card');
+
+      if (card.classList.contains('collapsed')) {
+        // Cerrar todas las demás cards antes de abrir esta
+        allCards.forEach(otherCard => {
+          if (otherCard !== card && otherCard.classList.contains('expanded')) {
+            otherCard.classList.remove('expanded');
+            otherCard.classList.add('collapsed');
+          }
+        });
+
+        // Expandir la card seleccionada
+        card.classList.remove('collapsed');
+        card.classList.add('expanded');
+        // Agregar clase al contenedor para indicar que hay una card expandida
+        formCard.classList.add('has-expanded-card');      } else {
+        // Colapsar la card actual
+        card.classList.remove('expanded');
+        card.classList.add('collapsed');
+
+        // Como solo puede haber una card abierta, al cerrarla quitamos la clase
+        formCard.classList.remove('has-expanded-card');
+      }
+    }
+
+    // Validación de inputs
+    function initInputValidation() {
+      const inputs = document.querySelectorAll('input[type="text"], input[type="email"], textarea');
+      
+      inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+          validateInput(this);
+        });
+        
+        // También validar cuando cambia el contenido
+        input.addEventListener('input', function() {
+          if (this.value.trim() !== '') {
+            validateInput(this);
+          } else {
+            this.classList.remove('valid');
+          }
+        });
+      });
+    }
+
+    function validateInput(input) {
+      const value = input.value.trim();
+      let isValid = false;
+
+      if (input.type === 'email') {
+        // Validación de email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        isValid = emailRegex.test(value);
+      } else if (input.type === 'text') {
+        // Para campos de texto, validar que no esté vacío y tenga al menos 2 caracteres
+        isValid = value.length >= 2;
+      } else if (input.tagName.toLowerCase() === 'textarea') {
+        // Para textarea, validar que no esté vacío
+        isValid = value.length >= 1;
+      }
+
+      if (isValid) {
+        input.classList.add('valid');
+      } else {
+        input.classList.remove('valid');
+      }
+    }
+
+    // Validación de selects
+    function initSelectValidation() {
+      const selects = document.querySelectorAll('.custom-select');
+      
+      selects.forEach(select => {
+        const options = select.querySelectorAll('.custom-option');
+        
+        options.forEach(option => {
+          option.addEventListener('click', function() {
+            // Agregar clase valid al select cuando se selecciona una opción
+            select.classList.add('valid');
+          });
+        });
+      });
+    }
+
+    // Función para controlar el hover del header solo en el logo
+    function initLogoHoverEffect() {
+      const header = document.querySelector('header');
+      const logo = document.querySelector('header a');
+      
+      if (header && logo) {
+        logo.addEventListener('mouseenter', function() {
+          header.classList.add('logo-hover');
+        });
+        
+        logo.addEventListener('mouseleave', function() {
+          header.classList.remove('logo-hover');
+        });
+      }
+    }    // Función para limpiar todos los datos al cargar la página
+    function limpiarTodosLosDatos() {
+      // Limpiar todos los inputs de texto, email, date y textareas
+      const todosLosInputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="date"], textarea');
+      todosLosInputs.forEach(input => {
+        input.value = '';
+        input.classList.remove('has-value', 'valid');
+      });
+
+      // Limpiar todos los custom selects
+      const todosLosSelects = document.querySelectorAll('.custom-select');
+      todosLosSelects.forEach(select => {
+        select.classList.remove('has-value', 'valid', 'open');
+
+        const selectedText = select.querySelector('.selected-text');
+        const selectId = select.id;
+
+        if (selectedText) {
+          switch (selectId) {
+            case 'tipoVehiculo':
+              selectedText.textContent = 'Vehículo';
+              break;
+            case 'tipoCombustible':
+              selectedText.textContent = 'Combustible';
+              break;
+            case 'anio':
+              selectedText.textContent = 'Año';
+              break;
+            case 'plazo':
+              selectedText.textContent = 'Plazo';
+              break;
+            case 'tasaInteres':
+              selectedText.textContent = 'Tasa de Interés';
+              break;
+            case 'tipoTasa':
+              selectedText.textContent = 'Tipo de Tasa';
+              break;
+            case 'estadoCivil':
+              selectedText.textContent = 'Estado Civil';
+              break;
+            case 'situacionLaboral':
+              selectedText.textContent = 'Situación Laboral';
+              break;
+            case 'provincia':
+              selectedText.textContent = 'Provincia';
+              break;
+            case 'tipoVehiculoFormulario':
+              selectedText.textContent = 'Tipo de Vehículo';
+              break;
+            case 'combustible':
+              selectedText.textContent = 'Combustible';
+              break;
+            case 'patentado':
+              selectedText.textContent = 'Patentado';
+              break;
+            case 'anioModelo':
+              selectedText.textContent = 'Año/Modelo';
+              break;
+            case 'plazoDeseado':
+              selectedText.textContent = 'Plazo Deseado';
+              break;
+            case 'conyugeSituacionLaboral':
+              selectedText.textContent = 'Situación Laboral';
+              break;
+          }
+        }
+
+        // Limpiar el input hidden correspondiente
+        const hiddenInput = select.parentElement.querySelector('input[type="hidden"]');
+        if (hiddenInput) {
+          hiddenInput.value = '';
+        }
+
+        // Cerrar dropdown si está abierto
+        const options = select.querySelector('.custom-options');
+        if (options) {
+          options.classList.remove('show');
+        }
+      });
+
+      // Limpiar input de monto específico
+      const montoInput = document.getElementById('montoPrestamo');
+      if (montoInput) {
+        montoInput.value = '';
+        montoInput.classList.remove('has-value', 'valid');
+      }
+
+      // Colapsar todas las cards del datero
+      const dateroCards = document.querySelectorAll('#datero .form-card');
+      dateroCards.forEach(card => {
+        card.classList.remove('expanded');
+        card.classList.add('collapsed');
+      });
+
+      // Ocultar la card de cónyuge/pareja
+      const conyugeContainer = document.getElementById('conyuge-container');
+      if (conyugeContainer) {
+        conyugeContainer.style.display = 'none';
+      }
+    }    // Inicializar validaciones y limpiar datos cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', function() {
+      // Primero limpiar todos los datos
+      limpiarTodosLosDatos();
+      
+      // Luego inicializar las validaciones
+      initInputValidation();
+      initSelectValidation();
+      
+      // Inicializar el efecto hover del logo
+      initLogoHoverEffect();
+    });
   </script>
 </body>
 
