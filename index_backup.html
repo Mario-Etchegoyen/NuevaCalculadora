@@ -453,7 +453,30 @@
       filter: blur(2px);
       opacity: 0.5;
       transition: filter 0.3s ease, opacity 0.3s ease;
-    }    /* Contenido de cards del datero - REGLAS PRINCIPALES */
+    }
+
+    /* Contenido de cards del datero */
+    .datero-card.collapsed .card-content {
+      display: none;
+      opacity: 0;
+      max-height: 0;
+      min-height: 0;
+      padding: 0;
+      overflow: hidden;
+      transition: var(--transition-smooth);
+      background: transparent;
+    }
+
+    .datero-card.expanded .card-content {
+      display: block;
+      opacity: 1;
+      max-height: none;
+      min-height: auto;
+      padding: var(--space-lg) var(--space-md) 0.2vh var(--space-lg);
+      overflow: visible;
+      transition: var(--transition-smooth);
+      background: transparent;
+    }
 
     /* Headers clickeables del datero */
     #datero .card-header {
@@ -1029,8 +1052,10 @@
 
     .datero-card.expanded .custom-options.show {
       z-index: 145;
-    }    /* === REGLAS FINALES PARA DATERO CARDS === */
-    /* Contenido de cards expandidas - Especificidad alta para override */
+    }
+
+    /* === REGLAS DE DEPURACIÓN PARA DATERO === */
+    /* Asegurar que el contenido se muestre cuando la card está expandida */
     #datero .datero-card.expanded .card-content {
       display: block !important;
       opacity: 1 !important;
@@ -1040,12 +1065,9 @@
       overflow: visible !important;
       background: transparent !important;
       visibility: visible !important;
-      transition: all 0.3s ease;
-      position: relative !important;
-      z-index: 1 !important;
     }
 
-    /* Contenido de cards colapsadas - Especificidad alta */
+    /* Asegurar que el contenido se oculte cuando la card está colapsada */
     #datero .datero-card.collapsed .card-content {
       display: none !important;
       opacity: 0 !important;
@@ -1054,24 +1076,6 @@
       padding: 0 !important;
       overflow: hidden !important;
       visibility: hidden !important;
-      transition: all 0.3s ease;
-    }
-
-    /* Asegurar que los form-groups dentro del contenido expandido se muestren */
-    #datero .datero-card.expanded .card-content .form-group,
-    #datero .datero-card.expanded .card-content .form-row {
-      display: block !important;
-      opacity: 1 !important;
-      visibility: visible !important;
-    }
-
-    /* Asegurar que los inputs dentro del contenido expandido se muestren */
-    #datero .datero-card.expanded .card-content input,
-    #datero .datero-card.expanded .card-content label,
-    #datero .datero-card.expanded .card-content .custom-select {
-      display: block !important;
-      opacity: 1 !important;
-      visibility: visible !important;
     }
 
     /* === REGLAS PARA ANIMACIONES Y TRANSICIONES === */
@@ -2484,17 +2488,6 @@
         card.classList.add('expanded');
         console.log('Card classes after expand:', card.classList.toString()); // Debug
 
-        // Debug: Verificar el estado del contenido
-        const cardContent = card.querySelector('.card-content');
-        if (cardContent) {
-          console.log('Card content element found:', cardContent);
-          console.log('Card content computed style display:', window.getComputedStyle(cardContent).display);
-          console.log('Card content computed style opacity:', window.getComputedStyle(cardContent).opacity);
-          console.log('Card content computed style visibility:', window.getComputedStyle(cardContent).visibility);
-        } else {
-          console.log('Card content element NOT FOUND!');
-        }
-
         // Aplicar efecto blur a las otras cards
         allCards.forEach(otherCard => {
           if (otherCard !== card) {
@@ -2510,7 +2503,8 @@
         // Agregar clase al contenedor para indicar que hay una card expandida
         formCard.classList.add('has-expanded-card');
         // Guardar el ID de la card expandida
-        expandedCardId = card.id;} else {
+        expandedCardId = card.id;
+      } else {
         // Colapsar la card actual
         card.classList.remove('expanded');
         card.classList.add('collapsed');
@@ -2522,11 +2516,17 @@
 
         // Remover clase de cónyuge visible al colapsar
         card.classList.remove('has-conyuge-visible');
-        
         // Limpiar el estado de card expandida
-        expandedCardId = null;
-        
-        // Verificar si aún hay cards expandidas antes de quitar la clase
+        formCard.classList.add('has-expanded-card');
+        // Guardar el ID de la card expandida
+        expandedCardId = card.id;
+      } else {
+        // Colapsar la card actual
+        card.classList.remove('expanded');
+        card.classList.add('collapsed');
+        // Remover clase de cónyuge visible al colapsar
+        card.classList.remove('has-conyuge-visible');        // Limpiar el estado de card expandida
+        expandedCardId = null;        // Verificar si aún hay cards expandidas antes de quitar la clase
         const hasAnyExpanded = Array.from(allCards).some(c => c.classList.contains('expanded'));
         if (!hasAnyExpanded) {
           formCard.classList.remove('has-expanded-card');
@@ -2534,8 +2534,7 @@
       }
     }
 
-    // Función para restaurar la card expandida
-    function restoreExpandedCard(cardId) {
+    // Función para restaurar la card expandida    function restoreExpandedCard(cardId) {
     const card = document.getElementById(cardId);
     if (card) {
       const formCard = document.querySelector('#datero .form-card');
