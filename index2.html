@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -265,7 +264,7 @@
       <!-- Frase Tasa UVA, AUTOS y MOTOS en tres renglones -->
       <div class="frase-moto-info" id="frase-uva-info">
         <b>Tasa UVA</b><br>
-        <b>AUTOS:</b> Año desde <span id="autos-anio"></span> / Plazo hasta <span id="autos-meses"></span> meses<br>
+        <b>AUTOS/UTILITARIOS:</b> Año desde <span id="autos-anio"></span> / Plazo hasta <span id="autos-meses"></span> meses<br>
         <b>MOTOS:</b> desde <span id="motos-cilindrada"></span>cc / Año desde <span id="motos-anio"></span> / Plazo
         hasta
         <span id="motos-meses"></span> meses
@@ -292,7 +291,7 @@
 
     // Constantes globales para cantidad de años a mostrar por tipo de vehículo
     const aniosAutos = 9;        // Muestra opcionesAnios[0] a opcionesAnios[9]
-    const aniosUtilitario = 7;   // Muestra opcionesAnios[0] a opcionesAnios[7]
+    const aniosUtilitario = 9;   // Muestra opcionesAnios[0] a opcionesAnios[7]
     const aniosMotos = 7;        // Muestra opcionesAnios[0] a opcionesAnios[6]
     const aniosCuatri = 7;       // Muestra opcionesAnios[0] a opcionesAnios[6]
 
@@ -866,7 +865,7 @@
           if (condicionSeleccionada === '0km') {
             aniosFiltrados = opcionesAnios.slice(0, 2);
           } else {
-            aniosFiltrados = opcionesAnios.slice(0, aniosAutos);
+            aniosFiltrados = opcionesAnios.slice(0, aniosAutos + 1);
           }
         } else {
           if (condicionSeleccionada === '0km') {
@@ -882,7 +881,7 @@
           if (condicionSeleccionada === '0km') {
             aniosFiltrados = opcionesAnios.slice(0, 2);
           } else if (condicionSeleccionada === 'Usado') {
-            aniosFiltrados = opcionesAnios.slice(0, aniosUtilitario);
+            aniosFiltrados = opcionesAnios.slice(0, aniosUtilitario + 1);
           } else {
             aniosFiltrados = opcionesAnios.slice(0, 4);
           }
@@ -902,7 +901,7 @@
             return;
           }
           if (window.valorCilindrada >= altaCilindrada) {
-            aniosFiltrados = opcionesAnios.slice(0, aniosMotos); // 0 a aniosMotos-1
+            aniosFiltrados = opcionesAnios.slice(0, aniosMotos + 1); // 0 a aniosMotos
           } else if (window.valorCilindrada >= mediaCilindrada) {
             aniosFiltrados = opcionesAnios.slice(0, 4); // 0 a 3
           } else {
@@ -922,7 +921,7 @@
       // CUATRICICLO
       else if (vehiculoSeleccionado === 'cuatriciclo') {
         if (combustibleSeleccionado === 'nafta') {
-          aniosFiltrados = opcionesAnios.slice(0, aniosCuatri); // 0 a aniosCuatri-1
+          aniosFiltrados = opcionesAnios.slice(0, aniosCuatri + 1); // 0 a aniosCuatri
         } else {
           aniosFiltrados = [opcionesAnios[0]]; // solo el primero
         }
@@ -967,26 +966,42 @@
 
       // AUTO
       if (vehiculoSeleccionado === 'auto') {
-        if (combustibleSeleccionado === 'comun') {
-          if (anioSeleccionado >= opcionesAnios[7]) {
+        const condicionSeleccionada = document.getElementById('condicion').value;
+        if ((combustibleSeleccionado === 'comun' || combustibleSeleccionado === 'nafta' || combustibleSeleccionado === 'electricoAuto') && condicionSeleccionada === '0km') {
+          // Todos los valores de opcionesPlazos excepto el de la posición 1
+          plazosFiltrados = opcionesPlazos.filter((_, i) => i !== 1);
+        } else if ((combustibleSeleccionado === 'comun' || combustibleSeleccionado === 'nafta' || combustibleSeleccionado === 'electricoAuto') && condicionSeleccionada === 'Usado') {
+          // Determinar el índice del año seleccionado en opcionesAnios
+          const indexAnio = opcionesAnios.indexOf(anioSeleccionado);
+          if (indexAnio >= 0 && indexAnio <= 7) {
             plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 5 && i !== 1);
-          } else if (anioSeleccionado === opcionesAnios[8]) {
+          } else if (indexAnio === 8) {
             plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 4 && i !== 1);
+          } else if (indexAnio === 9) {
+            plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 3 && i !== 1);
           } else {
             plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 3 && i !== 1);
           }
         } else {
-          plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 5 && i !== 1);
+          plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 3 && i !== 1);
         }
       }
       // UTILITARIO
       else if (vehiculoSeleccionado === 'utilitario') {
-        if (combustibleSeleccionado === 'comun') {
-          if (anioSeleccionado >= opcionesAnios[3]) {
+        const condicionSeleccionada = document.getElementById('condicion').value;
+        if ((combustibleSeleccionado === 'comun' || combustibleSeleccionado === 'nafta' || combustibleSeleccionado === 'electricoAuto') && condicionSeleccionada === 'Usado') {
+          const indexAnio = opcionesAnios.indexOf(anioSeleccionado);
+          if (indexAnio >= 0 && indexAnio <= 7) {
+            plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 5 && i !== 1);
+          } else if (indexAnio === 8) {
+            plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 4 && i !== 1);
+          } else if (indexAnio === 9) {
             plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 3 && i !== 1);
           } else {
             plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 3 && i !== 1);
           }
+        } else if ((combustibleSeleccionado === 'comun' || combustibleSeleccionado === 'nafta' || combustibleSeleccionado === 'electricoAuto') && condicionSeleccionada === '0km') {
+          plazosFiltrados = opcionesPlazos.filter((_, i) => i !== 1);
         } else {
           plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 3 && i !== 1);
         }
@@ -1075,10 +1090,18 @@
         // Siempre mostrar tasa fija si hay plazo válido
         if (indexPlazo !== -1) {
           let tasaFija;
-          if (combustibleSeleccionado === 'comun' || combustibleSeleccionado === 'nafta') {
-            tasaFija = opcionesTasasComunes[indexPlazo];
-          } else {
-            tasaFija = opcionesTasasElectricos[indexPlazo];
+          if (vehiculoSeleccionado === 'auto') {
+            if (combustibleSeleccionado === 'comun' || combustibleSeleccionado === 'nafta') {
+              tasaFija = opcionesTasasComunesAutos[indexPlazo];
+            } else {
+              tasaFija = opcionesTasasElectricos[indexPlazo];
+            }
+          } else if (vehiculoSeleccionado === 'utilitario') {
+            if (combustibleSeleccionado === 'comun' || combustibleSeleccionado === 'nafta') {
+              tasaFija = opcionesTasasComunesAutos[indexPlazo];
+            } else {
+              tasaFija = opcionesTasasElectricos[indexPlazo];
+            }
           }
           console.log('Tasa fija calculada:', tasaFija);
           if (tasaFija !== undefined) {
