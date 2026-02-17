@@ -690,76 +690,79 @@
     </header>
 
     <!-- Calculadora Section -->
-    <section id="inicio">
-        <main style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
-            <form>
-                <!-- Input: Monto del Préstamo -->
-                <label for="montoPrestamo">Monto del Préstamo</label>
-                <input type="text" id="montoPrestamo" name="montoPrestamo" placeholder="Ingresá Monto (Mín. $1000)" required
-                    oninput="verificarMontoMinimo(this, false);" onblur="verificarMontoMinimo(this, true)" />
-
-                <!-- Select: Tipo de Vehículo -->
-                <label for="tipoVehiculo">Vehículo</label>
-                <select id="tipoVehiculo" name="tipoVehiculo" disabled>
-                    <option value="" disabled selected>Opciones</option>
-                    <option value="auto">Auto/Camioneta</option>
-                    <option value="utilitario">Utilitario</option>
-                    <option value="moto">Moto</option>
-                    <option value="cuatriciclo">Cuatriciclo/Quad/SSV</option>
-                </select>
-
-                <!-- Select: Tipo de Combustible -->
-                <label for="tipoCombustible">Combustible</label>
-                <select id="tipoCombustible" name="tipoCombustible" disabled>
-                    <option value="" disabled selected>Opciones</option>
-                </select>
-
-                <!-- Condición y Año en el mismo renglón -->
-                <div style="display: flex; gap: 0.5rem; width: 90%; margin: 0 auto;">
-                    <div style="flex: 1;">
-                        <label for="condicion" style="margin: 0.5rem 0 0.25rem;">Condición</label>
-                        <select id="condicion" name="condicion" disabled onfocus="mostrarCondiciones()" style="width: 100%; margin-bottom: 1rem;">
-                            <option value="" disabled selected>Opciones</option>
-                        </select>
-                    </div>
-                    
-                    <div style="flex: 1;">
-                        <label for="anio" style="margin: 0.5rem 0 0.25rem;">Año</label>
-                        <select id="anio" name="anio" disabled onfocus="mostrarAnios()" style="width: 100%; margin-bottom: 1rem;">
-                            <option value="" disabled selected>Opciones</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Select: Plazo -->
-                <label for="plazo">Plazo</label>
-                <select id="plazo" name="plazo" disabled onfocus="mostrarPlazos()">
-                    <option value="" disabled selected>Opciones</option>
-                </select>
-
-                <!-- Select: Tasa de Interés -->
-                <label for="tasaInteres">Tasa de Interés</label>
-                <select id="tasaInteres" name="tasaInteres" disabled onfocus="mostrarTasasInteres()">
-                    <option value="" disabled selected>Opciones</option>
-                </select>
-
-                <!-- Frase Tasa UVA, AUTOS y MOTOS en tres renglones -->
-                <div class="frase-moto-info" id="frase-uva-info">
-                    <b>Tasa UVA</b><br>
-                    <b>AUTOS/UTILITARIOS:</b> Año desde <span id="autos-anio"></span> / Plazo hasta <span id="autos-meses"></span> meses<br>
-                    <b>MOTOS:</b> desde <span id="motos-cilindrada"></span>cc / Año desde <span id="motos-anio"></span> / Plazo hasta <span id="motos-meses"></span> meses
-                </div>
-
-                <!-- Botón -->
-                <button type="button" class="boton-calcular" onclick="calcularDesdeBoton()">Calcular</button>
-            </form>
-            <div id="resultadoCuota"></div>
-        </main>
-    </section>
-
     <!-- Main Content -->
     <main>
-        <!-- Servicios -->
+        <!-- Sección 1: Calculadora -->
+        <section id="calculadora">
+            <h2>Calculadora de Préstamos</h2>
+            <div style="max-width: 1000px; margin: 0 auto; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
+                <form>
+                    <!-- Input: Monto del Préstamo -->
+                    <label for="montoPrestamo">Monto del Préstamo</label>
+                    <input type="text" id="montoPrestamo" name="montoPrestamo" placeholder="Ingresá Monto (Mín. $1000)" required
+                        oninput="verificarMontoMinimo(this, false);" onblur="verificarMontoMinimo(this, true)" />
+
+                    <!-- Select: Tipo de Vehículo -->
+                    <label for="tipoVehiculo">Vehículo</label>
+                    <select id="tipoVehiculo" name="tipoVehiculo" disabled>
+                        <option value="" disabled selected>Opciones</option>
+                        <option value="auto">Auto/Camioneta</option>
+                        <option value="utilitario">Utilitario</option>
+                        <option value="moto">Moto</option>
+                        <option value="cuatriciclo">Cuatriciclo/Quad/SSV</option>
+                    </select>
+
+                    <!-- Select: Tipo de Combustible -->
+                    <label for="tipoCombustible">Combustible</label>
+                    <select id="tipoCombustible" name="tipoCombustible" disabled>
+                        <option value="" disabled selected>Opciones</option>
+                    </select>
+
+                    <!-- Condición y Año en el mismo renglón -->
+                    <div style="display: flex; gap: 0.5rem; width: 100%;">
+                        <div style="flex: 1;">
+                            <label for="condicion" style="margin: 0.5rem 0 0.25rem;">Condición</label>
+                            <select id="condicion" name="condicion" disabled onfocus="mostrarCondiciones()" style="width: 100%; margin-bottom: 1rem;">
+                                <option value="" disabled selected>Opciones</option>
+                            </select>
+                        </div>
+                        
+                        <div style="flex: 1;">
+                            <label for="anio" style="margin: 0.5rem 0 0.25rem;">Año</label>
+                            <select id="anio" name="anio" disabled onfocus="mostrarAnios()" style="width: 100%; margin-bottom: 1rem;">
+                                <option value="" disabled selected>Opciones</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Select: Plazo -->
+                    <label for="plazo">Plazo</label>
+                    <select id="plazo" name="plazo" disabled onfocus="mostrarPlazos()">
+                        <option value="" disabled selected>Opciones</option>
+                    </select>
+
+                    <!-- Select: Tasa de Interés -->
+                    <label for="tasaInteres">Tasa de Interés</label>
+                    <select id="tasaInteres" name="tasaInteres" disabled onfocus="mostrarTasasInteres()">
+                        <option value="" disabled selected>Opciones</option>
+                    </select>
+
+                    <!-- Frase Tasa UVA, AUTOS y MOTOS en tres renglones -->
+                    <div class="frase-moto-info" id="frase-uva-info">
+                        <b>Tasa UVA</b><br>
+                        <b>AUTOS/UTILITARIOS:</b> Año desde <span id="autos-anio"></span> / Plazo hasta <span id="autos-meses"></span> meses<br>
+                        <b>MOTOS:</b> desde <span id="motos-cilindrada"></span>cc / Año desde <span id="motos-anio"></span> / Plazo hasta <span id="motos-meses"></span> meses
+                    </div>
+
+                    <!-- Botón -->
+                    <button type="button" class="boton-calcular" onclick="calcularDesdeBoton()">Calcular</button>
+                </form>
+                <div id="resultadoCuota"></div>
+            </div>
+        </section>
+
+        <!-- Sección 2: Nuestros Servicios -->
+        <!-- Sección 2: Nuestros Servicios -->
         <section id="servicios">
             <h2>Nuestros Servicios</h2>
             <div class="cards-container">
@@ -801,7 +804,7 @@
             </div>
         </section>
 
-        <!-- Características -->
+        <!-- Sección 3: Por qué elegirnos -->
         <section id="caracteristicas">
             <h2>Por qué elegirnos</h2>
             <div class="features">
@@ -824,7 +827,7 @@
             </div>
         </section>
 
-        <!-- Contacto -->
+        <!-- Sección 4: Ponte en Contacto -->
         <section id="contacto">
             <h2>Ponte en Contacto</h2>
             <div class="contenedor-formulario">
