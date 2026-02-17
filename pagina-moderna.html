@@ -343,6 +343,336 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--color-secondary);
         }
+
+        /* --- ESTILOS DEL FORMULARIO DE CONTACTO --- */
+        .contenedor-formulario {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 3rem;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contenedor-formulario h1 {
+            color: #333;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        .descripcion {
+            color: #666;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .grupo-formulario {
+            margin-bottom: 1.5rem;
+        }
+
+        .contenedor-formulario label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .contenedor-formulario input,
+        .contenedor-formulario textarea,
+        .contenedor-formulario select {
+            width: 100%;
+            padding: 0.85rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .contenedor-formulario input:focus,
+        .contenedor-formulario textarea:focus,
+        .contenedor-formulario select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .contenedor-formulario input.error,
+        .contenedor-formulario textarea.error,
+        .contenedor-formulario select.error {
+            border-color: #e74c3c;
+        }
+
+        .contenedor-formulario textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .mensaje-error {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+
+        .mensaje-error.visible {
+            display: block;
+        }
+
+        .grupo-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .contenedor-formulario input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .label-checkbox {
+            margin-bottom: 0;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .contenedor-formulario button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .contenedor-formulario button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .contenedor-formulario button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .contenedor-formulario button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .mensaje-exito {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            display: none;
+            text-align: center;
+            border: 1px solid #c3e6cb;
+        }
+
+        .mensaje-exito.visible {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .contador-caracteres {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 0.3rem;
+            text-align: right;
+        }
+
+        /* --- ESTILOS DE LA CALCULADORA --- */
+        main form {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #ffffff34;
+            padding: 2rem 0;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #montoPrestamo {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+        }
+
+        #montoPrestamo::placeholder {
+            text-align: center;
+        }
+
+        /* Frase informativa de las motos y autos */
+        .frase-moto-info {
+            display: inline-block;
+            margin: 0.5rem auto;
+            color: #fff;
+            background: rgba(30, 147, 197, 0.7);
+            font-weight: normal;
+            border-radius: 0.25rem;
+            padding: 0.5rem 5%;
+            min-width: 100px;
+            text-align: start;
+            white-space: nowrap;
+            font-size: clamp(0.6rem, 2vw, 2.5rem);
+            overflow: hidden;
+            text-overflow: clip;
+            width: auto;
+            max-width: 100%;
+        }
+
+        .select-con-valor {
+            background-color: #5ec6a392 !important;
+            color: #f0f0f0 !important;
+            font-weight: bold;
+        }
+
+        .input-con-valor {
+            background-color: #5ec6a392 !important;
+            color: #f0f0f0 !important;
+            font-weight: bold;
+        }
+
+        .boton-calcular {
+            background: #c3baba;
+            color: #fff;
+            font-weight: bold;
+            font-size: clamp(1rem, 3vw, 2rem);
+            padding: 0.85rem 2.2rem;
+            border: none;
+            border-radius: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            margin: 1rem auto 0.5rem auto;
+            width: 60%;
+            min-width: 220px;
+            text-align: center;
+            display: block;
+        }
+
+        .boton-calcular:hover:not(:disabled),
+        .boton-calcular:focus:not(:disabled) {
+            background: #68a6e7;
+            color: #fff;
+            transform: scale(1.2);
+        }
+
+        .boton-calcular:disabled {
+            cursor: not-allowed;
+            background: #c3baba;
+            opacity: 0.65;
+            transform: none;
+        }
+
+        .boton-calcular:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        main form input,
+        main form select {
+            width: 90%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 0.25rem;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        main form input::placeholder {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            text-align: center;
+        }
+
+        main form label {
+            display: flex;
+            margin: 0.5rem 5% 0.25rem;
+            color: rgb(233, 233, 233);
+            font-weight: bold;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+        }
+
+        main form select,
+        main form select option {
+            text-align: center;
+        }
+
+        main form select {
+            text-align-last: center;
+        }
+
+        main form select option {
+            background-color: rgba(30, 147, 197, 0.7) !important;
+            color: #fff !important;
+            font-weight: normal;
+        }
+
+        main form select option:checked,
+        main form select option[selected] {
+            font-weight: bold;
+        }
+
+        main form select option[value=""] {
+            background-color: #fff !important;
+            color: #111 !important;
+            font-weight: normal;
+            display: none !important;
+        }
+
+        main form select option:hover {
+            font-weight: 900;
+        }
+
+        @media (max-width: 600px) {
+            main form input,
+            main form select {
+                padding: 0.5rem 0.3rem;
+                font-size: 1rem;
+            }
+
+            main form input::placeholder {
+                font-size: 0.95rem;
+            }
+
+            main form {
+                width: 100vw;
+                max-width: 98vw;
+                padding: 1rem 0.5rem;
+            }
+
+            .boton-calcular {
+                padding: 0.85rem 0.5rem;
+                font-size: clamp(1rem, 5vw, 1.3rem);
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -359,14 +689,72 @@
         </nav>
     </header>
 
-    <!-- Hero Section -->
-    <section id="inicio" class="hero">
-        <h1>Bienvenido a nuestra web moderna</h1>
-        <p>Experiencia digital diseñada con las mejores prácticas y tecnologías actuales</p>
-        <div class="hero-buttons">
-            <button class="btn btn-primary">Comenzar</button>
-            <button class="btn btn-secondary">Aprender más</button>
-        </div>
+    <!-- Calculadora Section -->
+    <section id="inicio">
+        <main style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+            <form>
+                <!-- Input: Monto del Préstamo -->
+                <label for="montoPrestamo">Monto del Préstamo</label>
+                <input type="text" id="montoPrestamo" name="montoPrestamo" placeholder="Ingresá Monto (Mín. $1000)" required
+                    oninput="verificarMontoMinimo(this, false);" onblur="verificarMontoMinimo(this, true)" />
+
+                <!-- Select: Tipo de Vehículo -->
+                <label for="tipoVehiculo">Vehículo</label>
+                <select id="tipoVehiculo" name="tipoVehiculo" disabled>
+                    <option value="" disabled selected>Opciones</option>
+                    <option value="auto">Auto/Camioneta</option>
+                    <option value="utilitario">Utilitario</option>
+                    <option value="moto">Moto</option>
+                    <option value="cuatriciclo">Cuatriciclo/Quad/SSV</option>
+                </select>
+
+                <!-- Select: Tipo de Combustible -->
+                <label for="tipoCombustible">Combustible</label>
+                <select id="tipoCombustible" name="tipoCombustible" disabled>
+                    <option value="" disabled selected>Opciones</option>
+                </select>
+
+                <!-- Condición y Año en el mismo renglón -->
+                <div style="display: flex; gap: 0.5rem; width: 90%; margin: 0 auto;">
+                    <div style="flex: 1;">
+                        <label for="condicion" style="margin: 0.5rem 0 0.25rem;">Condición</label>
+                        <select id="condicion" name="condicion" disabled onfocus="mostrarCondiciones()" style="width: 100%; margin-bottom: 1rem;">
+                            <option value="" disabled selected>Opciones</option>
+                        </select>
+                    </div>
+                    
+                    <div style="flex: 1;">
+                        <label for="anio" style="margin: 0.5rem 0 0.25rem;">Año</label>
+                        <select id="anio" name="anio" disabled onfocus="mostrarAnios()" style="width: 100%; margin-bottom: 1rem;">
+                            <option value="" disabled selected>Opciones</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Select: Plazo -->
+                <label for="plazo">Plazo</label>
+                <select id="plazo" name="plazo" disabled onfocus="mostrarPlazos()">
+                    <option value="" disabled selected>Opciones</option>
+                </select>
+
+                <!-- Select: Tasa de Interés -->
+                <label for="tasaInteres">Tasa de Interés</label>
+                <select id="tasaInteres" name="tasaInteres" disabled onfocus="mostrarTasasInteres()">
+                    <option value="" disabled selected>Opciones</option>
+                </select>
+
+                <!-- Frase Tasa UVA, AUTOS y MOTOS en tres renglones -->
+                <div class="frase-moto-info" id="frase-uva-info">
+                    <b>Tasa UVA</b><br>
+                    <b>AUTOS/UTILITARIOS:</b> Año desde <span id="autos-anio"></span> / Plazo hasta <span id="autos-meses"></span> meses<br>
+                    <b>MOTOS:</b> desde <span id="motos-cilindrada"></span>cc / Año desde <span id="motos-anio"></span> / Plazo hasta <span id="motos-meses"></span> meses
+                </div>
+
+                <!-- Botón -->
+                <button type="button" class="boton-calcular" onclick="calcularDesdeBoton()">Calcular</button>
+            </form>
+            <div id="resultadoCuota"></div>
+        </main>
     </section>
 
     <!-- Main Content -->
@@ -439,9 +827,69 @@
         <!-- Contacto -->
         <section id="contacto">
             <h2>Ponte en Contacto</h2>
-            <div class="card" style="max-width: 600px; margin: 0 auto; text-align: center;">
-                <p>¿Tienes preguntas o necesitas más información? No dudes en contactarnos. Estamos aquí para ayudarte.</p>
-                <button class="btn btn-primary" style="margin-top: 1rem; width: auto;" onclick="abrirContacto()">Enviar Mensaje</button>
+            <div class="contenedor-formulario">
+                <p class="descripcion">Nos encantaría escucharte. Completa el formulario y nos pondremos en contacto pronto.</p>
+
+                <div id="mensajeExito" class="mensaje-exito">
+                    ¡Mensaje enviado exitosamente! Te responderemos pronto.
+                </div>
+
+                <form id="formularioContacto" novalidate>
+                    <!-- Nombre -->
+                    <div class="grupo-formulario">
+                        <label for="nombre">Nombre Completo</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+                        <div class="mensaje-error" id="errorNombre"></div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="grupo-formulario">
+                        <label for="email">Correo Electrónico</label>
+                        <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+                        <div class="mensaje-error" id="errorEmail"></div>
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div class="grupo-formulario">
+                        <label for="telefono">Teléfono (Opcional)</label>
+                        <input type="tel" id="telefono" name="telefono" placeholder="+54 (9) XXXX-XXXX">
+                        <div class="mensaje-error" id="errorTelefono"></div>
+                    </div>
+
+                    <!-- Asunto -->
+                    <div class="grupo-formulario">
+                        <label for="asunto">Asunto</label>
+                        <select id="asunto" name="asunto" required>
+                            <option value="">Selecciona un asunto</option>
+                            <option value="consulta">Consulta General</option>
+                            <option value="soporte">Soporte Técnico</option>
+                            <option value="sugerencia">Sugerencia</option>
+                            <option value="reclamo">Reclamo</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                        <div class="mensaje-error" id="errorAsunto"></div>
+                    </div>
+
+                    <!-- Mensaje -->
+                    <div class="grupo-formulario">
+                        <label for="mensaje">Mensaje</label>
+                        <textarea id="mensaje" name="mensaje" placeholder="Cuéntanos tu consulta o sugerencia..." required></textarea>
+                        <div class="contador-caracteres"><span id="contadorCaracteres">0</span>/500</div>
+                        <div class="mensaje-error" id="errorMensaje"></div>
+                    </div>
+
+                    <!-- Checkbox de términos -->
+                    <div class="grupo-formulario">
+                        <div class="grupo-checkbox">
+                            <input type="checkbox" id="terminos" name="terminos" required>
+                            <label for="terminos" class="label-checkbox">Acepto que procesen mis datos personales</label>
+                        </div>
+                        <div class="mensaje-error" id="errorTerminos"></div>
+                    </div>
+
+                    <!-- Botón enviar -->
+                    <button type="submit" id="botonEnviar">Enviar Mensaje</button>
+                </form>
             </div>
         </section>
     </main>
@@ -501,6 +949,181 @@
         // Log inicial
         console.log('%cWebModerna - HTML5 Moderno', 'color: #667eea; font-size: 20px; font-weight: bold;');
         console.log('Construido con HTML5, CSS3 y JavaScript ES6+');
+
+        // --- SCRIPTS DEL FORMULARIO DE CONTACTO ---
+        const formulario = document.getElementById('formularioContacto');
+        const campos = {
+            nombre: document.getElementById('nombre'),
+            email: document.getElementById('email'),
+            telefono: document.getElementById('telefono'),
+            asunto: document.getElementById('asunto'),
+            mensaje: document.getElementById('mensaje'),
+            terminos: document.getElementById('terminos')
+        };
+
+        const errores = {
+            nombre: document.getElementById('errorNombre'),
+            email: document.getElementById('errorEmail'),
+            telefono: document.getElementById('errorTelefono'),
+            asunto: document.getElementById('errorAsunto'),
+            mensaje: document.getElementById('errorMensaje'),
+            terminos: document.getElementById('errorTerminos')
+        };
+
+        const mensajeExito = document.getElementById('mensajeExito');
+        const botonEnviar = document.getElementById('botonEnviar');
+        const contadorCaracteres = document.getElementById('contadorCaracteres');
+
+        // Contador de caracteres en mensaje
+        campos.mensaje.addEventListener('input', function() {
+            contadorCaracteres.textContent = this.value.length;
+            
+            if (this.value.length > 500) {
+                this.value = this.value.substring(0, 500);
+                contadorCaracteres.textContent = '500';
+            }
+        });
+
+        // Limpiar error al escribir
+        Object.keys(campos).forEach(campo => {
+            campos[campo].addEventListener('input', function() {
+                limpiarErrorFormulario(campo);
+            });
+        });
+
+        // Validar email
+        function validarEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+
+        // Limpiar error
+        function limpiarErrorFormulario(campo) {
+            campos[campo].classList.remove('error');
+            errores[campo].classList.remove('visible');
+        }
+
+        // Mostrar error
+        function mostrarErrorFormulario(campo, mensaje) {
+            campos[campo].classList.add('error');
+            errores[campo].textContent = mensaje;
+            errores[campo].classList.add('visible');
+        }
+
+        // Validar campo
+        function validarCampoFormulario(campo) {
+            const valor = campos[campo].value.trim();
+
+            if (campo === 'nombre') {
+                if (!valor) {
+                    mostrarErrorFormulario('nombre', 'El nombre es requerido');
+                    return false;
+                }
+                if (valor.length < 3) {
+                    mostrarErrorFormulario('nombre', 'El nombre debe tener al menos 3 caracteres');
+                    return false;
+                }
+            }
+
+            if (campo === 'email') {
+                if (!valor) {
+                    mostrarErrorFormulario('email', 'El email es requerido');
+                    return false;
+                }
+                if (!validarEmail(valor)) {
+                    mostrarErrorFormulario('email', 'Por favor ingresa un email válido');
+                    return false;
+                }
+            }
+
+            if (campo === 'telefono') {
+                if (valor && valor.length < 10) {
+                    mostrarErrorFormulario('telefono', 'El teléfono debe tener al menos 10 dígitos');
+                    return false;
+                }
+            }
+
+            if (campo === 'asunto') {
+                if (!valor) {
+                    mostrarErrorFormulario('asunto', 'Por favor selecciona un asunto');
+                    return false;
+                }
+            }
+
+            if (campo === 'mensaje') {
+                if (!valor) {
+                    mostrarErrorFormulario('mensaje', 'El mensaje es requerido');
+                    return false;
+                }
+                if (valor.length < 10) {
+                    mostrarErrorFormulario('mensaje', 'El mensaje debe tener al menos 10 caracteres');
+                    return false;
+                }
+            }
+
+            if (campo === 'terminos') {
+                if (!campos[campo].checked) {
+                    mostrarErrorFormulario('terminos', 'Debe aceptar los términos');
+                    return false;
+                }
+            }
+
+            limpiarErrorFormulario(campo);
+            return true;
+        }
+
+        // Validar todo el formulario
+        function validarFormularioCompleto() {
+            const camposValidar = ['nombre', 'email', 'asunto', 'mensaje', 'terminos'];
+            return camposValidar.every(campo => validarCampoFormulario(campo));
+        }
+
+        // Enviar formulario
+        formulario.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (!validarFormularioCompleto()) {
+                return;
+            }
+
+            // Simular envío
+            botonEnviar.disabled = true;
+            botonEnviar.textContent = 'Enviando...';
+
+            setTimeout(() => {
+                // Mostrar mensaje de éxito
+                mensajeExito.classList.add('visible');
+
+                // Resetear formulario
+                formulario.reset();
+                contadorCaracteres.textContent = '0';
+
+                // Resetear botón
+                botonEnviar.disabled = false;
+                botonEnviar.textContent = 'Enviar Mensaje';
+
+                // Ocultar mensaje después de 5 segundos
+                setTimeout(() => {
+                    mensajeExito.classList.remove('visible');
+                }, 5000);
+
+                // En una aplicación real aquí enviarías los datos al servidor
+                console.log({
+                    nombre: campos.nombre.value,
+                    email: campos.email.value,
+                    telefono: campos.telefono.value,
+                    asunto: campos.asunto.value,
+                    mensaje: campos.mensaje.value
+                });
+            }, 1500);
+        });
+
+        // Validar al soltar el campo
+        Object.keys(campos).forEach(campo => {
+            campos[campo].addEventListener('blur', function() {
+                validarCampoFormulario(campo);
+            });
+        });
     </script>
 </body>
 </html>
