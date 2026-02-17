@@ -344,6 +344,36 @@
             background: var(--color-secondary);
         }
 
+        /* Calculadora Container */
+        .calculadora-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Flex Row para Condición y Año */
+        .flex-row {
+            display: flex;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .flex-row > div {
+            flex: 1;
+        }
+
+        .flex-row label {
+            margin: 0.5rem 0 0.25rem;
+        }
+
+        .flex-row select {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
         /* --- ESTILOS DEL FORMULARIO DE CONTACTO --- */
         .contenedor-formulario {
             background: white;
@@ -689,63 +719,70 @@
         </nav>
     </header>
 
-    <!-- Calculadora Section -->
     <!-- Main Content -->
     <main>
         <!-- Sección 1: Calculadora -->
         <section id="calculadora">
             <h2>Calculadora de Préstamos</h2>
-            <div style="max-width: 1000px; margin: 0 auto; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
-                <form>
+            <div class="calculadora-container">
+                <form id="formularioCalculadora" method="POST">
                     <!-- Input: Monto del Préstamo -->
-                    <label for="montoPrestamo">Monto del Préstamo</label>
-                    <input type="text" id="montoPrestamo" name="montoPrestamo" placeholder="Ingresá Monto (Mín. $1000)" required
-                        oninput="verificarMontoMinimo(this, false);" onblur="verificarMontoMinimo(this, true)" />
+                    <div class="grupo-formulario">
+                        <label for="montoPrestamo">Monto del Préstamo</label>
+                        <input type="text" id="montoPrestamo" name="montoPrestamo" placeholder="Ingresá Monto (Mín. $1000)" required>
 
+                    </div>
                     <!-- Select: Tipo de Vehículo -->
-                    <label for="tipoVehiculo">Vehículo</label>
-                    <select id="tipoVehiculo" name="tipoVehiculo" disabled>
-                        <option value="" disabled selected>Opciones</option>
-                        <option value="auto">Auto/Camioneta</option>
-                        <option value="utilitario">Utilitario</option>
-                        <option value="moto">Moto</option>
-                        <option value="cuatriciclo">Cuatriciclo/Quad/SSV</option>
-                    </select>
+                    <div class="grupo-formulario">
+                        <label for="tipoVehiculo">Vehículo</label>
+                        <select id="tipoVehiculo" name="tipoVehiculo" disabled>
+                            <option value="" disabled selected>Opciones</option>
+                            <option value="auto">Auto/Camioneta</option>
+                            <option value="utilitario">Utilitario</option>
+                            <option value="moto">Moto</option>
+                            <option value="cuatriciclo">Cuatriciclo/Quad/SSV</option>
+                        </select>
+                    </div>
 
                     <!-- Select: Tipo de Combustible -->
-                    <label for="tipoCombustible">Combustible</label>
-                    <select id="tipoCombustible" name="tipoCombustible" disabled>
-                        <option value="" disabled selected>Opciones</option>
-                    </select>
+                    <div class="grupo-formulario">
+                        <label for="tipoCombustible">Combustible</label>
+                        <select id="tipoCombustible" name="tipoCombustible" disabled>
+                            <option value="" disabled selected>Opciones</option>
+                        </select>
+                    </div>
 
                     <!-- Condición y Año en el mismo renglón -->
-                    <div style="display: flex; gap: 0.5rem; width: 100%;">
-                        <div style="flex: 1;">
-                            <label for="condicion" style="margin: 0.5rem 0 0.25rem;">Condición</label>
-                            <select id="condicion" name="condicion" disabled onfocus="mostrarCondiciones()" style="width: 100%; margin-bottom: 1rem;">
+                    <div class="flex-row">
+                        <div>
+                            <label for="condicion">Condición</label>
+                            <select id="condicion" name="condicion" disabled>
                                 <option value="" disabled selected>Opciones</option>
                             </select>
                         </div>
-                        
-                        <div style="flex: 1;">
-                            <label for="anio" style="margin: 0.5rem 0 0.25rem;">Año</label>
-                            <select id="anio" name="anio" disabled onfocus="mostrarAnios()" style="width: 100%; margin-bottom: 1rem;">
+                        <div>
+                            <label for="anio">Año</label>
+                            <select id="anio" name="anio" disabled>
                                 <option value="" disabled selected>Opciones</option>
                             </select>
                         </div>
                     </div>
 
                     <!-- Select: Plazo -->
-                    <label for="plazo">Plazo</label>
-                    <select id="plazo" name="plazo" disabled onfocus="mostrarPlazos()">
-                        <option value="" disabled selected>Opciones</option>
-                    </select>
+                    <div class="grupo-formulario">
+                        <label for="plazo">Plazo</label>
+                        <select id="plazo" name="plazo" disabled>
+                            <option value="" disabled selected>Opciones</option>
+                        </select>
+                    </div>
 
                     <!-- Select: Tasa de Interés -->
-                    <label for="tasaInteres">Tasa de Interés</label>
-                    <select id="tasaInteres" name="tasaInteres" disabled onfocus="mostrarTasasInteres()">
-                        <option value="" disabled selected>Opciones</option>
-                    </select>
+                    <div class="grupo-formulario">
+                        <label for="tasaInteres">Tasa de Interés</label>
+                        <select id="tasaInteres" name="tasaInteres" disabled>
+                            <option value="" disabled selected>Opciones</option>
+                        </select>
+                    </div>
 
                     <!-- Frase Tasa UVA, AUTOS y MOTOS en tres renglones -->
                     <div class="frase-moto-info" id="frase-uva-info">
@@ -755,7 +792,7 @@
                     </div>
 
                     <!-- Botón -->
-                    <button type="button" class="boton-calcular" onclick="calcularDesdeBoton()">Calcular</button>
+                    <button type="button" class="boton-calcular">Calcular</button>
                 </form>
                 <div id="resultadoCuota"></div>
             </div>
@@ -1102,6 +1139,40 @@
             campos[campo].addEventListener('blur', function() {
                 validarCampoFormulario(campo);
             });
+        });
+
+        // --- EVENT LISTENERS PARA LA CALCULADORA ---
+        // Monto del Préstamo
+        document.getElementById('montoPrestamo').addEventListener('input', function() {
+            verificarMontoMinimo(this, false);
+        });
+        document.getElementById('montoPrestamo').addEventListener('blur', function() {
+            verificarMontoMinimo(this, true);
+        });
+
+        // Condición - mostrar años
+        document.getElementById('condicion').addEventListener('focus', function() {
+            mostrarAnios();
+        });
+
+        // Año
+        document.getElementById('anio').addEventListener('focus', function() {
+            mostrarAnios();
+        });
+
+        // Plazo
+        document.getElementById('plazo').addEventListener('focus', function() {
+            mostrarPlazos();
+        });
+
+        // Tasa de Interés
+        document.getElementById('tasaInteres').addEventListener('focus', function() {
+            mostrarTasasInteres();
+        });
+
+        // Botón Calcular
+        document.querySelector('.boton-calcular').addEventListener('click', function() {
+            calcularDesdeBoton();
         });
     </script>
 </body>
