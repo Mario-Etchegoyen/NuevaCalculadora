@@ -443,14 +443,15 @@
         }
 
         .mensaje-error {
-            color: #e74c3c;
+            color: transparent;
             font-size: 0.85rem;
             margin-top: 0.3rem;
-            display: none;
+            display: block;
+            height: 1.2rem;
         }
 
         .mensaje-error.visible {
-            display: block;
+            color: #e74c3c;
         }
 
         .grupo-checkbox {
@@ -876,9 +877,8 @@
 
         <!-- Sección 4: Ponte en Contacto -->
         <section id="contacto">
-            <h2>Ponte en Contacto</h2>
+            <h2>Envía tus Comentarios</h2>
             <div class="contenedor-formulario">
-                <p class="descripcion">Nos encantaría escucharte. Completa el formulario y nos pondremos en contacto pronto.</p>
 
                 <div id="mensajeExito" class="mensaje-exito">
                     ¡Mensaje enviado exitosamente! Te responderemos pronto.
