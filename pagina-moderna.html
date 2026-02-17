@@ -681,9 +681,9 @@
         <nav>
             <div class="logo">WebModerna</div>
             <ul>
-                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#calculadora">Calculadora</a></li>
                 <li><a href="#servicios">Servicios</a></li>
-                <li><a href="#caracteristicas">Características</a></li>
+                <li><a href="#caracteristicas">Por qué elegirnos</a></li>
                 <li><a href="#contacto">Contacto</a></li>
             </ul>
         </nav>
@@ -859,20 +859,6 @@
                         <div class="mensaje-error" id="errorTelefono"></div>
                     </div>
 
-                    <!-- Asunto -->
-                    <div class="grupo-formulario">
-                        <label for="asunto">Asunto</label>
-                        <select id="asunto" name="asunto" required>
-                            <option value="">Selecciona un asunto</option>
-                            <option value="consulta">Consulta General</option>
-                            <option value="soporte">Soporte Técnico</option>
-                            <option value="sugerencia">Sugerencia</option>
-                            <option value="reclamo">Reclamo</option>
-                            <option value="otro">Otro</option>
-                        </select>
-                        <div class="mensaje-error" id="errorAsunto"></div>
-                    </div>
-
                     <!-- Mensaje -->
                     <div class="grupo-formulario">
                         <label for="mensaje">Mensaje</label>
@@ -901,9 +887,9 @@
     <footer>
         <div class="footer-content">
             <div class="footer-links">
-                <a href="#inicio">Inicio</a>
+                <a href="#calculadora">Calculadora</a>
                 <a href="#servicios">Servicios</a>
-                <a href="#caracteristicas">Características</a>
+                <a href="#caracteristicas">Por qué elegirnos</a>
                 <a href="#contacto">Contacto</a>
             </div>
             <div class="footer-copy">
@@ -959,7 +945,6 @@
             nombre: document.getElementById('nombre'),
             email: document.getElementById('email'),
             telefono: document.getElementById('telefono'),
-            asunto: document.getElementById('asunto'),
             mensaje: document.getElementById('mensaje'),
             terminos: document.getElementById('terminos')
         };
@@ -968,7 +953,6 @@
             nombre: document.getElementById('errorNombre'),
             email: document.getElementById('errorEmail'),
             telefono: document.getElementById('errorTelefono'),
-            asunto: document.getElementById('errorAsunto'),
             mensaje: document.getElementById('errorMensaje'),
             terminos: document.getElementById('errorTerminos')
         };
@@ -1046,13 +1030,6 @@
                 }
             }
 
-            if (campo === 'asunto') {
-                if (!valor) {
-                    mostrarErrorFormulario('asunto', 'Por favor selecciona un asunto');
-                    return false;
-                }
-            }
-
             if (campo === 'mensaje') {
                 if (!valor) {
                     mostrarErrorFormulario('mensaje', 'El mensaje es requerido');
@@ -1077,7 +1054,7 @@
 
         // Validar todo el formulario
         function validarFormularioCompleto() {
-            const camposValidar = ['nombre', 'email', 'asunto', 'mensaje', 'terminos'];
+            const camposValidar = ['nombre', 'email', 'mensaje', 'terminos'];
             return camposValidar.every(campo => validarCampoFormulario(campo));
         }
 
@@ -1115,7 +1092,6 @@
                     nombre: campos.nombre.value,
                     email: campos.email.value,
                     telefono: campos.telefono.value,
-                    asunto: campos.asunto.value,
                     mensaje: campos.mensaje.value
                 });
             }, 1500);
