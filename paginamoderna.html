@@ -20,22 +20,35 @@
 			--color-light: #f8f9fa;
 			--color-border: #e0e0e0;
 			--transition: all 0.3s ease;
+			--gradient-brand: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+			--panel-radial: radial-gradient(circle at center, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 100%);
 		}
 
+		html,
 		body {
 			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 			line-height: 1.6;
 			color: var(--color-text);
 			background: url('Imagenes/Agencia.png') center/cover fixed no-repeat;
 			min-height: 100vh;
+			overflow-y: auto;
+			scrollbar-width: none;
+			padding-top: 52px;
+		}
+
+		html::-webkit-scrollbar,
+		body::-webkit-scrollbar {
+			display: none;
 		}
 
 		header {
 			background: white;
 			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-			position: sticky;
+			position: fixed;
 			top: 0;
-			z-index: 1000;
+			left: 0;
+			right: 0;
+			z-index: 1200;
 		}
 
 		nav {
@@ -50,7 +63,7 @@
 		.logo {
 			font-size: 1.8rem;
 			font-weight: 700;
-			background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+			background: var(--gradient-brand);
 			-webkit-background-clip: text;
 			-webkit-text-fill-color: transparent;
 			background-clip: text;
@@ -77,7 +90,7 @@
 			height: 2px;
 			bottom: -5px;
 			left: 0;
-			background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+			background: var(--gradient-brand);
 			transition: var(--transition);
 		}
 
@@ -157,7 +170,7 @@
 		.feature-number {
 			font-size: 2.5rem;
 			font-weight: 700;
-			background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+			background: var(--gradient-brand);
 			-webkit-background-clip: text;
 			-webkit-text-fill-color: transparent;
 			background-clip: text;
@@ -173,6 +186,8 @@
 			flex-direction: column;
 			align-items: center;
 			gap: 1.5rem;
+			position: relative;
+			width: 100%;
 		}
 
 		.calculadora-cuotas form {
@@ -216,11 +231,252 @@
 
 		#resultadoCuota {
 			display: none;
-			margin-top: 1.5rem;
-			font-size: 1.2rem;
-			font-weight: bold;
-			padding: 1rem;
+			position: absolute;
+			left: 50%;
+			transform: translateX(-50%);
+			top: 0;
+			font-size: 1.1rem;
+			font-weight: 500;
+			padding: 1.5rem;
 			border-radius: 2rem;
+			background: rgba(0, 0, 0, 0.85);
+			color: #f0f0f0;
+			text-align: center;
+			width: min(572px, 100%);
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+			line-height: 1.4;
+			z-index: 5;
+			pointer-events: auto;
+		}
+
+		.resultado-stack {
+			position: relative;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.resultado-cuota-total {
+			background: aquamarine;
+			border-radius: 2rem;
+			color: #111;
+			font-weight: 700;
+			padding: 0.75rem 1rem;
+			margin-bottom: 1rem;
+			font-size: clamp(1.15rem, 2vw, 1.4rem);
+		}
+
+		.resultado-preaprobado {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			background: rgb(233, 233, 233);
+			color: #00c9a7;
+			font-weight: 700;
+			border-radius: 999px;
+			padding: 0.4rem 1.25rem;
+			margin: 0.75rem auto 0;
+			min-width: 0;
+			width: auto;
+			height: auto;
+			font-size: clamp(1rem, 2vw, 1.15rem);
+			border: none;
+			cursor: pointer;
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+			box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+		}
+
+		.resultado-preaprobado:hover {
+			transform: translateY(-1px) scale(1.08);
+			box-shadow: 0 10px 22px rgba(0, 0, 0, 0.2);
+		}
+
+		.modal-preaprobado {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			display: none;
+			align-items: flex-start;
+			justify-content: center;
+			background: transparent;
+			padding: 1rem clamp(1rem, 5vw, 3rem) 2rem;
+			z-index: 3000;
+		}
+
+		.modal-preaprobado[aria-hidden="false"] {
+			display: flex;
+		}
+
+		.modal-preaprobado__content {
+			background: #0f1c2d;
+			border-radius: 1.25rem;
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			box-shadow: 0 25px 55px rgba(0, 0, 0, 0.45);
+			width: min(1000px, calc(100% - 2rem));
+			height: auto;
+			max-height: none;
+			overflow-y: visible;
+			padding: clamp(1.5rem, 3vw, 2.5rem);
+			color: #f5f5f5;
+			position: relative;
+		}
+
+		.modal-preaprobado__toast {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%) scale(0.96);
+			padding: 1rem 1.5rem;
+			background: rgba(5, 15, 30, 0.95);
+			border-radius: 1rem;
+			border: 1px solid rgba(120, 227, 255, 0.45);
+			color: #f5f5f5;
+			font-weight: 600;
+			text-align: center;
+			letter-spacing: 0.01em;
+			opacity: 0;
+			pointer-events: none;
+			transition: opacity 0.2s ease, transform 0.2s ease;
+			z-index: 10;
+		}
+
+		.modal-preaprobado__toast.is-visible {
+			opacity: 1;
+			transform: translate(-50%, -50%) scale(1);
+		}
+
+		.modal-preaprobado__header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 1.5rem;
+		}
+
+		.modal-preaprobado__header h3 {
+			margin: 0;
+			font-size: clamp(1.4rem, 3vw, 2rem);
+			color: #68e3ff;
+		}
+
+		.modal-preaprobado__obligatorios {
+			margin: 0.3rem 0 0;
+			font-size: 0.9rem;
+			color: rgba(245, 245, 245, 0.75);
+		}
+
+		.modal-preaprobado__close {
+			background: transparent;
+			border: none;
+			color: #f5f5f5;
+			font-size: 1.8rem;
+			cursor: pointer;
+			line-height: 1;
+		}
+
+		.modal-preaprobado form {
+			display: grid;
+			gap: 1rem;
+		}
+
+		.modal-preaprobado__section {
+			padding: 1rem 1.25rem;
+			border: 1px solid rgba(255, 255, 255, 0.15);
+			border-radius: 1rem;
+			margin-bottom: 1rem;
+			background: radial-gradient(circle at center, rgba(0, 201, 167, 0.25), rgba(102, 126, 234, 0.12));
+		}
+
+		.modal-preaprobado__section h4 {
+			margin: 0 0 0.75rem;
+			font-size: 1.05rem;
+			color: #7fe4ff;
+			display: flex;
+			gap: 0.5rem;
+			align-items: baseline;
+		}
+
+		.modal-preaprobado__section h4 span {
+			font-size: 0.85rem;
+			color: #f0f0f0;
+			font-weight: 400;
+		}
+
+		.modal-preaprobado__field {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.modal-preaprobado label {
+			font-weight: 600;
+			margin-bottom: 0.35rem;
+			color: #d5f5ff;
+		}
+
+		.modal-preaprobado__label-note {
+			font-weight: 400;
+			font-size: 0.9em;
+			color: #f0f6ff;
+			margin-left: 0.2rem;
+		}
+
+		.modal-preaprobado input,
+		.modal-preaprobado select {
+			width: 100%;
+			padding: 0.75rem 0.85rem;
+			border-radius: 0.75rem;
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			background: #0f1c2d;
+			color: #f5f5f5;
+		}
+
+		.modal-preaprobado input[type="file"] {
+			padding: 0.55rem;
+			background: #0f1c2d;
+		}
+
+		.modal-preaprobado input::placeholder {
+			color: rgba(245, 245, 245, 0.7);
+		}
+
+		.modal-preaprobado__actions {
+			display: flex;
+			justify-content: flex-end;
+			gap: 1rem;
+			margin-top: 0.5rem;
+		}
+
+		.modal-preaprobado__btn {
+			border: none;
+			border-radius: 999px;
+			padding: 0.85rem 1.75rem;
+			font-weight: 600;
+			cursor: pointer;
+			transition: opacity 0.2s ease;
+		}
+
+		.modal-preaprobado__btn--secondary {
+			background: rgba(255, 255, 255, 0.1);
+			color: #f5f5f5;
+		}
+
+		.modal-preaprobado__btn--primary {
+			background: #00c9a7;
+			color: #0a1020;
+		}
+
+		.modal-preaprobado__btn:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
+
+		.resultado-cuota-leyenda {
+			color: #c3baba;
+			font-weight: 600;
+			font-size: clamp(0.95rem, 2vw, 1.1rem);
+			margin: 0;
 		}
 
 		@media (max-width: 600px) {
@@ -348,36 +604,28 @@
 			max-width: 100%;
 		}
 
-		.select-con-valor {
-			background-color: rgba(94, 198, 163, 0.57) !important;
-			color: #f0f0f0 !important;
-			font-weight: bold;
-		}
-
+		.select-con-valor,
 		.input-con-valor {
 			background-color: rgba(94, 198, 163, 0.57) !important;
 			color: #f0f0f0 !important;
 			font-weight: bold;
 		}
 
-		.calculadora-container {
+		:is(.calculadora-container, .calculadora-container form) {
 			max-width: 1000px;
 			margin: 0 auto;
-			background: radial-gradient(circle at center, rgba(255, 255, 255, 0.0) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
+			background: var(--panel-radial) !important;
 			padding: 2rem;
 			border-radius: 12px;
 			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+		}
+
+		.calculadora-container {
 			border: 2px solid #f0f0f0;
 		}
 
 		.calculadora-container form {
 			width: 100%;
-			max-width: 1000px;
-			margin: 0 auto;
-			background: radial-gradient(circle at center, rgba(255, 255, 255, 0.0) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
-			padding: 2rem;
-			border-radius: 12px;
-			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 			border: none;
 		}
 
@@ -467,7 +715,7 @@
 		.boton-enviar {
 			width: 100%;
 			padding: 1rem;
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			background: var(--gradient-brand);
 			color: white;
 			border: none;
 			border-radius: 6px;
@@ -586,7 +834,7 @@
 			<ul>
 				<li><a href="#calculadora">Calculadora</a></li>
 				<li><a href="#servicios">Servicios</a></li>
-				<li><a href="#caracteristicas">Por qué elegirnos</a></li>
+				<li><a href="#modalDatosPreaprobado" id="linkDatosPreaprobadoHeader" data-modal-link="true">Preaprobado</a></li>
 				<li><a href="#contacto">Contacto</a></li>
 			</ul>
 		</nav>
@@ -638,15 +886,17 @@
 						<option value="" disabled selected>Opciones</option>
 					</select>
 
-					<div class="frase-moto-info" id="frase-uva-info">
-						<b>Tasa UVA</b><br>
-						<b>AUTOS/UTILITARIOS:</b> Año desde <span id="autos-anio"></span> / Plazo hasta <span id="autos-meses"></span> meses<br>
-						<b>MOTOS:</b> desde <span id="motos-cilindrada"></span>cc / Año desde <span id="motos-anio"></span> / Plazo hasta <span id="motos-meses"></span> meses
+					<div class="resultado-stack">
+						<div id="resultadoCuota"></div>
+						<div class="frase-moto-info" id="frase-uva-info">
+							<b>Tasa UVA</b><br>
+							<b>AUTOS/UTILITARIOS:</b> Año desde <span id="autos-anio"></span> / Plazo hasta <span id="autos-meses"></span> meses<br>
+							<b>MOTOS:</b> desde <span id="motos-cilindrada"></span>cc / Año desde <span id="motos-anio"></span> / Plazo hasta <span id="motos-meses"></span> meses
+						</div>
 					</div>
 
 					<button type="button" class="boton-calcular" onclick="calcularDesdeBoton()">Calcular</button>
 				</form>
-				<div id="resultadoCuota"></div>
 			</div>
 		</section>
 		<section id="servicios">
@@ -654,13 +904,13 @@
 			<div class="cards-container">
 				<div class="card">
 					<div class="card-icon">🚀</div>
-					<h3>Desarrollo Rápido</h3>
+					<h3>Rápida Respuesta</h3>
 					<p>Soluciones web innovadoras con las tecnologías más modernas y eficientes del mercado.</p>
 				</div>
 				<div class="card">
 					<div class="card-icon">🎨</div>
 					<h3>Diseño Moderno</h3>
-					<p>Interfaces atractivas y funcionales que ofrecen una experiencia de usuario excepcional.</p>
+					<p>Web intuitiva de fácil operación permite una experiencia armoniosa.</p>
 				</div>
 				<div class="card">
 					<div class="card-icon">🔒</div>
@@ -669,18 +919,18 @@
 				</div>
 				<div class="card">
 					<div class="card-icon">📱</div>
-					<h3>Responsive Design</h3>
-					<p>Adaptación perfecta a cualquier dispositivo, desde móviles hasta pantallas grandes.</p>
+					<h3>Responsive</h3>
+					<p>Adaptación perfecta a cualquier situación. Nuestro compromiso es indagar todas las alternativas posibles.</p>
 				</div>
 				<div class="card">
 					<div class="card-icon">⚡</div>
 					<h3>Alto Rendimiento</h3>
-					<p>Optimización máxima para velocidad y eficiencia en todos los navegadores.</p>
+					<p>Optimización máxima para velocidad y eficiencia en todos tus trámites.</p>
 				</div>
 				<div class="card">
 					<div class="card-icon">🌍</div>
 					<h3>Alcance Global</h3>
-					<p>Soluciones escalables que crecen con tu negocio sin límites geográficos.</p>
+					<p>Soluciones sin límites geográficos. Llegamos a todo el país</p>
 				</div>
 			</div>
 		</section>
@@ -694,11 +944,11 @@
 				</div>
 				<div class="feature">
 					<div class="feature-number">24/7</div>
-					<p>Soporte Técnico</p>
+					<p>Soporte Comercial</p>
 				</div>
 				<div class="feature">
-					<div class="feature-number">500+</div>
-					<p>Proyectos Completados</p>
+					<div class="feature-number">+3.000</div>
+					<p>Préstamos Otorgados</p>
 				</div>
 				<div class="feature">
 					<div class="feature-number">50+</div>
@@ -747,6 +997,92 @@
 			</div>
 		</section>
 	</main>
+	<div id="modalDatosPreaprobado" class="modal-preaprobado" aria-hidden="true">
+		<div class="modal-preaprobado__content" role="dialog" aria-modal="true" aria-labelledby="modalDatosPreaprobadoTitulo">
+			<div class="modal-preaprobado__header">
+				<div>
+					<h3 id="modalDatosPreaprobadoTitulo">Datos Preaprobado</h3>
+					<p class="modal-preaprobado__obligatorios">(*) Son Datos Obligatorios</p>
+				</div>
+				<button type="button" class="modal-preaprobado__close" id="cerrarModalPreaprobado" aria-label="Cerrar">&times;</button>
+			</div>
+			<form id="formPreaprobado">
+				<section class="modal-preaprobado__section">
+					<h4>Datos Agencia/Particular</h4>
+					<div class="modal-preaprobado__field">
+						<label for="tipoSolicitante">Nombre *</label>
+						<input type="text" id="tipoSolicitante" required placeholder="Nombre Agencia o Particular">
+					</div>
+					<div class="modal-preaprobado__field">
+						<label for="telefonoContacto">Teléfono Contacto</label>
+						<input type="tel" id="telefonoContacto" placeholder="Ej: 11 55555555">
+					</div>
+					<div class="modal-preaprobado__field">
+						<label for="mailContacto">Mail Contacto</label>
+						<input type="email" id="mailContacto" placeholder="Mail Agencia">
+					</div>
+				</section>
+
+				<section class="modal-preaprobado__section">
+					<h4>Datos Obligatorios</h4>
+					<div class="modal-preaprobado__field">
+						<label for="dniTitularFrente">Foto DNI TITULAR Frente *</label>
+						<input type="file" id="dniTitularFrente" accept="image/*,.pdf" required>
+					</div>
+					<div class="modal-preaprobado__field">
+						<label for="dniTitularDorso">Foto DNI TITULAR Dorso *</label>
+						<input type="file" id="dniTitularDorso" accept="image/*,.pdf" required>
+					</div>
+					
+					<div class="modal-preaprobado__field">
+						<label for="tituloFrente">Foto TITULO Frente (o CAT) *</label>
+						<input type="file" id="tituloFrente" accept="image/*,.pdf" required>
+					</div>
+					<div class="modal-preaprobado__field">
+						<label for="tituloDorso">Foto TITULO Dorso</label>
+						<input type="file" id="tituloDorso" accept="image/*,.pdf">
+					</div>
+					<div class="modal-preaprobado__field">
+						<label for="capturaSimulador">Captura PANTALLA SIMULADOR * <span class="modal-preaprobado__label-note">(datos operación)</span></label>
+						<input type="file" id="capturaSimulador" accept="image/*,.pdf" required>
+					</div>
+					<div class="modal-preaprobado__field">
+						<label for="telefonoCliente">Nro Telef. Celular Cliente *</label>
+						<input type="tel" id="telefonoCliente" required placeholder="Ej: +54 9 11 4444-4444">
+					</div>
+					<div class="modal-preaprobado__field">
+						<label for="mailCliente">MAIL Cliente *</label>
+						<input type="email" id="mailCliente" required placeholder="cliente@email.com">
+					</div>
+				</section>
+
+				<section class="modal-preaprobado__section">
+					<h4>Datos Adicionales</h4>
+					<div class="modal-preaprobado__field">
+						<label for="conyugeFrente">Foto DNI CONYUGE/CONCUBINO Frente</label>
+						<input type="file" id="conyugeFrente" accept="image/*,.pdf">
+					</div>
+					<div class="modal-preaprobado__field">
+						<label for="conyugeDorso">Foto DNI CONYUGE/CONCUBINO Dorso</label>
+						<input type="file" id="conyugeDorso" accept="image/*,.pdf">
+					</div>
+					<div class="modal-preaprobado__field">
+						<label for="cotitularFrente">Foto DNI COTITULAR Frente</label>
+						<input type="file" id="cotitularFrente" accept="image/*,.pdf">
+					</div>
+					<div class="modal-preaprobado__field">
+						<label for="cotitularDorso">Foto DNI COTITULAR Dorso</label>
+						<input type="file" id="cotitularDorso" accept="image/*,.pdf">
+					</div>
+				</section>
+				<div class="modal-preaprobado__actions">
+					<button type="button" class="modal-preaprobado__btn modal-preaprobado__btn--secondary" id="btnCancelarPreaprobado">Cancelar</button>
+					<button type="submit" class="modal-preaprobado__btn modal-preaprobado__btn--primary">Enviar Datos</button>
+				</div>
+			</form>
+			<div id="modalPreaprobadoToast" class="modal-preaprobado__toast" role="status" aria-live="assertive" aria-atomic="true"></div>
+		</div>
+	</div>
 	<footer>
 		<div class="footer-content">
 			<div class="footer-links">
@@ -809,6 +1145,14 @@
 
 		const gastos = 2;
 		const IVA = 21;
+		const camposPersistentesPreaprobado = [
+			'tipoSolicitante',
+			'telefonoContacto',
+			'mailContacto',
+			'telefonoCliente',
+			'mailCliente'
+		];
+		let estadoPreaprobadoPersistente = {};
 
 		// --- CONSTANTES PARA CONDICIONES DE VEHÍCULOS ---
 		// MODIFICAR ESTAS CONSTANTES PARA CAMBIAR RÁPIDAMENTE QUÉ CONDICIONES ESTÁN DISPONIBLES
@@ -1884,164 +2228,28 @@
 			const ivaSobreIntereses = Math.ceil(intereses * (IVA / 100));
 			const totalCuota = cuota + ivaSobreIntereses;
 
+			const divResultado = document.getElementById('resultadoCuota');
+			const contenedorResultado = document.querySelector('.resultado-stack');
+			if (divResultado && contenedorResultado) {
+				divResultado.innerHTML = `
+					<div class="resultado-cuota-total">Total Cuota $ ${totalCuota.toLocaleString('es-AR')}</div>
+					<p class="resultado-cuota-leyenda">Valor de la cuota sujeto a aprobación crediticia de acuerdo a pautas de la entidad interviniente.</p>
+					<button type="button" class="resultado-preaprobado" id="btnSolicitarPreaprobado">Solicitar Preaprobado</button>
+				`;
+				divResultado.style.top = '0';
+				divResultado.style.display = 'block';
+				const botonCalcular = document.querySelector('.boton-calcular');
+				if (botonCalcular) {
+					botonCalcular.style.visibility = 'hidden';
+				}
+				configurarSolicitudPreaprobado();
+			}
+
 			// console.log('Tasa: ',tasaMensual);
 			// console.log('monto: ',montoAjustado);
 			// console.log('cuota: ',cuota);
 			// console.log('Intereses: ', intereses);
 			// console.log('IVA:', ivaSobreIntereses);
-
-			// Elimina cualquier ventana anterior
-			const modalExistente = document.getElementById('modalResultadoCuota');
-			if (modalExistente) modalExistente.remove();
-
-			// Obtiene las posiciones de los elementos
-			const selectTasa = document.getElementById('tasaInteres');
-			const botonCalcular = document.querySelector('.boton-calcular');
-			const rectTasa = selectTasa.getBoundingClientRect();
-			const rectBoton = botonCalcular.getBoundingClientRect();
-
-			// Calcula la posición Y para el borde superior del modal
-			const mitad = rectTasa.bottom + ((rectBoton.top - rectTasa.bottom) / 2);
-			const scrollY = window.scrollY || document.documentElement.scrollTop;
-
-			// Crea la ventana modal negra posicionada
-			const modal = document.createElement('div');
-			modal.id = 'modalResultadoCuota';
-			modal.style.position = 'fixed';
-			modal.style.left = '0';
-			modal.style.top = (mitad + scrollY) + 'px';
-			modal.style.width = '100vw';
-			modal.style.background = 'transparent'; // Fondo del modal transparente
-			modal.style.display = 'flex';
-			modal.style.alignItems = 'center';
-			modal.style.justifyContent = 'center';
-			modal.style.zIndex = '2000';
-
-			// Obtén el ancho de <main>
-			const main = document.querySelector('main');
-			const mainRect = main.getBoundingClientRect();
-			const anchoMain = mainRect.width;
-
-			// Si la pantalla es pequeña, usa 80%, si no, 70%
-			const porcentajeModal = window.innerWidth <= 600 ? 0.8 : 0.7;
-			const anchoModal = anchoMain * porcentajeModal;
-
-			// Contenido de la ventana (el rectángulo negro)
-			const contenido = document.createElement('div');
-			contenido.style.background = '#111';
-			contenido.style.borderRadius = '2rem';
-			contenido.style.padding = '2rem 2.5vw';
-			contenido.style.textAlign = 'center';
-			contenido.style.minWidth = '300px'; // <-- Agrega este mínimo
-			contenido.style.width = anchoModal + 'px'; // 70% o 80% del main
-			contenido.style.maxWidth = '100%'; // Nunca más que el main
-
-			contenido.innerHTML = `
-				<div id="totalCuotaTexto"
-					style="background:aquamarine; width:80%; color:#111; font-weight:bold; margin-bottom:1.2rem; border-radius:2rem; padding:1rem; margin-left:auto; margin-right:auto; white-space:nowrap; overflow:hidden;">
-					Total Cuota $ ${totalCuota.toLocaleString('es-AR')}
-				</div>
-				<div id="fraseCuota"
-					style="background:transparent; width:100%; color:#c3baba; font-weight:bold; line-height:1.4; border-radius:1.2rem; display:block; margin:0 auto; padding:0;">
-					Valor de la cuota sujeto a aprobación<br>
-					crediticia de acuerdo a pautas<br>
-					de la entidad interviniente
-				</div>
-			`;
-
-			// Ajuste de ancho y centrado responsivo
-			function ajustarFraseCuota() {
-				const frase = contenido.querySelector('#fraseCuota');
-				frase.style.width = '90%';
-				frase.style.maxWidth = '540px'; // 90% de 600px (el máximo del contenedor negro en desktop)
-				frase.style.display = 'block';
-				frase.style.marginLeft = 'auto';
-				frase.style.marginRight = 'auto';
-				// Ajuste de fuente
-				const ancho = frase.offsetWidth;
-				const fontSize = Math.max(14, Math.min(28, ancho * 0.05));
-				frase.style.fontSize = fontSize + 'px';
-			}
-
-			function ajustarAnchoModal() {
-				const main = document.querySelector('main');
-				const mainRect = main.getBoundingClientRect();
-				const anchoMain = mainRect.width;
-				const porcentajeModal = window.innerWidth <= 600 ? 0.8 : 0.7;
-				contenido.style.width = (anchoMain * porcentajeModal) + 'px';
-			}
-
-			ajustarFraseCuota();
-			ajustarAnchoModal();
-			window.addEventListener('resize', ajustarAnchoModal);
-
-			modal.appendChild(contenido);
-			document.body.appendChild(modal);
-
-			// Cerrar modal al hacer click en cualquier parte de la ventana negra
-			modal.addEventListener('click', function () {
-				if (modal && document.body.contains(modal)) {
-					modal.remove();
-					removerListenersCerrarModal();
-				}
-			});
-
-			// Cerrar modal al hacer click en cualquier label del formulario
-			document.querySelectorAll('form label').forEach(label => {
-				label.addEventListener('click', cerrarModalPorFocus);
-			});
-
-			// Cerrar modal si el usuario se posiciona (focus) en el input o en algún select
-			const camposCerrar = [
-				'montoPrestamo',
-				'tipoVehiculo',
-				'tipoCombustible',
-				'anio',
-				'plazo',
-				'tasaInteres'
-			];
-
-			function cerrarModalPorFocus() {
-				if (modal && document.body.contains(modal)) {
-					modal.remove();
-					removerListenersCerrarModal();
-				}
-			}
-
-			function removerListenersCerrarModal() {
-				camposCerrar.forEach(id => {
-					const el = document.getElementById(id);
-					if (el) el.removeEventListener('focus', cerrarModalPorFocus);
-				});
-				// Remueve el listener del display
-				document.removeEventListener('click', listenerCerrarDisplay, true);
-			}
-
-			// Agrega los listeners al mostrar el modal
-			camposCerrar.forEach(id => {
-				const el = document.getElementById(id);
-				if (el) {
-					el.addEventListener('focus', cerrarModalPorFocus);
-				}
-			});
-
-			// --- NUEVO: Cerrar modal al hacer click en cualquier parte del display ---
-			function listenerCerrarDisplay(e) {
-				// Si el click NO fue dentro del modal, cierra
-				if (!modal.contains(e.target)) {
-					if (modal && document.body.contains(modal)) {
-						modal.remove();
-						removerListenersCerrarModal();
-					}
-				}
-			}
-			setTimeout(() => {
-				document.addEventListener('click', listenerCerrarDisplay, true);
-			}, 0);
-
-			// Oculta el div de resultado tradicional
-			const divResultado = document.getElementById('resultadoCuota');
-			divResultado.style.display = 'none';
 
 			// Elimina el console.log final
 			return totalCuota;
@@ -2067,6 +2275,136 @@
 			}
 		}
 
+		function configurarSolicitudPreaprobado() {
+			const boton = document.getElementById('btnSolicitarPreaprobado');
+			if (boton) {
+				boton.addEventListener('click', abrirModalDatosPreaprobado);
+			}
+		}
+
+		function abrirModalDatosPreaprobado() {
+			const overlay = document.getElementById('modalDatosPreaprobado');
+			if (!overlay) return;
+			overlay.setAttribute('aria-hidden', 'false');
+			restaurarEstadoPreaprobado();
+			posicionarModalDatosPreaprobado(overlay);
+		}
+
+		function cerrarModalDatosPreaprobado() {
+			const overlay = document.getElementById('modalDatosPreaprobado');
+			if (!overlay) return;
+			overlay.setAttribute('aria-hidden', 'true');
+			overlay.style.paddingTop = '';
+			overlay.style.top = '';
+		}
+
+		function posicionarModalDatosPreaprobado(overlay) {
+			const contenedorCalculadora = document.querySelector('#calculadora .calculadora-container');
+			const headingServicios = document.querySelector('#servicios h2');
+			let offset = window.scrollY + 20;
+
+			if (contenedorCalculadora) {
+				const rect = contenedorCalculadora.getBoundingClientRect();
+				offset = Math.max(window.scrollY + rect.bottom + 20, offset);
+			} else if (headingServicios) {
+				const distancia = headingServicios.getBoundingClientRect().top;
+				offset = Math.max(window.scrollY + distancia, offset);
+			}
+
+			overlay.style.top = `${offset}px`;
+			overlay.style.paddingTop = '0';
+		}
+
+		function inicializarPersistenciaFormularioPreaprobado(form) {
+			if (!form) return;
+			camposPersistentesPreaprobado.forEach(id => {
+				const campo = form.querySelector(`#${id}`);
+				if (!campo) return;
+				campo.addEventListener('input', function () {
+					estadoPreaprobadoPersistente[id] = campo.value;
+				});
+			});
+		}
+
+		function restaurarEstadoPreaprobado() {
+			camposPersistentesPreaprobado.forEach(id => {
+				const campo = document.getElementById(id);
+				if (!campo) return;
+				if (estadoPreaprobadoPersistente[id] !== undefined) {
+					campo.value = estadoPreaprobadoPersistente[id];
+				}
+			});
+		}
+
+		function obtenerValorCampoPreaprobado(id) {
+			const campo = document.getElementById(id);
+			if (!campo) return 'No informado';
+			if (campo.type === 'file') {
+				return campo.files && campo.files.length ? campo.files[0].name : 'Sin archivo';
+			}
+			const valor = (campo.value || '').trim();
+			return valor || 'No informado';
+		}
+
+		function construirResumenSolicitudPreaprobado() {
+			const camposTexto = [
+				{ id: 'tipoSolicitante', label: 'Nombre o Agencia' },
+				{ id: 'telefonoContacto', label: 'Teléfono de Contacto' },
+				{ id: 'mailContacto', label: 'Mail de Contacto' },
+				{ id: 'telefonoCliente', label: 'Teléfono Cliente' },
+				{ id: 'mailCliente', label: 'Mail Cliente' }
+			];
+
+			const camposArchivo = [
+				{ id: 'dniTitularFrente', label: 'DNI Titular Frente' },
+				{ id: 'dniTitularDorso', label: 'DNI Titular Dorso' },
+				{ id: 'tituloFrente', label: 'Título Frente/CAT' },
+				{ id: 'tituloDorso', label: 'Título Dorso' },
+				{ id: 'capturaSimulador', label: 'Captura Simulador' },
+				{ id: 'conyugeFrente', label: 'DNI Cónyuge Frente' },
+				{ id: 'conyugeDorso', label: 'DNI Cónyuge Dorso' },
+				{ id: 'cotitularFrente', label: 'DNI Cotitular Frente' },
+				{ id: 'cotitularDorso', label: 'DNI Cotitular Dorso' }
+			];
+
+			const seccionTextos = camposTexto.map(({ id, label }) => `${label}: ${obtenerValorCampoPreaprobado(id)}`);
+			const seccionArchivos = camposArchivo.map(({ id, label }) => `${label}: ${obtenerValorCampoPreaprobado(id)}`);
+
+			return [
+				'Se registró una nueva solicitud de datos preaprobado.',
+				'',
+				'Datos de contacto:',
+				...seccionTextos,
+				'',
+				'Listado de archivos adjuntados (se deben cargar manualmente en el correo):',
+				...seccionArchivos
+			].join('\n');
+		}
+
+		function enviarSolicitudPreaprobadoPorCorreo() {
+			const cuerpo = construirResumenSolicitudPreaprobado();
+			const asunto = 'Nueva Solicitud Datos Preaprobado';
+			const destinatario = 'datosrecibidos@tuprendario.com';
+			const enlaceMailto = `mailto:${destinatario}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+			window.location.href = enlaceMailto;
+		}
+
+		function mostrarAvisoPreaprobado(mensaje, duracion = 750) {
+			return new Promise(resolve => {
+				const toast = document.getElementById('modalPreaprobadoToast');
+				if (!toast) {
+					resolve();
+					return;
+				}
+				toast.textContent = mensaje;
+				toast.classList.add('is-visible');
+				setTimeout(() => {
+					toast.classList.remove('is-visible');
+					resolve();
+				}, duracion);
+			});
+		}
+
 		// Agrega esto al final del <script>
 		['montoPrestamo', 'tipoVehiculo', 'tipoCombustible', 'anio', 'plazo', 'tasaInteres'].forEach(id => {
 			const el = document.getElementById(id);
@@ -2078,12 +2416,31 @@
 		function ocultarResultadoCuota() {
 			const divResultado = document.getElementById('resultadoCuota');
 			divResultado.style.display = 'none';
+			const botonCalcular = document.querySelector('.boton-calcular');
+			if (botonCalcular) {
+				botonCalcular.style.visibility = 'visible';
+			}
 		}
 
 		window.addEventListener('DOMContentLoaded', function () {
 			const inputMonto = document.getElementById('montoPrestamo');
 			if (inputMonto) {
 				inputMonto.placeholder = `Ingresá Monto (Mín. $${montoMinimoTexto})`;
+			}
+			const contenedorCalculadora = document.querySelector('.calculadora-container');
+			if (contenedorCalculadora) {
+				contenedorCalculadora.addEventListener('click', function (event) {
+					const panelCuota = document.getElementById('resultadoCuota');
+					if (!panelCuota || panelCuota.style.display === 'none') {
+						return;
+					}
+					if (event.target.closest('.boton-calcular')) {
+						return;
+					}
+					if (!panelCuota.contains(event.target)) {
+						ocultarResultadoCuota();
+					}
+				});
 			}
 		});
 
@@ -2113,6 +2470,70 @@
 				}
 			});
 		});
+
+		window.addEventListener('DOMContentLoaded', function () {
+			const modal = document.getElementById('modalDatosPreaprobado');
+			const botonCerrar = document.getElementById('cerrarModalPreaprobado');
+			const botonCancelar = document.getElementById('btnCancelarPreaprobado');
+			const formPreaprobado = document.getElementById('formPreaprobado');
+			inicializarPersistenciaFormularioPreaprobado(formPreaprobado);
+
+			if (modal) {
+				modal.addEventListener('click', function (event) {
+					if (event.target === modal) {
+						cerrarModalDatosPreaprobado();
+					}
+				});
+			}
+
+			[botonCerrar, botonCancelar].forEach((btn) => {
+				if (btn) {
+					btn.addEventListener('click', cerrarModalDatosPreaprobado);
+				}
+			});
+
+			if (formPreaprobado) {
+				formPreaprobado.addEventListener('submit', async function (e) {
+					e.preventDefault();
+					enviarSolicitudPreaprobadoPorCorreo();
+					await mostrarAvisoPreaprobado('Hemos recibido tus datos. Pronto nos comunicaremos', 750);
+					formPreaprobado.reset();
+					estadoPreaprobadoPersistente = {};
+					cerrarModalDatosPreaprobado();
+				});
+			}
+
+		});
+
+		function manejarClickFueraModal(event) {
+			const modal = document.getElementById('modalDatosPreaprobado');
+			const contenido = modal ? modal.querySelector('.modal-preaprobado__content') : null;
+			if (!modal || modal.getAttribute('aria-hidden') === 'true') {
+				return;
+			}
+			if (contenido && contenido.contains(event.target)) {
+				return;
+			}
+			cerrarModalDatosPreaprobado();
+		}
+
+		document.addEventListener('mousedown', manejarClickFueraModal);
+
+		document.addEventListener('keydown', function (event) {
+			if (event.key === 'Escape') {
+				const modal = document.getElementById('modalDatosPreaprobado');
+				if (modal && modal.getAttribute('aria-hidden') === 'false') {
+					cerrarModalDatosPreaprobado();
+				}
+			}
+		});
+
+		window.addEventListener('resize', function () {
+			const modal = document.getElementById('modalDatosPreaprobado');
+			if (modal && modal.getAttribute('aria-hidden') === 'false') {
+				posicionarModalDatosPreaprobado(modal);
+			}
+		});
 	</script>
 
 	<script>
@@ -2120,7 +2541,18 @@
 			alert('Formulario de contacto - Próximamente disponible');
 		}
 
+		const linkDatosPreaprobadoHeader = document.getElementById('linkDatosPreaprobadoHeader');
+		if (linkDatosPreaprobadoHeader) {
+			linkDatosPreaprobadoHeader.addEventListener('click', function (e) {
+				e.preventDefault();
+				abrirModalDatosPreaprobado();
+			});
+		}
+
 		document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+			if (anchor.dataset.modalLink === 'true') {
+				return;
+			}
 			anchor.addEventListener('click', function (e) {
 				e.preventDefault();
 				const target = document.querySelector(this.getAttribute('href'));
@@ -2193,12 +2625,20 @@
 		function limpiarErrorFormulario(campo) {
 			campos[campo].classList.remove('error');
 			errores[campo].classList.remove('visible');
+			if (campo === 'terminos') {
+				errores[campo].style.fontWeight = '';
+				errores[campo].style.color = '';
+			}
 		}
 
 		function mostrarErrorFormulario(campo, mensaje) {
 			campos[campo].classList.add('error');
 			errores[campo].textContent = mensaje;
 			errores[campo].classList.add('visible');
+			if (campo === 'terminos') {
+				errores[campo].style.fontWeight = '700';
+				errores[campo].style.color = '#b81414';
+			}
 		}
 
 		function validarCampoFormulario(campo) {

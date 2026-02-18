@@ -170,7 +170,7 @@
         h2 {
             font-size: clamp(1.5rem, 4vw, 2.5rem);
             margin-bottom: 1.5rem;
-            color: var(--color-text);
+            color: #f0f0f0;
             text-align: center;
         }
 
@@ -352,10 +352,11 @@
         .calculadora-container {
             max-width: 1000px;
             margin: 0 auto;
-            background: white;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.0) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
             padding: 2rem;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid #f0f0f0;
         }
 
         /* Flex Row para Condición y Año */
@@ -379,15 +380,25 @@
         }
 
         /* --- ESTILOS DEL FORMULARIO DE CONTACTO --- */
-        .contenedor-formulario {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            padding: 3rem;
-            width: 100%;
-            max-width: 600px;
+        .calculadora-container {
+            max-width: 1000px;
             margin: 0 auto;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.0) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid #f0f0f0;
         }
+        .calculadora-container form {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.0) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: none;
+          }
 
         .contenedor-formulario h1 {
             color: #333;
@@ -596,9 +607,16 @@
         }
 
         .input-con-valor {
-            background-color: #5ec6a392 !important;
-            color: #f0f0f0 !important;
-            font-weight: bold;
+          background: linear-gradient(135deg, #5ec6a392 0%, #68a6e7 100%) !important;
+          color: #f0f0f0 !important;
+          font-weight: bold;
+          transition: background 0.3s;
+        }
+        #montoPrestamo.input-con-valor {
+          background: linear-gradient(135deg, #5ec6a392 0%, #68a6e7 100%) !important;
+          color: #f0f0f0 !important;
+          font-weight: bold;
+          transition: background 0.3s;
         }
 
         .boton-calcular {
@@ -710,6 +728,8 @@
                 width: 100vw;
                 max-width: 98vw;
                 padding: 1rem 0.5rem;
+                background-color: yellow;
+                border: 5px solid #f0f0f0;
             }
 
             .boton-calcular {
@@ -740,74 +760,68 @@
         <section id="calculadora">
             <h2>Calculadora de Préstamos</h2>
             <div class="calculadora-container">
-                <form id="formularioCalculadora" method="POST">
+                <form>
                     <!-- Input: Monto del Préstamo -->
-                    <div class="grupo-formulario">
-                        <label for="montoPrestamo">Monto del Préstamo</label>
-                        <input type="text" id="montoPrestamo" name="montoPrestamo" placeholder="Ingresá Monto (Mín. $1000)" required>
+                    <label for="montoPrestamo">Monto del Préstamo</label>
+                    <input type="text" id="montoPrestamo" name="montoPrestamo" placeholder="Ingresá Monto (Mín. $1000)" required
+                        oninput="verificarMontoMinimo(this, false);" onblur="verificarMontoMinimo(this, true)" />
 
-                    </div>
                     <!-- Select: Tipo de Vehículo -->
-                    <div class="grupo-formulario">
-                        <label for="tipoVehiculo">Vehículo</label>
-                        <select id="tipoVehiculo" name="tipoVehiculo" disabled>
-                            <option value="" disabled selected>Opciones</option>
-                            <option value="auto">Auto/Camioneta</option>
-                            <option value="utilitario">Utilitario</option>
-                            <option value="moto">Moto</option>
-                            <option value="cuatriciclo">Cuatriciclo/Quad/SSV</option>
-                        </select>
-                    </div>
+                    <label for="tipoVehiculo">Vehículo</label>
+                    <select id="tipoVehiculo" name="tipoVehiculo" disabled>
+                        <option value="" disabled selected>Opciones</option>
+                        <option value="auto">Auto/Camioneta</option>
+                        <option value="utilitario">Utilitario</option>
+                        <option value="moto">Moto</option>
+                        <option value="cuatriciclo">Cuatriciclo/Quad/SSV</option>
+                    </select>
 
                     <!-- Select: Tipo de Combustible -->
-                    <div class="grupo-formulario">
-                        <label for="tipoCombustible">Combustible</label>
-                        <select id="tipoCombustible" name="tipoCombustible" disabled>
-                            <option value="" disabled selected>Opciones</option>
-                        </select>
-                    </div>
+                    <label for="tipoCombustible">Combustible</label>
+                    <select id="tipoCombustible" name="tipoCombustible" disabled>
+                        <option value="" disabled selected>Opciones</option>
+                    </select>
 
                     <!-- Condición y Año en el mismo renglón -->
-                    <div class="flex-row">
-                        <div>
-                            <label for="condicion">Condición</label>
-                            <select id="condicion" name="condicion" disabled>
+                    <div style="display: flex; gap: 0.5rem; width: 90%; margin: 0 auto;">
+                        <div style="flex: 1;">
+                            <label for="condicion" style="margin: 0.5rem 0 0.25rem;">Condición</label>
+                            <select id="condicion" name="condicion" disabled onfocus="mostrarCondiciones()" style="width: 100%; margin-bottom: 1rem;">
                                 <option value="" disabled selected>Opciones</option>
                             </select>
                         </div>
-                        <div>
-                            <label for="anio">Año</label>
-                            <select id="anio" name="anio" disabled>
+                        
+                        <div style="flex: 1;">
+                            <label for="anio" style="margin: 0.5rem 0 0.25rem;">Año</label>
+                            <select id="anio" name="anio" disabled onfocus="mostrarAnios()" style="width: 100%; margin-bottom: 1rem;">
                                 <option value="" disabled selected>Opciones</option>
                             </select>
                         </div>
                     </div>
 
                     <!-- Select: Plazo -->
-                    <div class="grupo-formulario">
-                        <label for="plazo">Plazo</label>
-                        <select id="plazo" name="plazo" disabled>
-                            <option value="" disabled selected>Opciones</option>
-                        </select>
-                    </div>
+                    <label for="plazo">Plazo</label>
+                    <select id="plazo" name="plazo" disabled onfocus="mostrarPlazos()">
+                        <option value="" disabled selected>Opciones</option>
+                    </select>
 
                     <!-- Select: Tasa de Interés -->
-                    <div class="grupo-formulario">
-                        <label for="tasaInteres">Tasa de Interés</label>
-                        <select id="tasaInteres" name="tasaInteres" disabled>
-                            <option value="" disabled selected>Opciones</option>
-                        </select>
-                    </div>
+                    <label for="tasaInteres">Tasa de Interés</label>
+                    <select id="tasaInteres" name="tasaInteres" disabled onfocus="mostrarTasasInteres()">
+                        <option value="" disabled selected>Opciones</option>
+                    </select>
 
                     <!-- Frase Tasa UVA, AUTOS y MOTOS en tres renglones -->
                     <div class="frase-moto-info" id="frase-uva-info">
                         <b>Tasa UVA</b><br>
                         <b>AUTOS/UTILITARIOS:</b> Año desde <span id="autos-anio"></span> / Plazo hasta <span id="autos-meses"></span> meses<br>
-                        <b>MOTOS:</b> desde <span id="motos-cilindrada"></span>cc / Año desde <span id="motos-anio"></span> / Plazo hasta <span id="motos-meses"></span> meses
+                        <b>MOTOS:</b> desde <span id="motos-cilindrada"></span>cc / Año desde <span id="motos-anio"></span> / Plazo
+                        hasta
+                        <span id="motos-meses"></span> meses
                     </div>
 
                     <!-- Botón -->
-                    <button type="button" class="boton-calcular">Calcular</button>
+                    <button type="button" class="boton-calcular" onclick="calcularDesdeBoton()">Calcular</button>
                 </form>
                 <div id="resultadoCuota"></div>
             </div>
@@ -882,54 +896,47 @@
         <!-- Sección 4: Ponte en Contacto -->
         <section id="contacto">
             <h2>Envía tus Comentarios</h2>
-            <div class="contenedor-formulario">
-
-                <div id="mensajeExito" class="mensaje-exito">
-                    ¡Mensaje enviado exitosamente! Te responderemos pronto.
+            <div class="calculadora-container">
+              <div id="mensajeExito" class="mensaje-exito">
+                ¡Mensaje enviado exitosamente! Te responderemos pronto.
+              </div>
+              <form>
+                <!-- Nombre -->
+                <div class="grupo-formulario">
+                  <label for="nombre">Nombre y Apellido</label>
+                  <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+                  <div class="mensaje-error" id="errorNombre"></div>
                 </div>
-
-                <form id="formularioContacto" novalidate>
-                    <!-- Nombre -->
-                    <div class="grupo-formulario">
-                        <label for="nombre">Nombre y Apellido</label>
-                        <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
-                        <div class="mensaje-error" id="errorNombre"></div>
-                    </div>
-
-                    <!-- Email -->
-                    <div class="grupo-formulario">
-                        <label for="email">Correo Electrónico</label>
-                        <input type="email" id="email" name="email" placeholder="tu@email.com" required>
-                        <div class="mensaje-error" id="errorEmail"></div>
-                    </div>
-
-                    <!-- Teléfono -->
-                    <div class="grupo-formulario">
-                        <label for="telefono">Teléfono (Opcional)</label>
-                        <input type="tel" id="telefono" name="telefono" placeholder="+54 (9) XXXX-XXXX">
-                        <div class="mensaje-error" id="errorTelefono"></div>
-                    </div>
-
-                    <!-- Mensaje -->
-                    <div class="grupo-formulario">
-                        <label for="mensaje">Mensaje</label>
-                        <textarea id="mensaje" name="mensaje" placeholder="Cuéntanos tu consulta o sugerencia..." required></textarea>
-                        <div class="contador-caracteres"><span id="contadorCaracteres">0</span>/500</div>
-                        <div class="mensaje-error" id="errorMensaje"></div>
-                    </div>
-
-                    <!-- Checkbox de términos -->
-                    <div class="grupo-formulario">
-                        <div class="grupo-checkbox">
-                            <input type="checkbox" id="terminos" name="terminos" required>
-                            <label for="terminos" class="label-checkbox">Acepto que procesen mis datos personales</label>
-                        </div>
-                        <div class="mensaje-error" id="errorTerminos"></div>
-                    </div>
-
-                    <!-- Botón enviar -->
-                    <button type="submit" id="botonEnviar">Enviar Mensaje</button>
-                </form>
+                <!-- Email -->
+                <div class="grupo-formulario">
+                  <label for="email">Correo Electrónico</label>
+                  <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+                  <div class="mensaje-error" id="errorEmail"></div>
+                </div>
+                <!-- Teléfono -->
+                <div class="grupo-formulario">
+                  <label for="telefono">Teléfono (Opcional)</label>
+                  <input type="tel" id="telefono" name="telefono" placeholder="+54 (9) XXXX-XXXX">
+                  <div class="mensaje-error" id="errorTelefono"></div>
+                </div>
+                <!-- Mensaje -->
+                <div class="grupo-formulario">
+                  <label for="mensaje">Mensaje</label>
+                  <textarea id="mensaje" name="mensaje" placeholder="Cuéntanos tu consulta o sugerencia..." required></textarea>
+                  <div class="contador-caracteres"><span id="contadorCaracteres">0</span>/500</div>
+                  <div class="mensaje-error" id="errorMensaje"></div>
+                </div>
+                <!-- Checkbox de términos -->
+                <div class="grupo-formulario">
+                  <div class="grupo-checkbox">
+                    <input type="checkbox" id="terminos" name="terminos" required>
+                    <label for="terminos" class="label-checkbox">Acepto que procesen mis datos personales</label>
+                  </div>
+                  <div class="mensaje-error" id="errorTerminos"></div>
+                </div>
+                <!-- Botón enviar -->
+                <button type="submit" id="botonEnviar">Enviar Mensaje</button>
+              </form>
             </div>
         </section>
     </main>
@@ -1155,39 +1162,1355 @@
             });
         });
 
-        // --- EVENT LISTENERS PARA LA CALCULADORA ---
-        // Monto del Préstamo
-        document.getElementById('montoPrestamo').addEventListener('input', function() {
-            verificarMontoMinimo(this, false);
+        // --- Constantes globales al principio ---
+        let vehiculoSeleccionado = '';
+        let combustibleSeleccionado = '';
+        let anioSeleccionado = null;
+        let plazoSeleccionado = null;
+        let tasaSeleccionada = null;
+
+        const montoMinimo = 500000;
+
+        const opcionesAnios = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i);
+
+        // Constantes globales para cantidad de años a mostrar por tipo de vehículo
+        const aniosAutos = 9;        // Muestra opcionesAnios[0] a opcionesAnios[9]
+        const aniosUtilitario = 9;   // Muestra opcionesAnios[0] a opcionesAnios[7]
+        const aniosMotos = 7;        // Muestra opcionesAnios[0] a opcionesAnios[6]
+        const aniosCuatri = 7;       // Muestra opcionesAnios[0] a opcionesAnios[6]
+
+        const opcionesPlazos = [12, 18, 24, 36, 48, 60];
+
+        const opcionesTasasComunesAutos = [53, 53, 53, 53, 53, 53]; // Porcentajes para cada plazo
+        const opcionesTasasElectricos = [48, 48, 48, 48, 48, 48]; // Porcentajes para cada plazo
+        const tasaUvaAutos = [27, 28, 28, 28, 28]; // Cambiado de tasaUVA a tasaUvaAutos
+
+        const inicioUvaAutos = opcionesAnios[7]; // Año de inicio para la frase "Año desde"
+        const mesesUvaAutos = 48; // Constante para los meses expresados en la frase "Tasa UVA"
+
+        // Nuevas constantes globales para motos
+        const bajaCilindrada = 125;
+        const mediaCilindrada = 200;
+        const altaCilindrada = 500;
+
+        const bajaPotencia = 1200;
+        const altaPotencia = 5000;
+
+        const opcionesTasaComunesMotos = [61, 61, 61, 61, 61, 61]; // Porcentajes para cada plazo (ejemplo)
+        const opcionesTasasElectricosMotos = [48, 48, 48, 48, 48, 48]; // Porcentajes para cada plazo
+        const tasaUvaMotos = [27, 28, 28, 28, 28, 28];
+        const inicioUvaMotos = inicioUvaAutos;
+        const mesesUvaMotos = mesesUvaAutos;
+
+        const cilindradaUvaMotos = mediaCilindrada; // Nueva constante global
+
+        const gastos = 2;
+        const IVA = 21;
+
+        // --- CONSTANTES PARA CONDICIONES DE VEHÍCULOS ---
+        // MODIFICAR ESTAS CONSTANTES PARA CAMBIAR RÁPIDAMENTE QUÉ CONDICIONES ESTÁN DISPONIBLES
+        const condicionesAuto = ['0km', 'Usado'];           // Auto: ambas opciones
+        const condicionesUtilitario = ['0km', 'Usado'];     // Utilitario: ambas opciones  
+        const condicionesMoto = ['0km', 'Usado'];           // Moto: ambas opciones
+        const condicionesCuatriciclo = ['0km', 'Usado'];    // Cuatriciclo: ambas opciones
+
+        // --- Resto del código JS ---
+        // Función para formatear el monto ingresado en el input
+        function formatearMonto(input) {
+          let valor = input.value.replace(/[^0-9]/g, ''); // Elimina cualquier carácter que no sea un número
+
+          if (valor) {
+            valor = parseInt(valor, 10).toLocaleString('es-AR', {
+              maximumFractionDigits: 0,
+            });
+            input.value = `$ ${valor}`;
+          } else {
+            input.placeholder = `Ingresá Monto (Mín. $${montoMinimo})`;
+          }
+        }
+
+        // Función para verificar si el monto ingresado cumple con el mínimo
+        function verificarMontoMinimo(input, forzarHabilitar) {
+          let valor = input.value.replace(/[^0-9]/g, '');
+          let valorNumerico = parseInt(valor, 10);
+
+          // Formatea siempre con $ y puntos
+          if (valor) {
+            input.value = `$ ${parseInt(valor, 10).toLocaleString('es-AR')}`;
+          } else {
+            input.value = '';
+            input.placeholder = `Ingresá Monto (Mín. $${montoMinimo})`;
+          }
+
+          // Agrega o quita la clase según si el monto es válido
+          if (!isNaN(valorNumerico) && valorNumerico >= montoMinimo) {
+            input.classList.add('input-con-valor');
+            habilitarSelects();
+            if (forzarHabilitar) {
+              // console.log("verificarMontoMinimo/valorNumerico:", valorNumerico);
+            }
+            return true;
+          } else {
+            input.classList.remove('input-con-valor');
+            // Quita el fondo de todos los selects
+            document.getElementById('tipoVehiculo').classList.remove('select-con-valor');
+            document.getElementById('tipoCombustible').classList.remove('select-con-valor');
+            document.getElementById('condicion').classList.remove('select-con-valor');
+            document.getElementById('anio').classList.remove('select-con-valor');
+            document.getElementById('plazo').classList.remove('select-con-valor');
+            document.getElementById('tasaInteres').classList.remove('select-con-valor');
+            if (forzarHabilitar && !isNaN(valorNumerico) && valorNumerico >= montoMinimo) {
+              habilitarSelects();
+              // console.log("verificarMontoMinimo/valorNumerico:", valorNumerico);
+              return true;
+            } else {
+              // Si no cumple, deshabilita y reinicia los selects
+              const selects = document.querySelectorAll('select');
+              selects.forEach((select) => {
+                select.selectedIndex = 0;
+                select.disabled = true;
+              });
+              
+              // IMPORTANTE: Resetear todas las variables globales para evitar datos inconsistentes
+              vehiculoSeleccionado = '';
+              combustibleSeleccionado = '';
+              anioSeleccionado = null;
+              plazoSeleccionado = null;
+              tasaSeleccionada = null;
+              
+              // Resetear variables de cilindrada y potencia si existen
+              if (window.valorCilindrada !== undefined) {
+                window.valorCilindrada = null;
+              }
+              if (window.valorPotencia !== undefined) {
+                window.valorPotencia = null;
+              }
+              
+              return false;
+            }
+          }
+        }
+
+        // Función para habilitar todos los selects
+        function habilitarSelects() {
+          const selects = document.querySelectorAll('select');
+          selects.forEach((select) => {
+            select.disabled = false;
+          });
+        }
+
+        function mostrarValorTipoVehiculo() {
+          const select = document.getElementById('tipoVehiculo');
+          vehiculoSeleccionado = select.value;
+          // console.log("mostrarValorTipoVehiculo/vehiculoSeleccionado:", vehiculoSeleccionado);
+          actualizarOpcionesCombustible(vehiculoSeleccionado);
+          return vehiculoSeleccionado;
+        }
+
+        function mostrarValorTipoCombustible() {
+          const select = document.getElementById('tipoCombustible');
+          combustibleSeleccionado = select.value;
+          const vehiculoSeleccionado = document.getElementById('tipoVehiculo').value;
+          // console.log("mostrarValorTipoCombustible/combustibleSeleccionado:", combustibleSeleccionado);
+
+          if (vehiculoSeleccionado === "moto" && combustibleSeleccionado === "nafta") {
+            mostrarVentanaCilindrada();
+          }
+          if (vehiculoSeleccionado === "moto" && combustibleSeleccionado === "electricoMoto") {
+            mostrarVentanaPotencia();
+          }
+
+          return combustibleSeleccionado;
+        }
+
+        function actualizarOpcionesCombustible(vehiculoSeleccionado) {
+          const selectCombustible = document.getElementById('tipoCombustible');
+          // Limpia las opciones actuales
+          selectCombustible.innerHTML = '';
+
+          // Opciones por defecto
+          let opciones = [];
+
+          if (vehiculoSeleccionado === 'auto' || vehiculoSeleccionado === 'utilitario') {
+            opciones = [
+              { value: 'comun', text: 'Nafta/Diesel' },
+              { value: 'electricoAuto', text: 'Híbrido/Eléctrico' }
+            ];
+          } else if (vehiculoSeleccionado === 'moto') {
+            opciones = [
+              { value: 'nafta', text: 'Nafta' },
+              { value: 'electricoMoto', text: 'Eléctrico' }
+            ];
+          } else if (vehiculoSeleccionado === 'cuatriciclo') {
+            opciones = [
+              { value: 'nafta', text: 'Nafta' },
+              { value: 'electricoCuatri', text: 'Eléctrico' }
+            ];
+          } else {
+            opciones = [];
+          }
+
+          // Limpia las opciones pero mantiene la opción "Opciones" inicial
+          selectCombustible.innerHTML = '<option value="" disabled selected>Opciones</option>';
+          
+          // Agrega las opciones válidas al select
+          opciones.forEach(op => {
+            const option = document.createElement('option');
+            option.value = op.value;
+            option.text = op.text;
+            selectCombustible.appendChild(option);
+          });
+
+          // Reinicia la selección a la opción por defecto
+          selectCombustible.value = '';
+          selectCombustible.classList.remove('select-con-valor'); // Remover color verde
+
+          // Habilita el select de combustible si hay opciones válidas
+          selectCombustible.disabled = opciones.length <= 0;
+        }
+
+        function mostrarVentanaCilindrada() {
+          // Crea el fondo oscuro
+          const fondo = document.createElement('div');
+          fondo.style.position = 'fixed';
+          fondo.style.top = 0;
+          fondo.style.left = 0;
+          fondo.style.width = '100vw';
+          fondo.style.height = '100vh';
+          fondo.style.backgroundColor = 'transparent';
+          fondo.style.display = 'flex';
+          fondo.style.alignItems = 'center';
+          fondo.style.justifyContent = 'center';
+          fondo.style.zIndex = 1000;
+
+          // Crea la ventana modal
+          const modal = document.createElement('div');
+          modal.style.background = '#29708f';
+          modal.style.padding = '2rem';
+          modal.style.borderRadius = '8px';
+          modal.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
+          modal.style.textAlign = 'center';
+
+          // Label
+          const label = document.createElement('label');
+          label.textContent = 'CILINDRADA';
+          label.style.display = 'block';
+          label.style.marginBottom = '1rem';
+
+          // Input tipo text
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.placeholder = `Mínimo ${bajaCilindrada}cc`;
+          input.style.marginBottom = '1rem';
+          input.style.width = '80%';
+          input.style.textAlign = 'center';
+          input.style.display = 'block';
+          input.style.marginLeft = 'auto';
+          input.style.marginRight = 'auto';
+          input.style.fontSize = 'clamp(1rem, 2.5vw, 1.2rem)'; // Igual que en ventana potencia
+
+          // Evento para agregar puntos a los miles y " cc"
+          input.addEventListener('input', function () {
+            let valor = input.value.replace(/\./g, '').replace(/\s*cc\s*$/, ''); // Quita puntos y cc
+            valor = valor.replace(/\D/g, ''); // Solo números
+            if (valor) {
+              let valorFormateado = parseInt(valor, 10).toLocaleString('es-AR');
+              input.value = valorFormateado + 'cc'; // <-- Sin espacio antes de cc
+              input.setSelectionRange(input.value.length - 2, input.value.length - 2);
+            } else {
+              input.value = '';
+            }
+          });
+
+          // Botón
+          const btn = document.createElement('button');
+          btn.textContent = 'Aceptar';
+          btn.onclick = function () {
+            // Obtiene el valor numérico ingresado
+            let valorCilindrada = parseInt(input.value.replace(/\./g, '').replace(/\s*cc\s*$/, ''), 10);
+            if (!isNaN(valorCilindrada) && valorCilindrada >= bajaCilindrada) {
+              window.valorCilindrada = valorCilindrada; // Guarda el valor como global
+              // console.log("mostrarVentanaCilindrada/valorCilindrada:", valorCilindrada);
+              document.body.removeChild(fondo);
+              removerListeners();
+            } else {
+              input.value = '';
+              input.focus();
+            }
+          };
+
+          // Copia los estilos del botón .boton-calcular
+          btn.style.background = '#c3baba';
+          btn.style.color = '#fff';
+          btn.style.fontWeight = 'bold';
+          btn.style.fontSize = 'clamp(1rem, 3vw, 2rem)';
+          btn.style.padding = '0.85rem 2.2rem';
+          btn.style.border = 'none';
+          btn.style.borderRadius = '2rem';
+          btn.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+          btn.style.cursor = 'pointer';
+          btn.style.transition = 'background 0.3s, transform 0.2s';
+          btn.style.marginTop = '1rem';
+          btn.style.marginBottom = '0.5rem';
+          btn.style.width = 'auto';
+          btn.style.minWidth = '150px';
+
+          // Efecto hover y focus
+          btn.addEventListener('mouseenter', function () {
+            btn.style.background = '#68a6e7';
+            btn.style.transform = 'scale(1.2)';
+          });
+          btn.addEventListener('mouseleave', function () {
+            btn.style.background = '#c3baba';
+            btn.style.transform = 'none';
+          });
+          btn.addEventListener('focus', function () {
+            btn.style.background = '#68a6e7';
+            btn.style.transform = 'scale(1.2)';
+          });
+          btn.addEventListener('blur', function () {
+            btn.style.background = '#c3baba';
+            btn.style.transform = 'none';
+          });
+
+          // Función para cerrar la ventana y remover listeners
+          function cerrarVentana() {
+            if (document.body.contains(fondo)) {
+              document.body.removeChild(fondo);
+              removerListeners();
+            }
+          }
+
+          // Listeners para cerrar la ventana si el usuario se posiciona en otros campos
+          function listenerCerrar() {
+            cerrarVentana();
+          }
+
+          // También cerrar al cambiar el select de tipo de combustible
+          function listenerChangeCombustible() {
+            cerrarVentana();
+          }
+
+          // Agrega los listeners de focus
+          document.getElementById('montoPrestamo').addEventListener('focus', listenerCerrar);
+          document.getElementById('tipoVehiculo').addEventListener('focus', listenerCerrar);
+          document.getElementById('tipoCombustible').addEventListener('focus', listenerCerrar);
+          // Agrega el listener de cambio
+          document.getElementById('tipoCombustible').addEventListener('change', listenerChangeCombustible);
+
+          // Remueve todos los listeners al cerrar
+          function removerListeners() {
+            document.getElementById('montoPrestamo').removeEventListener('focus', listenerCerrar);
+            document.getElementById('tipoVehiculo').removeEventListener('focus', listenerCerrar);
+            document.getElementById('tipoCombustible').removeEventListener('focus', listenerCerrar);
+            document.getElementById('tipoCombustible').removeEventListener('change', listenerChangeCombustible);
+          }
+
+          // Agrega los elementos al modal
+          modal.appendChild(label);
+          modal.appendChild(input);
+          modal.appendChild(document.createElement('br'));
+          modal.appendChild(btn);
+
+          // Agrega el modal al fondo
+          fondo.appendChild(modal);
+
+          // Agrega el fondo al body
+          document.body.appendChild(fondo);
+
+          // Cierra al hacer click fuera del modal
+          fondo.addEventListener('click', function (e) {
+            if (e.target === fondo) {
+              cerrarVentana();
+            }
+          });
+        }
+
+        function mostrarVentanaPotencia() {
+          // Crea el fondo oscuro
+          const fondo = document.createElement('div');
+          fondo.style.position = 'fixed';
+          fondo.style.top = 0;
+          fondo.style.left = 0;
+          fondo.style.width = '100vw';
+          fondo.style.height = '100vh';
+          fondo.style.backgroundColor = 'transparent';
+          fondo.style.display = 'flex';
+          fondo.style.alignItems = 'center';
+          fondo.style.justifyContent = 'center';
+          fondo.style.zIndex = 1000;
+
+          // Crea la ventana modal
+          const modal = document.createElement('div');
+          modal.style.background = '#29708f'; // Cambiado a igual que cilindrada
+          modal.style.padding = '2rem';
+          modal.style.borderRadius = '8px';
+          modal.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
+          modal.style.textAlign = 'center';
+
+          // Label
+          const label = document.createElement('label');
+          label.textContent = 'POTENCIA';
+          label.style.display = 'block';
+          label.style.marginBottom = '1rem';
+
+          // Input tipo text
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.placeholder = `${bajaPotencia.toLocaleString('es-AR')}w a ${altaPotencia.toLocaleString('es-AR')}w`;
+          input.style.marginBottom = '1rem';
+          input.style.width = '100%'; // Más ancho para el placeholder
+          input.style.textAlign = 'center';
+          input.style.display = 'block';
+          input.style.marginLeft = 'auto';
+          input.style.marginRight = 'auto';
+          input.style.fontSize = 'clamp(1rem, 2.5vw, 1.2rem)';
+
+          // Evento para formatear el input solo con números y agregar " w"
+          input.addEventListener('input', function () {
+            let valor = input.value.replace(/\./g, '').replace(/\s*w\s*$/i, ''); // Quita puntos y w (con o sin espacios)
+            valor = valor.replace(/\D/g, ''); // Solo números
+            if (valor) {
+              let valorFormateado = parseInt(valor, 10).toLocaleString('es-AR');
+              input.value = valorFormateado + 'w'; // <-- Sin espacio antes de w
+              input.setSelectionRange(input.value.length - 1, input.value.length - 1);
+            } else {
+              input.value = '';
+            }
+          });
+
+          // Botón
+          const btn = document.createElement('button');
+          btn.textContent = 'Aceptar';
+          btn.onclick = function () {
+            let valorPotencia = parseInt(input.value.replace(/\./g, '').replace(/\s*W\s*$/i, ''), 10);
+            if (
+              !isNaN(valorPotencia) &&
+              valorPotencia >= bajaPotencia &&
+              valorPotencia <= altaPotencia
+            ) {
+              window.valorPotencia = valorPotencia; // Guarda el valor globalmente
+              // console.log("mostrarVentanaPotencia/valorPotencia:", valorPotencia);
+              document.body.removeChild(fondo);
+              removerListeners();
+            } else {
+              input.value = '';
+              input.focus();
+            }
+          };
+
+          // Copia los estilos del botón .boton-calcular
+          btn.style.background = '#c3baba';
+          btn.style.color = '#fff';
+          btn.style.fontWeight = 'bold';
+          btn.style.fontSize = 'clamp(1rem, 3vw, 2rem)';
+          btn.style.padding = '0.85rem 2.2rem';
+          btn.style.border = 'none';
+          btn.style.borderRadius = '2rem';
+          btn.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+          btn.style.cursor = 'pointer';
+          btn.style.transition = 'background 0.3s, transform 0.2s';
+          btn.style.marginTop = '1rem';
+          btn.style.marginBottom = '0.5rem';
+          btn.style.width = 'auto';
+          btn.style.minWidth = '150px';
+
+          // Efecto hover y focus
+          btn.addEventListener('mouseenter', function () {
+            btn.style.background = '#68a6e7';
+            btn.style.transform = 'scale(1.2)';
+          });
+          btn.addEventListener('mouseleave', function () {
+            btn.style.background = '#c3baba';
+            btn.style.transform = 'none';
+          });
+          btn.addEventListener('focus', function () {
+            btn.style.background = '#68a6e7';
+            btn.style.transform = 'scale(1.2)';
+          });
+          btn.addEventListener('blur', function () {
+            btn.style.background = '#c3baba';
+            btn.style.transform = 'none';
+          });
+
+          // Función para cerrar la ventana y remover listeners
+          function cerrarVentana() {
+            if (document.body.contains(fondo)) {
+              document.body.removeChild(fondo);
+              removerListeners();
+            }
+          }
+
+          // Listeners para cerrar la ventana si el usuario se posiciona en otros campos
+          function listenerCerrar() {
+            cerrarVentana();
+          }
+
+          // También cerrar al cambiar el select de tipo de combustible
+          function listenerChangeCombustible() {
+            cerrarVentana();
+          }
+
+          // Agrega los listeners de focus
+          document.getElementById('montoPrestamo').addEventListener('focus', listenerCerrar);
+          document.getElementById('tipoVehiculo').addEventListener('focus', listenerCerrar);
+          document.getElementById('tipoCombustible').addEventListener('focus', listenerCerrar);
+          // Agrega el listener de cambio
+          document.getElementById('tipoCombustible').addEventListener('change', listenerChangeCombustible);
+
+          // Remueve todos los listeners al cerrar
+          function removerListeners() {
+            document.getElementById('montoPrestamo').removeEventListener('focus', listenerCerrar);
+            document.getElementById('tipoVehiculo').removeEventListener('focus', listenerCerrar);
+            document.getElementById('tipoCombustible').removeEventListener('focus', listenerCerrar);
+            document.getElementById('tipoCombustible').removeEventListener('change', listenerChangeCombustible);
+          }
+
+          // Agrega los elementos al modal
+          modal.appendChild(label);
+          modal.appendChild(input);
+          modal.appendChild(document.createElement('br'));
+          modal.appendChild(btn);
+
+          // Agrega el modal al fondo
+          fondo.appendChild(modal);
+
+          // Agrega el fondo al body
+          document.body.appendChild(fondo);
+
+          // Cierra al hacer click fuera del modal
+          fondo.addEventListener('click', function (e) {
+            if (e.target === fondo) {
+              cerrarVentana();
+            }
+          });
+        }
+
+        function mostrarCondiciones() {
+          const selectCondicion = document.getElementById('condicion');
+          const vehiculoSeleccionado = document.getElementById('tipoVehiculo').value;
+          const combustibleSeleccionado = document.getElementById('tipoCombustible').value;
+
+          if (!vehiculoSeleccionado || !combustibleSeleccionado) {
+            limpiarSelect('condicion', 'Opciones');
+            return;
+          }
+
+          // Mantener el placeholder
+          let opcionesHTML = '<option value="" disabled selected>Opciones</option>';
+          
+          // Obtener las condiciones según el tipo de vehículo usando las constantes
+          let condicionesDisponibles = [];
+          if (vehiculoSeleccionado === 'auto') {
+            condicionesDisponibles = condicionesAuto;
+          } else if (vehiculoSeleccionado === 'utilitario') {
+            condicionesDisponibles = condicionesUtilitario;
+          } else if (vehiculoSeleccionado === 'moto') {
+            condicionesDisponibles = condicionesMoto;
+          } else if (vehiculoSeleccionado === 'cuatriciclo') {
+            condicionesDisponibles = condicionesCuatriciclo;
+          }
+          
+          // Agregar las opciones disponibles dinámicamente
+          condicionesDisponibles.forEach(condicion => {
+            opcionesHTML += `<option value="${condicion}">${condicion}</option>`;
+          });
+          
+          selectCondicion.innerHTML = opcionesHTML;
+        }
+
+        function mostrarAnios() {
+          const selectAnio = document.getElementById('anio');
+          const vehiculoSeleccionado = document.getElementById('tipoVehiculo').value;
+          const combustibleSeleccionado = document.getElementById('tipoCombustible').value;
+          const condicionSeleccionada = document.getElementById('condicion').value;
+
+          if (!vehiculoSeleccionado || !combustibleSeleccionado || !condicionSeleccionada) {
+            limpiarSelect('anio', 'Opciones');
+            return;
+          }
+
+          // Limpia las opciones actuales
+          selectAnio.innerHTML = '';
+          // Opción por defecto
+          const optionDefault = document.createElement('option');
+          optionDefault.value = '';
+          optionDefault.text = 'Opciones';
+          optionDefault.disabled = true;
+          optionDefault.selected = true;
+          selectAnio.appendChild(optionDefault);
+
+          let aniosFiltrados = [];
+
+          // AUTO
+          if (vehiculoSeleccionado === 'auto') {
+            if (combustibleSeleccionado === 'comun' || combustibleSeleccionado === 'nafta') {
+              if (condicionSeleccionada === '0km') {
+                aniosFiltrados = opcionesAnios.slice(0, 2);
+              } else {
+                aniosFiltrados = opcionesAnios.slice(0, aniosAutos + 1);
+              }
+            } else {
+              if (condicionSeleccionada === '0km') {
+                aniosFiltrados = opcionesAnios.slice(0, 2);
+              } else {
+                aniosFiltrados = opcionesAnios.slice(0, 4);
+              }
+            }
+          }
+          // UTILITARIO
+          else if (vehiculoSeleccionado === 'utilitario') {
+            if (combustibleSeleccionado === 'comun' || combustibleSeleccionado === 'nafta') {
+              if (condicionSeleccionada === '0km') {
+                aniosFiltrados = opcionesAnios.slice(0, 2);
+              } else if (condicionSeleccionada === 'Usado') {
+                aniosFiltrados = opcionesAnios.slice(0, aniosUtilitario + 1);
+              } else {
+                aniosFiltrados = opcionesAnios.slice(0, 4);
+              }
+            } else {
+              if (condicionSeleccionada === '0km') {
+                aniosFiltrados = opcionesAnios.slice(0, 2);
+              } else {
+                aniosFiltrados = opcionesAnios.slice(0, 4);
+              }
+            }
+          }
+          // MOTO
+          else if (vehiculoSeleccionado === 'moto') {
+            if (combustibleSeleccionado === 'nafta') {
+              if (!window.valorCilindrada || isNaN(window.valorCilindrada) || window.valorCilindrada < bajaCilindrada) {
+                limpiarSelect('anio', 'Opciones');
+                return;
+              }
+              if (window.valorCilindrada >= altaCilindrada) {
+                aniosFiltrados = opcionesAnios.slice(0, aniosMotos + 1); // 0 a aniosMotos
+              } else if (window.valorCilindrada >= mediaCilindrada) {
+                aniosFiltrados = opcionesAnios.slice(0, 4); // 0 a 3
+              } else {
+                aniosFiltrados = [opcionesAnios[0]]; // solo el primero
+              }
+            } else if (combustibleSeleccionado === 'electricoMoto') {
+              if (!window.valorPotencia || isNaN(window.valorPotencia) || window.valorPotencia < bajaPotencia) {
+                limpiarSelect('anio', 'Opciones');
+                return;
+              }
+              aniosFiltrados = [opcionesAnios[0]]; // solo el primero
+            } else {
+              limpiarSelect('anio', 'Opciones');
+              return;
+            }
+          }
+          // CUATRICICLO
+          else if (vehiculoSeleccionado === 'cuatriciclo') {
+            if (combustibleSeleccionado === 'nafta') {
+              aniosFiltrados = opcionesAnios.slice(0, aniosCuatri + 1); // 0 a aniosCuatri
+            } else {
+              aniosFiltrados = [opcionesAnios[0]]; // solo el primero
+            }
+          }
+
+          // Agrega las opciones filtradas
+          aniosFiltrados.forEach(anio => {
+            const option = document.createElement('option');
+            option.value = anio;
+            option.text = anio;
+            selectAnio.appendChild(option);
+          });
+
+          document.getElementById('anio').onchange = function () {
+            anioSeleccionado = Number(this.value);
+            // console.log('mostrarAnios/anioSeleccionado:', anioSeleccionado);
+          };
+        }
+
+        function mostrarPlazos() {
+          const selectPlazo = document.getElementById('plazo');
+          const vehiculoSeleccionado = document.getElementById('tipoVehiculo').value;
+          const combustibleSeleccionado = document.getElementById('tipoCombustible').value;
+          const anioSeleccionado = Number(document.getElementById('anio').value);
+
+          if (!vehiculoSeleccionado || !combustibleSeleccionado || !anioSeleccionado) {
+            limpiarSelect('plazo', 'Opciones');
+            return;
+          }
+
+          // Limpia las opciones actuales
+          selectPlazo.innerHTML = '';
+          // Opción por defecto
+          const optionDefault = document.createElement('option');
+          optionDefault.value = '';
+          optionDefault.text = 'Opciones';
+          optionDefault.disabled = true;
+          optionDefault.selected = true;
+          selectPlazo.appendChild(optionDefault);
+
+          let plazosFiltrados = [];
+
+          // AUTO
+          if (vehiculoSeleccionado === 'auto') {
+            const condicionSeleccionada = document.getElementById('condicion').value;
+            if ((combustibleSeleccionado === 'comun' || combustibleSeleccionado === 'nafta' || combustibleSeleccionado === 'electricoAuto') && condicionSeleccionada === '0km') {
+              // Todos los valores de opcionesPlazos excepto el de la posición 1
+              plazosFiltrados = opcionesPlazos.filter((_, i) => i !== 1);
+            } else if ((combustibleSeleccionado === 'comun' || combustibleSeleccionado === 'nafta' || combustibleSeleccionado === 'electricoAuto') && condicionSeleccionada === 'Usado') {
+              // Determinar el índice del año seleccionado en opcionesAnios
+              const indexAnio = opcionesAnios.indexOf(anioSeleccionado);
+              if (indexAnio >= 0 && indexAnio <= 7) {
+                plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 5 && i !== 1);
+              } else if (indexAnio === 8) {
+                plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 4 && i !== 1);
+              } else if (indexAnio === 9) {
+                plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 3 && i !== 1);
+              } else {
+                plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 3 && i !== 1);
+              }
+            } else {
+              plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 3 && i !== 1);
+            }
+          }
+          // UTILITARIO
+          else if (vehiculoSeleccionado === 'utilitario') {
+            const condicionSeleccionada = document.getElementById('condicion').value;
+            if ((combustibleSeleccionado === 'comun' || combustibleSeleccionado === 'nafta' || combustibleSeleccionado === 'electricoAuto') && condicionSeleccionada === 'Usado') {
+              const indexAnio = opcionesAnios.indexOf(anioSeleccionado);
+              if (indexAnio >= 0 && indexAnio <= 7) {
+                plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 5 && i !== 1);
+              } else if (indexAnio === 8) {
+                plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 4 && i !== 1);
+              } else if (indexAnio === 9) {
+                plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 3 && i !== 1);
+              } else {
+                plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 3 && i !== 1);
+              }
+            } else if ((combustibleSeleccionado === 'comun' || combustibleSeleccionado === 'nafta' || combustibleSeleccionado === 'electricoAuto') && condicionSeleccionada === '0km') {
+              plazosFiltrados = opcionesPlazos.filter((_, i) => i !== 1);
+            } else {
+              plazosFiltrados = opcionesPlazos.filter((_, i) => i <= 3 && i !== 1);
+            }
+          }
+          // MOTO
+          else if (vehiculoSeleccionado === 'moto') {
+            if (combustibleSeleccionado === 'nafta') {
+              if (anioSeleccionado >= opcionesAnios[4]) {
+                plazosFiltrados = [...opcionesPlazos];
+              } else if (anioSeleccionado === opcionesAnios[5]) {
+                plazosFiltrados = opcionesPlazos.slice(0, 5);
+              } else {
+                plazosFiltrados = opcionesPlazos.slice(0, 4);
+              }
+            } else {
+              plazosFiltrados = [...opcionesPlazos];
+            }
+          }
+          // CUATRICICLO
+          else if (vehiculoSeleccionado === 'cuatriciclo') {
+            if (combustibleSeleccionado === 'nafta') {
+              if (anioSeleccionado >= opcionesAnios[3]) {
+                plazosFiltrados = [...opcionesPlazos];
+              } else {
+                plazosFiltrados = [...opcionesPlazos];
+              }
+            } else {
+              plazosFiltrados = [...opcionesPlazos];
+            }
+          }
+
+          // Agrega las opciones filtradas
+          plazosFiltrados.forEach(plazo => {
+            const option = document.createElement('option');
+            option.value = plazo;
+            option.text = `${plazo} meses`;
+            selectPlazo.appendChild(option);
+          });
+
+          document.getElementById('plazo').onchange = function () {
+            plazoSeleccionado = Number(this.value);
+            // console.log('mostrarPlazos/plazoSeleccionado:', plazoSeleccionado);
+          };
+        }
+
+        function mostrarTasasInteres() {
+          console.log('=== EJECUTANDO mostrarTasasInteres ===');
+          const selectTasa = document.getElementById('tasaInteres');
+          const vehiculoSeleccionado = document.getElementById('tipoVehiculo').value;
+          const combustibleSeleccionado = document.getElementById('tipoCombustible').value;
+          const anioSeleccionado = Number(document.getElementById('anio').value);
+          const plazoSeleccionado = Number(document.getElementById('plazo').value);
+
+          console.log('Valores recibidos:', {
+            vehiculo: vehiculoSeleccionado,
+            combustible: combustibleSeleccionado,
+            anio: anioSeleccionado,
+            plazo: plazoSeleccionado
+          });
+
+          if (!vehiculoSeleccionado || !combustibleSeleccionado || !anioSeleccionado || !plazoSeleccionado) {
+            console.log('SALIENDO: Faltan valores requeridos');
+            limpiarSelect('tasaInteres', 'Opciones');
+            return;
+          }
+
+          // Limpia las opciones actuales
+          selectTasa.innerHTML = '';
+          // Opción por defecto
+          const optionDefault = document.createElement('option');
+          optionDefault.value = '';
+          optionDefault.text = 'Opciones';
+          optionDefault.disabled = true;
+          optionDefault.selected = true;
+          selectTasa.appendChild(optionDefault);
+
+          // Busca el índice del plazo seleccionado
+          const indexPlazo = opcionesPlazos.indexOf(plazoSeleccionado);
+          let tasasOpciones = [];
+
+          console.log('IndexPlazo:', indexPlazo, 'de opcionesPlazos:', opcionesPlazos);
+
+          // Mostrar ambas opciones si corresponde tasa UVA
+          if (vehiculoSeleccionado === 'auto' || vehiculoSeleccionado === 'utilitario') {
+            console.log('PROCESANDO AUTO/UTILITARIO');
+            // Siempre mostrar tasa fija si hay plazo válido
+            if (indexPlazo !== -1) {
+              let tasaFija;
+              if (vehiculoSeleccionado === 'auto') {
+                if (combustibleSeleccionado === 'comun' || combustibleSeleccionado === 'nafta') {
+                  tasaFija = opcionesTasasComunesAutos[indexPlazo];
+                } else {
+                  tasaFija = opcionesTasasElectricos[indexPlazo];
+                }
+              } else if (vehiculoSeleccionado === 'utilitario') {
+                if (combustibleSeleccionado === 'comun' || combustibleSeleccionado === 'nafta') {
+                  tasaFija = opcionesTasasComunesAutos[indexPlazo];
+                } else {
+                  tasaFija = opcionesTasasElectricos[indexPlazo];
+                }
+              }
+              console.log('Tasa fija calculada:', tasaFija);
+              if (tasaFija !== undefined) {
+                tasasOpciones.push({ valor: tasaFija, texto: `${tasaFija.toFixed(1).replace('.', ',')}% Fija` });
+              }
+            }
+            // Solo mostrar UVA si se cumplen las condiciones
+            if (
+              anioSeleccionado >= inicioUvaAutos &&
+              plazoSeleccionado <= mesesUvaAutos &&
+              indexPlazo !== -1
+            ) {
+              const tasaUva = tasaUvaAutos[indexPlazo];
+              tasasOpciones.push({ valor: tasaUva, texto: `${tasaUva.toFixed(1).replace('.', ',')}% UVA` });
+            }
+          } else {
+            // Siempre mostrar tasa fija si hay plazo válido
+            if (indexPlazo !== -1) {
+              let tasaFija;
+              if (
+                (vehiculoSeleccionado === 'moto' || vehiculoSeleccionado === 'cuatriciclo') && combustibleSeleccionado === 'nafta'
+              ) {
+                tasaFija = opcionesTasaComunesMotos[indexPlazo];
+              } else if (
+                (vehiculoSeleccionado === 'moto' || vehiculoSeleccionado === 'cuatriciclo') && (combustibleSeleccionado === 'electrico' || combustibleSeleccionado === 'electricoMoto')
+              ) {
+                tasaFija = opcionesTasasElectricosMotos[indexPlazo];
+              } else if (combustibleSeleccionado === 'nafta') {
+                tasaFija = opcionesTasasComunes[indexPlazo];
+              } else {
+                tasaFija = opcionesTasasElectricos[indexPlazo];
+              }
+              if (tasaFija !== undefined) {
+                tasasOpciones.push({ valor: tasaFija, texto: `${tasaFija.toFixed(1).replace('.', ',')}% Fija` });
+              }
+            }
+            // Solo mostrar UVA si se cumplen las condiciones
+            if (
+              anioSeleccionado >= inicioUvaMotos &&
+              plazoSeleccionado <= mesesUvaMotos &&
+              indexPlazo !== -1 &&
+              (
+                (vehiculoSeleccionado === 'moto' && combustibleSeleccionado === 'nafta' && window.valorCilindrada >= mediaCilindrada) ||
+                (vehiculoSeleccionado === 'moto' && combustibleSeleccionado === 'electricoMoto' && window.valorPotencia >= bajaPotencia) ||
+                vehiculoSeleccionado === 'cuatriciclo'
+              )
+            ) {
+              const tasaUva = tasaUvaAutos[indexPlazo];
+              tasasOpciones.push({ valor: tasaUva, texto: `${tasaUva.toFixed(1).replace('.', ',')}% UVA` });
+            }
+          }
+
+          // Ordena las tasas de menor a mayor por valor numérico
+          tasasOpciones.sort((a, b) => a.valor - b.valor);
+
+          console.log('Tasas generadas:', tasasOpciones);
+          console.log('Total de opciones a agregar:', tasasOpciones.length);
+
+          // Agrega las opciones ordenadas al select
+          tasasOpciones.forEach(obj => {
+            const option = document.createElement('option');
+            option.value = obj.valor;
+            option.text = obj.texto;
+            selectTasa.appendChild(option);
+            console.log('Opción agregada:', obj.texto, 'con valor:', obj.valor);
+          });
+
+          console.log('HTML final del select:', selectTasa.innerHTML);
+          console.log('=== FIN mostrarTasasInteres ===');
+
+          document.getElementById('tasaInteres').onchange = function () {
+            tasaSeleccionada = Number(this.value);
+            // console.log('mostrarTasasInteres/tasaSeleccionada:', tasaSeleccionada);
+          };
+        }
+
+        function limpiarTasasInteres() {
+          const selectTasa = document.getElementById('tasaInteres');
+          selectTasa.innerHTML = '';
+          const optionDefault = document.createElement('option');
+          optionDefault.value = '';
+          optionDefault.text = 'Opciones';
+          optionDefault.disabled = true;
+          optionDefault.selected = true;
+          selectTasa.appendChild(optionDefault);
+          selectTasa.classList.remove('select-con-valor'); // Remover color verde
+          // Reinicia la variable global
+          tasaSeleccionada = null; // <-- Cambia '' por null
+        }
+
+        function limpiarPlazos() {
+          const selectPlazo = document.getElementById('plazo');
+          selectPlazo.innerHTML = '';
+          const optionDefault = document.createElement('option');
+          optionDefault.value = '';
+          optionDefault.text = 'Opciones';
+          optionDefault.disabled = true;
+          optionDefault.selected = true;
+          selectPlazo.appendChild(optionDefault);
+          selectPlazo.classList.remove('select-con-valor'); // Remover color verde
+        }
+
+        function limpiarCondicion() {
+          const selectCondicion = document.getElementById('condicion');
+          selectCondicion.value = '';
+          selectCondicion.classList.remove('select-con-valor');
+        }
+
+        // Agrega esta función al script
+        function validarFormulario() {
+          const inputMonto = document.getElementById('montoPrestamo');
+          const selectVehiculo = document.getElementById('tipoVehiculo');
+          const selectCombustible = document.getElementById('tipoCombustible');
+          const selectAnio = document.getElementById('anio');
+          const selectPlazo = document.getElementById('plazo');
+          const selectTasa = document.getElementById('tasaInteres');
+          const boton = document.querySelector('button[type="button"]');
+
+          let valor = inputMonto.value.replace(/[^0-9]/g, '');
+          let valorNumerico = parseInt(valor, 10);
+
+          const validado =
+            !isNaN(valorNumerico) && valorNumerico >= montoMinimo &&
+            selectVehiculo.value &&
+            selectCombustible.value &&
+            selectAnio.value &&
+            selectPlazo.value &&
+            selectTasa.value;
+
+          boton.disabled = !validado;
+        }
+
+        // Función para limpiar todos los selects siguientes en la secuencia
+        function limpiarSelectsSiguientes(selectActual) {
+          const ordenSelects = ['tipoVehiculo', 'tipoCombustible', 'condicion', 'anio', 'plazo', 'tasaInteres'];
+          const indiceActual = ordenSelects.indexOf(selectActual);
+          
+          // Para tipoVehiculo, no limpiar tipoCombustible ya que actualizarOpcionesCombustible lo maneja
+          let inicioLimpieza = indiceActual + 1;
+          if (selectActual === 'tipoVehiculo') {
+            inicioLimpieza = indiceActual + 2; // Saltar tipoCombustible
+          }
+          
+          // Limpia todos los selects siguientes al actual
+          for (let i = inicioLimpieza; i < ordenSelects.length; i++) {
+            const selectId = ordenSelects[i];
+            if (selectId === 'condicion') {
+              limpiarCondicion();
+              valorPrevioCondicion = ''; // Resetear valor previo
+            } else if (selectId === 'plazo') {
+              limpiarPlazos();
+              valorPrevioPlazo = ''; // Resetear valor previo
+            } else if (selectId === 'tasaInteres') {
+              limpiarTasasInteres();
+            } else if (selectId === 'anio') {
+              limpiarSelect(selectId, 'Opciones');
+              valorPrevioAnio = ''; // Resetear valor previo
+            } else {
+              limpiarSelect(selectId, 'Opciones');
+            }
+          }
+          
+          // Resetear valores previos de combustible si se limpia desde vehículo
+          if (selectActual === 'tipoVehiculo') {
+            valorPrevioCombustible = '';
+          }
+        }
+
+        // Llama a validarFormulario en cada cambio relevante
+        document.getElementById('montoPrestamo').addEventListener('input', validarFormulario);
+        
+        // Variables para rastrear valores previos y evitar limpiezas innecesarias
+        let valorPrevioVehiculo = '';
+        let valorPrevioCombustible = '';
+        let valorPrevioCondicion = '';
+        let valorPrevioAnio = '';
+        let valorPrevioPlazo = '';
+
+        // Event listeners que limpian selects siguientes automáticamente
+        document.getElementById('tipoVehiculo').addEventListener('change', function() {
+          mostrarValorTipoVehiculo(); // Función necesaria para el comportamiento del vehículo
+          // NO llamar mostrarAnios() aquí - el año debe quedarse vacío hasta el focus
+          validarFormulario();
+          
+          // Solo limpiar si realmente cambió el valor
+          if (this.value !== '' && this.value !== valorPrevioVehiculo) {
+            limpiarSelectsSiguientes('tipoVehiculo');
+            valorPrevioVehiculo = this.value;
+          }
         });
-        document.getElementById('montoPrestamo').addEventListener('blur', function() {
-            verificarMontoMinimo(this, true);
+        
+        document.getElementById('tipoCombustible').addEventListener('change', function() {
+          mostrarValorTipoCombustible(); // Función necesaria para el comportamiento del combustible
+          
+          // NO cargar opciones de condición automáticamente - debe quedarse vacío hasta el focus
+          
+          // NO llamar mostrarAnios() aquí - el año debe quedarse vacío hasta el focus
+          validarFormulario();
+          
+          // Solo limpiar si realmente cambió el valor
+          if (this.value !== '' && this.value !== valorPrevioCombustible) {
+            limpiarSelectsSiguientes('tipoCombustible');
+            valorPrevioCombustible = this.value;
+          }
+        });
+        
+        document.getElementById('condicion').addEventListener('change', function() {
+          validarFormulario();
+          
+          // Solo limpiar si realmente cambió el valor
+          if (this.value !== '' && this.value !== valorPrevioCondicion) {
+            limpiarSelectsSiguientes('condicion');
+            valorPrevioCondicion = this.value;
+          }
+        });
+        
+        document.getElementById('anio').addEventListener('change', function() {
+          mostrarPlazos(); // Regenera las opciones de plazo basándose en las selecciones actuales
+          validarFormulario();
+          
+          // Solo limpiar si realmente cambió el valor
+          if (this.value !== '' && this.value !== valorPrevioAnio) {
+            limpiarSelectsSiguientes('anio');
+            valorPrevioAnio = this.value;
+          }
+        });
+        
+        document.getElementById('plazo').addEventListener('change', function() {
+          mostrarTasasInteres(); // Regenera las opciones de tasa basándose en las selecciones actuales
+          validarFormulario();
+          
+          // Solo limpiar si realmente cambió el valor
+          if (this.value !== '' && this.value !== valorPrevioPlazo) {
+            limpiarSelectsSiguientes('plazo');
+            valorPrevioPlazo = this.value;
+          }
+        });
+        
+        document.getElementById('tasaInteres').addEventListener('change', validarFormulario);
+
+        // Deshabilita el botón al cargar la página
+        window.addEventListener('DOMContentLoaded', function () {
+          document.querySelector('button[type="button"]').disabled = true;
+
+          // Actualiza la frase de AUTOS con los valores de las constantes
+          const autosAnio = document.getElementById('autos-anio');
+          const autosMeses = document.getElementById('autos-meses');
+          if (autosAnio && autosMeses) {
+            autosAnio.textContent = inicioUvaAutos;
+            autosMeses.textContent = mesesUvaAutos;
+          }
+          // Actualiza la frase de MOTOS con los valores de las constantes
+          const motosCilindrada = document.getElementById('motos-cilindrada');
+          const motosAnio = document.getElementById('motos-anio');
+          const motosMeses = document.getElementById('motos-meses');
+          if (motosCilindrada && motosAnio && motosMeses) {
+            motosCilindrada.textContent = cilindradaUvaMotos;
+            motosAnio.textContent = inicioUvaMotos;
+            motosMeses.textContent = mesesUvaMotos;
+          }
         });
 
-        // Condición - mostrar años
-        document.getElementById('condicion').addEventListener('focus', function() {
-            mostrarAnios();
+        document.querySelector('form').onsubmit = function (e) {
+          e.preventDefault(); // Evita el envío del formulario
+
+          // Obtiene el valor numérico del monto ingresado
+          const inputMonto = document.getElementById('montoPrestamo');
+          let valor = inputMonto.value.replace(/[^0-9]/g, '');
+          let valorNumerico = parseInt(valor, 10);
+
+          // Verifica que todos los valores necesarios estén presentes
+          if (
+            !isNaN(valorNumerico) &&
+            plazoSeleccionado &&
+            tasaSeleccionada
+          ) {
+            calcularCuota(valorNumerico, plazoSeleccionado, tasaSeleccionada);
+          } else {
+            // console.log('Por favor, completá todos los campos antes de calcular la cuota.');
+          }
+        };
+
+        function calcularCuota(valorNumerico, plazoSeleccionado, tasaSeleccionada) {
+          // Convierte la tasa anual a mensual y a decimal
+          const monto = valorNumerico;
+          const plazo = plazoSeleccionado;
+          const tasa = tasaSeleccionada;
+
+          const tasaMensual = (tasaSeleccionada / 12) / 100;
+          const montoAjustado = Math.round(monto / (1 - (gastos / 100)));
+
+          const cuota = Math.ceil((montoAjustado * tasaMensual) / (1 - Math.pow(1 + tasaMensual, -plazo)));
+          const intereses = Math.ceil(montoAjustado * tasaMensual);
+          const ivaSobreIntereses = Math.ceil(intereses * (IVA / 100));
+          const totalCuota = cuota + ivaSobreIntereses;
+
+          // console.log('Tasa: ',tasaMensual);
+          // console.log('monto: ',montoAjustado);
+          // console.log('cuota: ',cuota);
+          // console.log('Intereses: ', intereses);
+          // console.log('IVA:', ivaSobreIntereses);
+
+          // Elimina cualquier ventana anterior
+          const modalExistente = document.getElementById('modalResultadoCuota');
+          if (modalExistente) modalExistente.remove();
+
+          // Obtiene las posiciones de los elementos
+          const selectTasa = document.getElementById('tasaInteres');
+          const botonCalcular = document.querySelector('.boton-calcular');
+          const rectTasa = selectTasa.getBoundingClientRect();
+          const rectBoton = botonCalcular.getBoundingClientRect();
+
+          // Calcula la posición Y para el borde superior del modal
+          const mitad = rectTasa.bottom + ((rectBoton.top - rectTasa.bottom) / 2);
+          const scrollY = window.scrollY || document.documentElement.scrollTop;
+
+          // Crea la ventana modal negra posicionada
+          const modal = document.createElement('div');
+          modal.id = 'modalResultadoCuota';
+          modal.style.position = 'fixed';
+          modal.style.left = '0';
+          modal.style.top = (mitad + scrollY) + 'px';
+          modal.style.width = '100vw';
+          modal.style.background = 'transparent'; // Fondo del modal transparente
+          modal.style.display = 'flex';
+          modal.style.alignItems = 'center';
+          modal.style.justifyContent = 'center';
+          modal.style.zIndex = '2000';
+
+          // Obtén el ancho de <main>
+          const main = document.querySelector('main');
+          const mainRect = main.getBoundingClientRect();
+          const anchoMain = mainRect.width;
+
+          // Si la pantalla es pequeña, usa 80%, si no, 70%
+          const porcentajeModal = window.innerWidth <= 600 ? 0.8 : 0.7;
+          const anchoModal = anchoMain * porcentajeModal;
+
+          // Contenido de la ventana (el rectángulo negro)
+          const contenido = document.createElement('div');
+          contenido.style.background = '#111';
+          contenido.style.borderRadius = '2rem';
+          contenido.style.padding = '2rem 2.5vw';
+          contenido.style.textAlign = 'center';
+          contenido.style.minWidth = '300px'; // <-- Agrega este mínimo
+          contenido.style.width = anchoModal + 'px'; // 70% o 80% del main
+          contenido.style.maxWidth = '100%'; // Nunca más que el main
+
+          contenido.innerHTML = `
+            <div id="totalCuotaTexto"
+              style="background:aquamarine; width:80%; color:#111; font-weight:bold; margin-bottom:1.2rem; border-radius:2rem; padding:1rem; margin-left:auto; margin-right:auto; white-space:nowrap; overflow:hidden;">
+              Total Cuota $ ${totalCuota.toLocaleString('es-AR')}
+            </div>
+            <div id="fraseCuota"
+              style="background:transparent; width:100%; color:#c3baba; font-weight:bold; line-height:1.4; border-radius:1.2rem; display:block; margin:0 auto; padding:0;">
+              Valor de la cuota sujeto a aprobación<br>
+              crediticia de acuerdo a pautas<br>
+              de la entidad interviniente
+            </div>
+          `;
+
+          // Ajuste de ancho y centrado responsivo
+          function ajustarFraseCuota() {
+            const frase = contenido.querySelector('#fraseCuota');
+            frase.style.width = '90%';
+            frase.style.maxWidth = '540px'; // 90% de 600px (el máximo del contenedor negro en desktop)
+            frase.style.display = 'block';
+            frase.style.marginLeft = 'auto';
+            frase.style.marginRight = 'auto';
+            // Ajuste de fuente
+            const ancho = frase.offsetWidth;
+            const fontSize = Math.max(14, Math.min(28, ancho * 0.05));
+            frase.style.fontSize = fontSize + 'px';
+          }
+
+          function ajustarAnchoModal() {
+            const main = document.querySelector('main');
+            const mainRect = main.getBoundingClientRect();
+            const anchoMain = mainRect.width;
+            const porcentajeModal = window.innerWidth <= 600 ? 0.8 : 0.7;
+            contenido.style.width = (anchoMain * porcentajeModal) + 'px';
+          }
+
+          ajustarFraseCuota();
+          ajustarAnchoModal();
+          window.addEventListener('resize', ajustarAnchoModal);
+
+          modal.appendChild(contenido);
+          document.body.appendChild(modal);
+
+          // Cerrar modal al hacer click en cualquier parte de la ventana negra
+          modal.addEventListener('click', function () {
+            if (modal && document.body.contains(modal)) {
+              modal.remove();
+              removerListenersCerrarModal();
+            }
+          });
+
+          // Cerrar modal al hacer click en cualquier label del formulario
+          document.querySelectorAll('form label').forEach(label => {
+            label.addEventListener('click', cerrarModalPorFocus);
+          });
+
+          // Cerrar modal si el usuario se posiciona (focus) en el input o en algún select
+          const camposCerrar = [
+            'montoPrestamo',
+            'tipoVehiculo',
+            'tipoCombustible',
+            'anio',
+            'plazo',
+            'tasaInteres'
+          ];
+
+          function cerrarModalPorFocus() {
+            if (modal && document.body.contains(modal)) {
+              modal.remove();
+              removerListenersCerrarModal();
+            }
+          }
+
+          function removerListenersCerrarModal() {
+            camposCerrar.forEach(id => {
+              const el = document.getElementById(id);
+              if (el) el.removeEventListener('focus', cerrarModalPorFocus);
+            });
+            // Remueve el listener del display
+            document.removeEventListener('click', listenerCerrarDisplay, true);
+          }
+
+          // Agrega los listeners al mostrar el modal
+          camposCerrar.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+              el.addEventListener('focus', cerrarModalPorFocus);
+            }
+          });
+
+          // --- NUEVO: Cerrar modal al hacer click en cualquier parte del display ---
+          function listenerCerrarDisplay(e) {
+            // Si el click NO fue dentro del modal, cierra
+            if (!modal.contains(e.target)) {
+              if (modal && document.body.contains(modal)) {
+                modal.remove();
+                removerListenersCerrarModal();
+              }
+            }
+          }
+          setTimeout(() => {
+            document.addEventListener('click', listenerCerrarDisplay, true);
+          }, 0);
+
+          // Oculta el div de resultado tradicional
+          const divResultado = document.getElementById('resultadoCuota');
+          divResultado.style.display = 'none';
+
+          // Elimina el console.log final
+          return totalCuota;
+        }
+
+        function calcularDesdeBoton() {
+          // Quita el foco del botón para que vuelva a su tamaño normal
+          document.activeElement.blur();
+
+          // Obtiene el valor numérico del monto ingresado
+          const inputMonto = document.getElementById('montoPrestamo');
+          let valor = inputMonto.value.replace(/[^0-9]/g, '');
+          let valorNumerico = parseInt(valor, 10);
+
+          if (
+            !isNaN(valorNumerico) &&
+            plazoSeleccionado &&
+            tasaSeleccionada
+          ) {
+            calcularCuota(valorNumerico, plazoSeleccionado, tasaSeleccionada);
+          } else {
+            // console.log('Por favor, completá todos los campos antes de calcular la cuota.');
+          }
+        }
+
+        // Agrega esto al final del <script>
+        ['montoPrestamo', 'tipoVehiculo', 'tipoCombustible', 'anio', 'plazo', 'tasaInteres'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.addEventListener('focus', ocultarResultadoCuota);
+          }
         });
 
-        // Año
-        document.getElementById('anio').addEventListener('focus', function() {
-            mostrarAnios();
+        function ocultarResultadoCuota() {
+          const divResultado = document.getElementById('resultadoCuota');
+          divResultado.style.display = 'none';
+        }
+
+        window.addEventListener('DOMContentLoaded', function () {
+          const inputMonto = document.getElementById('montoPrestamo');
+          if (inputMonto) {
+            inputMonto.placeholder = `Ingresá Monto (Mín. $${montoMinimo.toLocaleString('es-AR')})`;
+          }
         });
 
-        // Plazo
-        document.getElementById('plazo').addEventListener('focus', function() {
-            mostrarPlazos();
-        });
+        // Agrega esta función utilitaria si no la tienes:
+        function limpiarSelect(id, texto) {
+          const sel = document.getElementById(id);
+          sel.innerHTML = `<option value="">${texto}</option>`;
+          sel.classList.remove('select-con-valor'); // <-- Esto quita el fondo rojo
+        }
 
-        // Tasa de Interés
-        document.getElementById('tasaInteres').addEventListener('focus', function() {
-            mostrarTasasInteres();
+        // Agrega estos listeners después de cargar el DOM:
+        window.addEventListener('DOMContentLoaded', function () {
+          ['tipoVehiculo', 'tipoCombustible', 'condicion', 'anio', 'plazo', 'tasaInteres'].forEach(id => {
+            const sel = document.getElementById(id);
+            if (sel) {
+              sel.addEventListener('change', function () {
+                if (this.value && this.value !== "") {
+                  this.classList.add('select-con-valor');
+                } else {
+                  this.classList.remove('select-con-valor');
+                }
+              });
+              // Aplica el color si ya hay valor seleccionado al cargar
+              if (sel.value && sel.value !== "") {
+                sel.classList.add('select-con-valor');
+              }
+            }
+          });
         });
-
-        // Botón Calcular
-        document.querySelector('.boton-calcular').addEventListener('click', function() {
-            calcularDesdeBoton();
-        });
+        
     </script>
 </body>
 </html>
