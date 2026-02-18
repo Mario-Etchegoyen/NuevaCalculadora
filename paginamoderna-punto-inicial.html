@@ -150,10 +150,6 @@
 			padding: 1.5rem;
 		}
 
-		.feature p {
-			color: #f0f0f0;
-		}
-
 		.feature-number {
 			font-size: 2.5rem;
 			font-weight: 700;
@@ -183,9 +179,6 @@
 			padding: 2rem 0;
 			border-radius: 1rem;
 			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-			display: flex;
-			flex-direction: column;
-			align-items: center;
 		}
 
 		#calculadora label {
@@ -194,9 +187,6 @@
 			color: rgb(233, 233, 233);
 			font-weight: bold;
 			font-size: clamp(1rem, 2.5vw, 1.2rem);
-			align-self: flex-start;
-			width: 90%;
-			text-align: left;
 		}
 
 		.calculadora-cuotas input,
@@ -292,11 +282,6 @@
 			text-align-last: center;
 		}
 
-		.calculadora-cuotas input,
-		.calculadora-cuotas select {
-			text-align: center;
-		}
-
 		.calculadora-cuotas select option {
 			background-color: rgba(30, 147, 197, 0.7) !important;
 			color: #fff !important;
@@ -388,7 +373,7 @@
 		.grupo-formulario label {
 			display: block;
 			margin-bottom: 0.5rem;
-			color: rgb(233, 233, 233);
+			color: #333;
 			font-weight: 600;
 			font-size: 0.95rem;
 		}
@@ -597,7 +582,7 @@
 			<div class="calculadora-cuotas calculadora-container">
 				<form id="formCalculadora" novalidate>
 					<label for="montoPrestamo">Monto del Préstamo</label>
-					<input type="text" id="montoPrestamo" name="montoPrestamo" placeholder="Ingresá Monto (Mín. $500.000)" required oninput="verificarMontoMinimo(this, false);" onblur="verificarMontoMinimo(this, true)" />
+					<input type="text" id="montoPrestamo" name="montoPrestamo" placeholder="Ingresá Monto (Mín. $1000)" required oninput="verificarMontoMinimo(this, false);" onblur="verificarMontoMinimo(this, true)" />
 
 					<label for="tipoVehiculo">Vehículo</label>
 					<select id="tipoVehiculo" name="tipoVehiculo" disabled>
@@ -770,8 +755,7 @@
 		let plazoSeleccionado = null;
 		let tasaSeleccionada = null;
 
-		const montoMinimo = 1000000;
-		const montoMinimoTexto = montoMinimo.toLocaleString('es-AR');
+		const montoMinimo = 500000;
 
 		const opcionesAnios = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i);
 
@@ -828,7 +812,7 @@
 				});
 				input.value = `$ ${valor}`;
 			} else {
-				input.placeholder = `Ingresá Monto (Mín. $${montoMinimoTexto})`;
+				input.placeholder = `Ingresá Monto (Mín. $${montoMinimo})`;
 			}
 		}
 
@@ -842,7 +826,7 @@
 				input.value = `$ ${parseInt(valor, 10).toLocaleString('es-AR')}`;
 			} else {
 				input.value = '';
-				input.placeholder = `Ingresá Monto (Mín. $${montoMinimoTexto})`;
+				input.placeholder = `Ingresá Monto (Mín. $${montoMinimo})`;
 			}
 
 			// Agrega o quita la clase según si el monto es válido
@@ -2083,7 +2067,7 @@
 		window.addEventListener('DOMContentLoaded', function () {
 			const inputMonto = document.getElementById('montoPrestamo');
 			if (inputMonto) {
-				inputMonto.placeholder = `Ingresá Monto (Mín. $${montoMinimoTexto})`;
+				inputMonto.placeholder = `Ingresá Monto (Mín. $${montoMinimo.toLocaleString('es-AR')})`;
 			}
 		});
 
