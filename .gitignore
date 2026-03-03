@@ -1,0 +1,31 @@
+### Sistema / IDE
+.vscode/
+.copilot/
+*.code-workspace
+
+### Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+### OneDrive / Windows
+OneDrive/
+AppData/
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+### Archivos temporales
+*.log
+*.tmp
+*.swp
+
+### Builds / outputs
+dist/
+build/
+coverage/
+
+### Otros
+.DS_Store
