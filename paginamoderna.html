@@ -18,6 +18,9 @@
 			--color-border: #e0e0e0;
 			--color-accent: #1973b8;
 			--color-accent-soft: #5bbeff;
+			--color-valid: #4f9366;
+			--color-valid-soft: rgba(79, 147, 102, 0.16);
+			--color-valid-ring: rgba(79, 147, 102, 0.2);
 			
 			/* Gradientes y Fondos */
 			--gradient-brand: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
@@ -652,9 +655,14 @@
 		/* Estados de Input Valido */
 		form input.input-con-valor,
 		form select.select-con-valor {
-			background-color: rgba(25, 115, 184, 0.16);
-			border-color: #1973b8;
+			background-color: var(--color-valid-soft);
+			border-color: var(--color-valid);
 			color: #fff;
+		}
+		form input.input-con-valor:focus,
+		form select.select-con-valor:focus {
+			border-color: var(--color-valid);
+			box-shadow: 0 0 0 4px var(--color-valid-ring);
 		}
 		
 		/* Select Option Styling */
@@ -735,42 +743,46 @@
 			color: white;
 			padding: 0.95rem 1rem;
 			border-radius: 18px;
-			/* Reducir tamaño de fuente para las líneas informativas de Tasa UVA */
-			font-size: clamp(0.68rem, 1.1cqi, 0.95rem);
 			margin-top: 1rem;
-			display: block;
+			display: grid;
+			gap: 0.28rem;
 			width: 100%;
 			text-align: left;
 			box-shadow: 0 14px 24px rgba(0,0,0,0.18);
 			border: 1px solid rgba(255,255,255,0.14);
-			line-height: 1.45;
-			white-space: normal;
+			line-height: 1.2;
+			--frase-info-font: clamp(0.5rem, 1.7cqi, 0.86rem);
 		}
 
-		/* Ajustes finos según el ancho del contenedor (un poco más grande que antes) */
+		/* Ajustes finos según el ancho del contenedor */
 		@container (max-width: 540px) {
-			.frase-moto-info { font-size: clamp(0.78rem, 2.4cqi, 0.95rem); }
+			.frase-moto-info { --frase-info-font: clamp(0.48rem, 1.9cqi, 0.8rem); }
 		}
 		@container (max-width: 420px) {
-			.frase-moto-info { font-size: clamp(0.72rem, 2.1cqi, 0.9rem); }
+			.frase-moto-info { --frase-info-font: clamp(0.46rem, 1.8cqi, 0.72rem); }
 		}
 		@container (max-width: 340px) {
-			.frase-moto-info { font-size: 0.68rem; }
+			.frase-moto-info { --frase-info-font: 0.44rem; }
 		}
 
 		.frase-line {
 			display: block;
+			width: 100%;
+			min-width: 0;
 			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
+			font-size: var(--frase-info-font);
+			line-height: 1.2;
+			letter-spacing: -0.01em;
+		}
+		.frase-line--title {
+			font-size: var(--frase-info-font);
 		}
 
-		/* Título "Tasa UVA" dentro del recuadro turquesa: ligeramente más grande y responsivo */
-		.frase-moto-info > b:first-of-type {
+		/* Título "Tasa UVA" dentro del recuadro: ligeramente más destacado */
+		.frase-line--title b {
 			display: inline-block;
 			font-size: inherit;
 			line-height: 1.1;
-			margin-right: 0.35rem;
 			text-decoration: underline;
 			text-decoration-thickness: 1px;
 			text-underline-offset: 0.12rem;
@@ -785,7 +797,7 @@
 		}
 
 		@container (max-width: 420px) {
-			.frase-moto-info > b:first-of-type { font-size: inherit; }
+			.frase-line--title b { font-size: inherit; }
 			.frase-moto-info b { font-size: inherit; }
 		}
 
@@ -1422,13 +1434,7 @@
 			<div class="calculadora-container panel-calculadora">
 				<div class="panel-encabezado panel-encabezado--calculadora">
 					<span class="panel-encabezado__etiqueta">Simulador prendario</span>
-					<h3 class="panel-encabezado__titulo">Calcula una cuota con una lectura más clara y directa</h3>
-					<p class="panel-encabezado__texto">Completa los datos del vehículo y obtén una referencia visual limpia antes de avanzar al preaprobado.</p>
-					<div class="panel-encabezado__chips">
-						<span class="panel-encabezado__chip">Hasta 48 meses</span>
-						<span class="panel-encabezado__chip">Respuesta inmediata</span>
-						<span class="panel-encabezado__chip">Acceso a preaprobado</span>
-					</div>
+					<h3 class="panel-encabezado__titulo">Calculá tu cuota de manera rápida y fácil</h3>
 				</div>
 				<form id="formCalculadora" novalidate>
 					<label for="montoPrestamo">Monto del Préstamo *</label>
@@ -1486,9 +1492,9 @@
 					<div class="resultado-stack">
 						<div id="resultadoCuota"></div>
 						<div class="frase-moto-info" id="frase-uva-info">
-							<b>Tasa UVA</b><br>
-							<b>AUTOS/UTILITARIOS:</b> Año desde <span id="autos-anio"></span> / Plazo hasta <span id="autos-meses"></span> meses<br>
-							<b>MOTOS:</b> desde <span id="motos-cilindrada"></span>cc / Año desde <span id="motos-anio"></span> / Plazo hasta <span id="motos-meses"></span> meses
+							<span class="frase-line frase-line--title"><b>Tasa UVA</b></span>
+							<span class="frase-line"><b>AUTOS/UTILITARIOS:</b> Año desde <span id="autos-anio"></span> / Plazo hasta <span id="autos-meses"></span> meses</span>
+							<span class="frase-line"><b>MOTOS:</b> desde <span id="motos-cilindrada"></span>cc / Año desde <span id="motos-anio"></span> / Plazo hasta <span id="motos-meses"></span> meses</span>
 						</div>
 					</div>
 
@@ -1626,13 +1632,7 @@
 			<div class="section-panel panel-servicios">
 				<div class="panel-encabezado panel-encabezado--servicios">
 					<span class="panel-encabezado__etiqueta">Soluciones</span>
-					<h3 class="panel-encabezado__titulo">Servicios presentados con una lectura más clara y una presencia más sólida</h3>
-					<p class="panel-encabezado__texto">La sección ahora acompaña el mismo nivel visual del simulador, el contacto y el modal para que toda la experiencia se sienta parte del mismo sistema.</p>
-					<div class="panel-encabezado__chips">
-						<span class="panel-encabezado__chip">Respuesta rápida</span>
-						<span class="panel-encabezado__chip">Diseño claro</span>
-						<span class="panel-encabezado__chip">Cobertura nacional</span>
-					</div>
+					<h3 class="panel-encabezado__titulo">Servicios profesionales y dinámicos adaptados para tu necesidad</h3>
 				</div>
 				<div class="cards-container">
 					<div class="card">
@@ -1675,13 +1675,7 @@
 			<div class="section-panel panel-metricas">
 				<div class="panel-encabezado panel-encabezado--metricas">
 					<span class="panel-encabezado__etiqueta">Fortalezas</span>
-					<h3 class="panel-encabezado__titulo">Métricas y diferenciales con el mismo peso visual que el resto de la experiencia</h3>
-					<p class="panel-encabezado__texto">Los números importantes ahora viven en tarjetas más legibles y consistentes, con mejor ritmo visual y foco inmediato.</p>
-					<div class="panel-encabezado__chips">
-						<span class="panel-encabezado__chip">Experiencia real</span>
-						<span class="panel-encabezado__chip">Resultados medibles</span>
-						<span class="panel-encabezado__chip">Equipo especializado</span>
-					</div>
+					<h3 class="panel-encabezado__titulo">Nuestra experiencia a tu servicio</h3>
 				</div>
 				<div class="features">
 					<div class="feature">
@@ -1710,13 +1704,7 @@
 			<div class="calculadora-container panel-contacto">
 				<div class="panel-encabezado panel-encabezado--contacto">
 					<span class="panel-encabezado__etiqueta">Canal directo</span>
-					<h3 class="panel-encabezado__titulo">Escríbenos con el mismo nivel visual y de claridad</h3>
-					<p class="panel-encabezado__texto">Usa este formulario para consultas, comentarios o seguimiento de una operación. El bloque ahora acompaña mejor la experiencia general.</p>
-					<div class="panel-encabezado__chips">
-						<span class="panel-encabezado__chip">Contacto simple</span>
-						<span class="panel-encabezado__chip">Campos claros</span>
-						<span class="panel-encabezado__chip">Respuesta humana</span>
-					</div>
+					<h3 class="panel-encabezado__titulo">Exprésanos tus necesidades. Buscaremos la mejor solución</h3>
 				</div>
 				<div id="mensajeExito" class="mensaje-exito">
 					¡Mensaje enviado exitosamente! Te responderemos pronto.
@@ -1792,9 +1780,9 @@
 			// ==========================================
 			const CONFIG = {
 				MONTO_MINIMO: 1000000,
-				GASTOS_ADMIN: 2, // Porcentaje
+				GASTOS_ADMIN: 3, // Porcentaje
 				IVA: 21,         // Porcentaje
-				ANIOS_RETROACTIVOS: 10,
+				ANIOS_RETROACTIVOS: 9,
 				PLAZOS: [12, 18, 24, 36, 48, 60],
 				LIMITES: {
 					MOTO: {
@@ -1806,12 +1794,12 @@
 					AUTO: {
 						COMUN: [53, 53, 53, 53, 53, 53],
 						ELECTRICO: [48, 48, 48, 48, 48, 48],
-						UVA: [27, 28, 28, 28, 28] 
+						UVA: [27, 28, 28, 28, 28, 0]
 					},
 					MOTO: {
 						COMUN: [61, 61, 61, 61, 61, 61],
 						ELECTRICO: [48, 48, 48, 48, 48, 48],
-						UVA: [27, 28, 28, 28, 28, 28]
+						UVA: [27, 28, 28, 28, 28, 0]
 					}
 				},
 				CONDICIONES: {
@@ -1829,9 +1817,12 @@
 				EMAIL_PREAPROBADO: 'datosrecibidos@tuprendario.com'
 			};
 
-			// Generación dinámica de años
+			const quebrantos = [13, 0, 23.5, 33, 40, 0];
+			const tasaCero = 0;
+
+			// Generación dinámica de años: año actual + últimos 9 años
 			const currentYear = new Date().getFullYear();
-			const opcionesAnios = Array.from({ length: CONFIG.ANIOS_RETROACTIVOS }, (_, i) => currentYear - i);
+			const opcionesAnios = Array.from({ length: CONFIG.ANIOS_RETROACTIVOS + 1 }, (_, i) => currentYear - i);
 
 			// Configuración UVA
 			const UVA_CONFIG = {
@@ -2114,19 +2105,28 @@
 
 				let opciones = [];
 				const esNafta = ['comun', 'nafta'].includes(state.combustible);
+				const quebrantoPlazo = quebrantos[idxPlazo] ?? 0;
+				const formatTasaTexto = (val) => `${val.toFixed(1).replace('.', ',')}%`;
 
 				// Helper para agregar tasa
-				const add = (val, tipo) => opciones.push({ valor: val, texto: `${val.toFixed(1).replace('.', ',')}% ${tipo}` });
+				const add = (val, tipo, textoPersonalizado) => {
+					if (typeof val !== 'number' || Number.isNaN(val)) return;
+					opciones.push({
+						valor: val,
+						texto: textoPersonalizado ?? `${tipo} (${formatTasaTexto(val)})`
+					});
+				};
 
 				if (['auto', 'utilitario'].includes(state.vehiculo)) {
 					// Fija
 					let tasaFija = esNafta ? CONFIG.TASAS.AUTO.COMUN[idxPlazo] : CONFIG.TASAS.AUTO.ELECTRICO[idxPlazo];
-					if (tasaFija) add(tasaFija, 'Fija');
+					add(tasaFija, 'Fija');
 
 					// UVA
 					if (state.anio >= UVA_CONFIG.AUTOS.INICIO && state.plazo <= UVA_CONFIG.AUTOS.MESES_MAX) {
 						let tasaUva = CONFIG.TASAS.AUTO.UVA[idxPlazo];
-						if(tasaUva) add(tasaUva, 'UVA');
+						add(tasaUva, 'UVA');
+						if (quebrantoPlazo > 0) add(tasaCero, 'Tasa 0%', 'Tasa 0%');
 					}
 				} else {
 					// Motos/Cuatri y Fija
@@ -2138,7 +2138,7 @@
 					// Ajuste especifico segun la logica original compleja si es auto vs moto...
 					// La logica original usaba 'opcionesTasasComunes' que no vi definida en el bloque leido, asumiendo defaults
 					// Simplificación basada en logica de lectura:
-					if (tasaFija) add(tasaFija, 'Fija');
+					add(tasaFija, 'Fija');
 
 					// UVA Motos
 					const aplicaUvaMotos = (state.vehiculo === 'moto' && state.combustible === 'nafta' && state.cilindrada >= CONFIG.LIMITES.MOTO.CILINDRADA.MEDIA) ||
@@ -2147,11 +2147,11 @@
 					
 					if (aplicaUvaMotos && state.anio >= UVA_CONFIG.MOTOS.INICIO && state.plazo <= UVA_CONFIG.MOTOS.MESES_MAX) {
 						let tasaUva = CONFIG.TASAS.MOTO.UVA[idxPlazo];
-						if(tasaUva) add(tasaUva, 'UVA');
+						add(tasaUva, 'UVA');
+						if (quebrantoPlazo > 0) add(tasaCero, 'Tasa 0%', 'Tasa 0%');
 					}
 				}
 
-				opciones.sort((a, b) => a.valor - b.valor);
 				opciones.forEach(op => {
 					select.innerHTML += `<option value="${op.valor}">${op.texto}</option>`;
 				});
@@ -2163,16 +2163,27 @@
 				const plazo = state.plazo;
 				const tasaAnual = state.tasa;
 
-				if (!monto || !plazo || !tasaAnual) return;
+				if (!monto || !plazo || tasaAnual === null || Number.isNaN(tasaAnual)) return;
+
+				const idxPlazo = CONFIG.PLAZOS.indexOf(plazo);
+				if (idxPlazo === -1) return;
 
 				const tasaMensual = (tasaAnual / 12) / 100;
-				const montoAjustado = Math.round(monto / (1 - (CONFIG.GASTOS_ADMIN / 100)));
+				const montoConGastos = monto / (1 - (CONFIG.GASTOS_ADMIN / 100));
+				const montoAjustado = Math.round(montoConGastos);
+				const quebrantoPorcentaje = quebrantos[idxPlazo] ?? 0;
+				const quebrantoConIvaFactor = (quebrantoPorcentaje / 100) * (1 + (CONFIG.IVA / 100));
+				const montoTasaCero = Math.round(montoConGastos / (1 - quebrantoConIvaFactor));
 				
 				// Fórmula Francés
-				const cuotaPura = (montoAjustado * tasaMensual) / (1 - Math.pow(1 + tasaMensual, -plazo));
+				const cuotaPura = tasaMensual === 0
+					? (montoTasaCero / plazo)
+					: (montoAjustado * tasaMensual) / (1 - Math.pow(1 + tasaMensual, -plazo));
 				const intereses = montoAjustado * tasaMensual;
 				const iva = intereses * (CONFIG.IVA / 100);
-				const total = Math.ceil(cuotaPura + iva); // Ceil al final como en el original
+				const total = tasaMensual === 0
+					? Math.round(cuotaPura)
+					: Math.ceil(cuotaPura + iva); // Ceil al final como en el original
 
 				// Render
 				// Ocultar elementos que pueden empujar el layout antes de renderizar el resultado
@@ -2198,7 +2209,7 @@
 								state.condicion &&
 								state.anio &&
 								state.plazo &&
-								state.tasa;
+								state.tasa !== null && !Number.isNaN(state.tasa);
 				DOM.btnCalcular.disabled = !isValid;
 			}
 
@@ -2472,14 +2483,60 @@
 			if (DOM.resultado.infoMotos.anio) DOM.resultado.infoMotos.anio.textContent = UVA_CONFIG.MOTOS.INICIO;
 			if (DOM.resultado.infoMotos.meses) DOM.resultado.infoMotos.meses.textContent = UVA_CONFIG.MOTOS.MESES_MAX;
 
-			// Ajuste de Frase UVA (FitText logic)
+			// Ajuste de Frase UVA (FitText real según ancho disponible)
 			function fitFrase() {
 				const el = DOM.resultado.fraseInfo;
 				if (!el) return;
-				// Simple logic para ajustar fuente
-				const width = el.clientWidth;
-				const fs = Math.max(12, Math.min(20, width * 0.025));
-				el.style.setProperty('--frase-info-font', `${fs}px`);
+				const lines = Array.from(el.querySelectorAll('.frase-line'));
+				if (!lines.length) return;
+
+				const detailLines = lines.filter((line) => !line.classList.contains('frase-line--title'));
+				const targetLines = detailLines.length ? detailLines : lines;
+				const computed = window.getComputedStyle(el);
+				const paddingX = parseFloat(computed.paddingLeft || '0') + parseFloat(computed.paddingRight || '0');
+				const availableWidth = el.clientWidth - paddingX;
+				if (availableWidth <= 0) return;
+
+				const measureLineWidth = (line, fontSizePx) => {
+					const clone = line.cloneNode(true);
+					clone.style.position = 'absolute';
+					clone.style.visibility = 'hidden';
+					clone.style.pointerEvents = 'none';
+					clone.style.width = 'auto';
+					clone.style.maxWidth = 'none';
+					clone.style.display = 'inline-block';
+					clone.style.whiteSpace = 'nowrap';
+					clone.style.fontSize = `${fontSizePx}px`;
+					clone.style.lineHeight = '1.2';
+					clone.style.letterSpacing = '-0.01em';
+					clone.style.padding = '0';
+					clone.style.margin = '0';
+					document.body.appendChild(clone);
+					const width = clone.getBoundingClientRect().width;
+					clone.remove();
+					return width;
+				};
+
+				let minFont = 7;
+				let maxFont = 28;
+				let bestFit = minFont;
+
+				while ((maxFont - minFont) > 0.1) {
+					const probe = (minFont + maxFont) / 2;
+					const widestLine = Math.max(...targetLines.map((line) => measureLineWidth(line, probe)));
+
+					if (widestLine <= availableWidth) {
+						bestFit = probe;
+						minFont = probe;
+					} else {
+						maxFont = probe;
+					}
+				}
+
+				el.style.setProperty('--frase-info-font', `${bestFit.toFixed(2)}px`);
+			}
+			if (window.ResizeObserver && DOM.resultado.fraseInfo) {
+				new ResizeObserver(() => fitFrase()).observe(DOM.resultado.fraseInfo);
 			}
 			window.addEventListener('resize', fitFrase);
 			fitFrase();
