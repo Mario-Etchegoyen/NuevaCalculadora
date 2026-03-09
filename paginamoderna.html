@@ -42,6 +42,8 @@
 			--modal-input-bg: #0f1c2d;
 			--modal-accent: var(--color-secondary);
 			--modal-toast-border: rgba(93, 135, 196, 0.32);
+			--panel-wide-max-width: 1120px;
+			--layout-inline-padding: 2rem;
 
 			/* Otros */
 			--transition: all 0.3s ease;
@@ -181,7 +183,7 @@
 		   3. COMPONENTES: TARJETAS (Servicios & Features)
 		   ========================================= */
 		.section-panel {
-			width: min(100%, 1120px);
+			width: min(100%, var(--panel-wide-max-width));
 			margin: 0 auto;
 			padding: 1.35rem;
 			border-radius: 28px;
@@ -237,10 +239,10 @@
 			border-radius: 0;
 		}
 		.cards-container {
-			grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+			grid-template-columns: repeat(3, minmax(0, 1fr));
 		}
 		.features {
-			grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+			grid-template-columns: repeat(4, minmax(0, 1fr));
 		}
 
 		/* Estilos específicos Card (Servicios) */
@@ -338,7 +340,7 @@
 		
 		/* Contenedor estilo "Panel de Control" moderno */
 		.calculadora-container {
-			width: clamp(320px, 58vw, 760px);
+			width: min(100%, clamp(320px, calc(30vw + 150px), 760px));
 			container-type: inline-size;
 			margin: 0 auto;
 			padding: 1.35rem;
@@ -885,37 +887,53 @@
 		   5. COMPONENTE: MODAL PREAPROBADO
 		   ========================================= */
 		.modal-preaprobado {
-			position: fixed;
-			top: 0;
-			left: 0;
+			position: absolute;
+			top: calc(100% + 1.35rem);
+			left: 50%;
 			width: 100%;
-			height: 100%;
-			padding: clamp(0.75rem, 2vw, 1.5rem);
-			background:
-				radial-gradient(circle at top, rgba(20, 100, 165, 0.18), transparent 38%),
-				rgba(4, 10, 18, 0.78);
-			backdrop-filter: blur(8px);
-			z-index: 99999; /* SUPREMO */
-			display: none; /* JS toggle */
-			align-items: center;
-			justify-content: center;
-			overflow: hidden; /* El contenedor no scrollea, scrollea el contenido */
+			height: auto;
+			padding: 0;
+			margin-top: 0;
+			background: none;
+			backdrop-filter: none;
+			transform: translateX(-50%);
+			z-index: 120;
+			display: none;
+			overflow: visible;
+			isolation: isolate;
 		}
 
 		.modal-preaprobado[aria-hidden="false"] {
-			display: flex;
+			display: block;
+		}
+
+		.modal-preaprobado__overlay {
+			display: block;
+			position: absolute;
+			top: -1rem;
+			bottom: -1rem;
+			left: 50%;
+			width: min(calc(100vw - (2 * var(--layout-inline-padding))), var(--panel-wide-max-width));
+			transform: translateX(-50%);
+			background: linear-gradient(180deg, rgba(226, 232, 239, 0.2), rgba(214, 221, 230, 0.24));
+			border-radius: 28px;
+			border-top: none;
+			border-bottom: 1px solid rgba(7, 33, 70, 0.04);
+			box-shadow: 0 16px 30px rgba(7, 33, 70, 0.06);
+			z-index: 0;
 		}
 
 		.modal-preaprobado__content {
 			background: linear-gradient(180deg, rgba(15, 28, 45, 0.98), rgba(8, 17, 29, 0.98));
-			width: min(760px, 100%);
-			max-height: 90vh; /* Máximo 90% de la altura de pantalla */
+			width: 100%;
+			max-height: var(--modal-preaprobado-max-height, none);
 			overflow: hidden auto; /* Scroll interno */
 			border-radius: 24px;
 			border: 1px solid var(--modal-border);
 			box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 			padding: 1.35rem 1.35rem 1.5rem;
 			position: relative;
+			z-index: 1;
 			color: var(--modal-foreground);
 			isolation: isolate;
 			/* Ocultar scrollbar visualmente en navegadores */
@@ -1089,33 +1107,45 @@
 			border-radius: 14px;
 			margin-bottom: 0.65rem;
 			border: 1px solid rgba(255,255,255,0.08);
+			container-type: inline-size;
 		}
 		.modal-preaprobado__option-line {
-			display: flex;
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) auto auto;
 			align-items: center;
-			gap: 1rem;
-			flex-wrap: wrap;
+			column-gap: clamp(0.35rem, 2.5cqi, 0.9rem);
+			row-gap: 0;
 		}
 		.modal-preaprobado__option-title {
-			min-width: 150px;
+			min-width: 0;
 			font-weight: 600;
 			color: white;
+			white-space: nowrap;
+			font-size: clamp(0.72rem, 4.4cqi, 1rem);
+			line-height: 1.1;
 		}
 		.modal-preaprobado__choice {
-			display: flex;
+			display: inline-flex;
 			align-items: center;
-			gap: 0.45rem;
+			justify-content: center;
+			gap: clamp(0.2rem, 1.6cqi, 0.45rem);
 			cursor: pointer;
 			width: auto;
 			margin: 0;
-			padding: 0.45rem 0.8rem;
+			padding: clamp(0.32rem, 1.8cqi, 0.45rem) clamp(0.42rem, 2.8cqi, 0.8rem);
 			border-radius: 999px;
 			background: rgba(20, 100, 165, 0.08);
 			border: 1px solid rgba(93, 135, 196, 0.14);
+			font-size: clamp(0.7rem, 4.1cqi, 0.92rem);
+			line-height: 1;
+			white-space: nowrap;
 		}
 		.modal-preaprobado__choice input {
 			width: auto;
 			margin: 0;
+		}
+		.modal-preaprobado__choice span {
+			white-space: nowrap;
 		}
 		.modal-preaprobado__consent {
 			display: flex;
@@ -1190,6 +1220,85 @@
 		}
 		.modal-preaprobado__toast.is-visible {
 			opacity: 1;
+		}
+
+		#calculadora .calculadora-container.calculadora-container--modal-open {
+			overflow: visible;
+			z-index: 80;
+		}
+
+		#calculadora .calculadora-container.calculadora-container--modal-open::before {
+			height: 28px;
+			border-radius: 28px 28px 0 0;
+			-webkit-mask: linear-gradient(to bottom, #000 0 6px, transparent 6px);
+			mask: linear-gradient(to bottom, #000 0 6px, transparent 6px);
+		}
+
+		@media (min-width: 601px) {
+			#calculadora .calculadora-container.calculadora-container--modal-open {
+				overflow: visible;
+				z-index: 80;
+			}
+
+			#calculadora .calculadora-container.calculadora-container--modal-open::before {
+				height: 28px;
+				border-radius: 28px 28px 0 0;
+				-webkit-mask: linear-gradient(to bottom, #000 0 6px, transparent 6px);
+				mask: linear-gradient(to bottom, #000 0 6px, transparent 6px);
+			}
+
+			.modal-preaprobado {
+				position: absolute;
+				top: calc(100% + 1.35rem);
+				left: 50%;
+				width: 100%;
+				height: auto;
+				padding: 0;
+				margin-top: 0;
+				background: none;
+				backdrop-filter: none;
+				transform: translateX(-50%);
+				z-index: 120;
+				overflow: visible;
+				isolation: isolate;
+			}
+
+			.modal-preaprobado::before {
+				display: none;
+			}
+
+			.modal-preaprobado__overlay {
+				display: block;
+				position: absolute;
+				top: -1rem;
+				bottom: -1rem;
+				left: 50%;
+				width: min(calc(100vw - (2 * var(--layout-inline-padding))), var(--panel-wide-max-width));
+				transform: translateX(-50%);
+				background: linear-gradient(180deg, rgba(226, 232, 239, 0.2), rgba(214, 221, 230, 0.24));
+				border-radius: 28px;
+				border-top: none;
+				border-bottom: 1px solid rgba(7, 33, 70, 0.04);
+				box-shadow: 0 16px 30px rgba(7, 33, 70, 0.06);
+				z-index: 0;
+			}
+
+			.modal-preaprobado[aria-hidden="false"] {
+				display: block;
+			}
+
+			.modal-preaprobado__content {
+				width: 100%;
+				max-height: var(--modal-preaprobado-max-height, none);
+				overflow: hidden auto;
+			}
+
+			.modal-preaprobado__actions {
+				position: sticky;
+				bottom: 0;
+				background: linear-gradient(180deg, rgba(15, 28, 45, 0), rgba(15, 28, 45, 0.95) 24%, rgba(15, 28, 45, 1));
+				padding-top: 1rem;
+			}
 		}
 
 		/* Estilos para modales dinámicos creados por JS (Cilindrada / Potencia) */
@@ -1319,6 +1428,12 @@
 				justify-content: center;
 				flex-direction: column;
 			}
+			.cards-container {
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+			}
+			.features {
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+			}
 			.logo, nav ul {
 				width: 100%;
 				justify-content: center;
@@ -1395,7 +1510,7 @@
 				align-items: flex-start;
 			}
 			.modal-preaprobado__option-title {
-				min-width: 100%;
+				min-width: 0;
 			}
 			.modal-preaprobado__actions {
 				justify-content: stretch;
@@ -1495,12 +1610,15 @@
 							<span class="frase-line frase-line--title"><b>Tasa UVA</b></span>
 							<span class="frase-line"><b>AUTOS/UTILITARIOS:</b> Año desde <span id="autos-anio"></span> / Plazo hasta <span id="autos-meses"></span> meses</span>
 							<span class="frase-line"><b>MOTOS:</b> desde <span id="motos-cilindrada"></span>cc / Año desde <span id="motos-anio"></span> / Plazo hasta <span id="motos-meses"></span> meses</span>
+							<span class="frase-line frase-line--title"><b>Tasa 0%</b></span>
+							<span class="frase-line">Valor de quebranto ya incluido en valor de cuota</span>
 						</div>
 					</div>
 
 					<button type="button" class="boton-calcular" id="btnCalcular">Calcular</button>
 				</form>
 				<div id="modalDatosPreaprobado" class="modal-preaprobado" aria-hidden="true">
+					<div class="modal-preaprobado__overlay" aria-hidden="true"></div>
 					<div class="modal-preaprobado__content" role="dialog" aria-modal="true" aria-labelledby="modalDatosPreaprobadoTitulo">
 						<div class="modal-preaprobado__header">
 							<div>
@@ -1611,7 +1729,7 @@
 							</section>
 									<div class="modal-preaprobado__field modal-preaprobado__field--consent">
 										<label class="modal-preaprobado__consent">
-											<input type="checkbox" id="consentimientoDatos" />
+											<input type="checkbox" id="consentimientoDatos" required aria-describedby="errorTerminosModal" />
 											<span>Acepto que procesen mis datos personales *</span>
 										</label>
 										<div class="mensaje-error" id="errorTerminosModal">Debes aceptar el tratamiento de datos para continuar.</div>
@@ -2260,25 +2378,41 @@
 				const input = document.createElement('input');
 				input.type = 'text';
 				input.className = 'js-modal-input';
-				input.placeholder = maxVal ? `Entre ${minVal} y ${maxVal}` : `Mínimo ${minVal}`;
+				input.placeholder = (sufijo === 'w' && maxVal)
+					? `Entre ${minVal.toLocaleString('es-AR')}w y ${maxVal.toLocaleString('es-AR')}w`
+					: (maxVal ? `Entre ${minVal} y ${maxVal}` : `Mínimo ${minVal.toLocaleString('es-AR')}${sufijo}`);
+
+				const posicionarCursor = (posicion) => {
+					try {
+						input.setSelectionRange(posicion, posicion);
+					} catch (err) {
+						/* ignore */
+					}
+				};
+
+				const renderValor = (digits = '') => {
+					if (digits) {
+						const formatted = parseInt(digits, 10).toLocaleString('es-AR');
+						input.value = `${formatted} ${sufijo}`;
+						return formatted.length;
+					}
+
+					input.value = '';
+					return 0;
+				};
 				
 				// Auto-format and keep caret positioned before the suffix (e.g. before " cc")
-				input.addEventListener('input', (e) => {
+				input.addEventListener('input', () => {
 					// Extract only digits from the current value
 					const digits = input.value.replace(/[^0-9]/g, '');
-					if (digits) {
-						// Format with thousands separators
-						const formatted = parseInt(digits, 10).toLocaleString('es-AR');
-						// Ensure a space before the suffix for readability
-						const display = formatted + ' ' + sufijo;
-						input.value = display;
-						// Place caret between the number and the suffix (after the formatted digits)
-						const caretPos = formatted.length;
-						// setSelectionRange only if element is focused
-						try { input.setSelectionRange(caretPos, caretPos); } catch (err) { /* ignore */ }
-					} else {
-						input.value = '';
-					}
+					const caretPos = renderValor(digits);
+					posicionarCursor(caretPos);
+				});
+
+				input.addEventListener('click', () => {
+					const digits = input.value.replace(/[^0-9]/g, '');
+					const caretPos = digits ? parseInt(digits, 10).toLocaleString('es-AR').length : 0;
+					posicionarCursor(caretPos);
 				});
 
 				const btn = document.createElement('button');
@@ -2293,7 +2427,7 @@
 						callback(val);
 						cerrar();
 					} else {
-						input.value = '';
+						renderValor('');
 						input.focus();
 					}
 				};
@@ -2304,17 +2438,123 @@
 				modal.appendChild(btn);
 				fondo.appendChild(modal);
 				document.body.appendChild(fondo);
-				
-				fondo.addEventListener('click', (e) => { if(e.target===fondo) cerrar(); });
+
+				renderValor('');
+				input.focus();
+				posicionarCursor(0);
+			}
+
+			function actualizarMaxHeightModalPreaprobado() {
+				const modal = DOM.modales.preaprobado;
+				if (!modal) return;
+
+				if (modal.getAttribute('aria-hidden') === 'true') {
+					modal.style.removeProperty('--modal-preaprobado-max-height');
+					return;
+				}
+
+				const footer = document.querySelector('footer');
+				if (!footer) {
+					modal.style.removeProperty('--modal-preaprobado-max-height');
+					return;
+				}
+
+				const modalTop = modal.getBoundingClientRect().top + window.scrollY;
+				const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+				const availableHeight = Math.max(320, footerTop - modalTop - 16);
+
+				modal.style.setProperty('--modal-preaprobado-max-height', `${availableHeight}px`);
 			}
 
 			function abrirModalPreaprobado() {
+				const modalHost = DOM.modales.preaprobado.closest('.calculadora-container');
+				if (modalHost) modalHost.classList.add('calculadora-container--modal-open');
+				restaurarEstadoPreaprobado();
 				DOM.modales.preaprobado.setAttribute('aria-hidden', 'false');
-				requestAnimationFrame(() => DOM.modales.preaprobado.scrollIntoView({ behavior: 'smooth' }));
+				requestAnimationFrame(actualizarMaxHeightModalPreaprobado);
 			}
 			
-			function cerrarModalPreaprobado() {
+			function cerrarModalPreaprobado(shouldSaveState = true) {
+				if (shouldSaveState) guardarEstadoPreaprobado();
+				const modalHost = DOM.modales.preaprobado.closest('.calculadora-container');
+				if (modalHost) modalHost.classList.remove('calculadora-container--modal-open');
 				DOM.modales.preaprobado.setAttribute('aria-hidden', 'true');
+				DOM.modales.preaprobado.style.removeProperty('--modal-preaprobado-max-height');
+			}
+
+			function obtenerClaveCampoPreaprobado(field) {
+				if (field.type === 'radio') return `radio:${field.name}`;
+				return field.id || field.name || '';
+			}
+
+			function guardarEstadoPreaprobado() {
+				if (!formPreaprobado) return;
+
+				const nextState = {};
+				formPreaprobado.querySelectorAll('input, select, textarea').forEach((field) => {
+					if (field.type === 'file') return;
+
+					const key = obtenerClaveCampoPreaprobado(field);
+					if (!key) return;
+
+					if (field.type === 'radio') {
+						if (field.checked) nextState[key] = field.value;
+						return;
+					}
+
+					if (field.type === 'checkbox') {
+						nextState[key] = field.checked;
+						return;
+					}
+
+					nextState[key] = field.value;
+				});
+
+				state.preaprobadoForm = nextState;
+			}
+
+			function restaurarEstadoPreaprobado() {
+				if (!formPreaprobado) return;
+
+				const savedState = state.preaprobadoForm || {};
+				formPreaprobado.querySelectorAll('input, select, textarea').forEach((field) => {
+					if (field.type === 'file') return;
+
+					const key = obtenerClaveCampoPreaprobado(field);
+					if (!key || !(key in savedState)) return;
+
+					if (field.type === 'radio') {
+						field.checked = field.value === savedState[key];
+						return;
+					}
+
+					if (field.type === 'checkbox') {
+						field.checked = Boolean(savedState[key]);
+						return;
+					}
+
+					field.value = savedState[key] ?? '';
+				});
+
+				sincronizarDocumentacionExtraPreaprobado();
+
+				if (errorTerminos) errorTerminos.classList.remove('visible');
+			}
+
+			function sincronizarDocumentacionExtraPreaprobado() {
+				['estadoConyuge', 'estadoCotitular'].forEach((radioName) => {
+					const selectedRadio = formPreaprobado.querySelector(`input[name="${radioName}"]:checked`);
+					selectedRadio?.dispatchEvent(new Event('change'));
+				});
+			}
+
+			function limpiarFormularioPreaprobado() {
+				if (!formPreaprobado) return;
+
+				formPreaprobado.reset();
+				sincronizarDocumentacionExtraPreaprobado();
+				state.preaprobadoForm = {};
+				if (errorTerminos) errorTerminos.classList.remove('visible');
 			}
 
 			// ==========================================
@@ -2414,26 +2654,52 @@
 			// Modal Preaprobado Listeners
 			document.getElementById('cerrarModalPreaprobado').addEventListener('click', cerrarModalPreaprobado);
 			document.getElementById('btnCancelarPreaprobado').addEventListener('click', cerrarModalPreaprobado);
+			DOM.modales.preaprobado.addEventListener('click', (e) => {
+				if (!e.target.closest('.modal-preaprobado__content')) {
+					cerrarModalPreaprobado();
+				}
+			});
 
 			// Validación del consentimiento en el modal Preaprobado
 			const formPreaprobado = document.getElementById('formPreaprobado');
+			const consentimientoPreaprobado = document.getElementById('consentimientoDatos');
 			const errorTerminos = document.getElementById('errorTerminosModal');
+
+			function validarConsentimientoPreaprobado() {
+				if (!consentimientoPreaprobado) return false;
+
+				const isChecked = consentimientoPreaprobado.checked;
+				const validationMessage = isChecked ? '' : 'Debes aceptar el tratamiento de datos para continuar.';
+				consentimientoPreaprobado.setCustomValidity(validationMessage);
+				if (errorTerminos) errorTerminos.classList.toggle('visible', !isChecked);
+				return isChecked;
+			}
+
 			if (formPreaprobado) {
+				formPreaprobado.addEventListener('input', guardarEstadoPreaprobado);
+				formPreaprobado.addEventListener('change', guardarEstadoPreaprobado);
+
+				if (consentimientoPreaprobado) {
+					consentimientoPreaprobado.addEventListener('change', validarConsentimientoPreaprobado);
+					consentimientoPreaprobado.addEventListener('invalid', () => {
+						validarConsentimientoPreaprobado();
+					});
+				}
+
 				formPreaprobado.addEventListener('submit', (e) => {
 					e.preventDefault();
-					const consent = document.getElementById('consentimientoDatos');
-					if (!consent || !consent.checked) {
-						if (errorTerminos) errorTerminos.classList.add('visible');
-						consent && consent.focus();
+					if (!validarConsentimientoPreaprobado()) {
+						consentimientoPreaprobado && consentimientoPreaprobado.reportValidity();
+						consentimientoPreaprobado && consentimientoPreaprobado.focus();
 						return;
 					}
-					if (errorTerminos) errorTerminos.classList.remove('visible');
 					// Simular envío: cerrar modal y mostrar toast breve
 					if (DOM.modales && DOM.modales.toast) {
 						DOM.modales.toast.textContent = 'Datos enviados correctamente';
 						DOM.modales.toast.classList.add('is-visible');
 					}
-					cerrarModalPreaprobado();
+					limpiarFormularioPreaprobado();
+					cerrarModalPreaprobado(false);
 					setTimeout(() => {
 						if (DOM.modales && DOM.modales.toast) DOM.modales.toast.classList.remove('is-visible');
 					}, 2000);
@@ -2539,6 +2805,7 @@
 				new ResizeObserver(() => fitFrase()).observe(DOM.resultado.fraseInfo);
 			}
 			window.addEventListener('resize', fitFrase);
+			window.addEventListener('resize', actualizarMaxHeightModalPreaprobado);
 			fitFrase();
 			
 			// Formulario Contacto
