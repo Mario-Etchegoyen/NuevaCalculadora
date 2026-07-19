@@ -1,0 +1,64 @@
+{
+	"name": "PRENDARIOS - TuPrendario.com",
+	"short_name": "PRENDARIOS",
+	"description": "Calculadora de cuotas para préstamos prendarios en Entre Ríos. Autos, motos, camionetas y utilitarios.",
+	"start_url": "/",
+	"scope": "/",
+	"display": "standalone",
+	"orientation": "portrait-primary",
+	"background_color": "#072146",
+	"theme_color": "#072146",
+	"lang": "es-AR",
+	"categories": ["finance", "utilities"],
+	"icons": [
+		{
+			"src": "/Imagenes/icon-192.png",
+			"sizes": "192x192",
+			"type": "image/png",
+			"purpose": "any"
+		},
+		{
+			"src": "/Imagenes/icon-192.png",
+			"sizes": "192x192",
+			"type": "image/png",
+			"purpose": "maskable"
+		},
+		{
+			"src": "/Imagenes/icon-512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "any"
+		},
+		{
+			"src": "/Imagenes/icon-512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "maskable"
+		}
+	],
+	"screenshots": [
+		{
+			"src": "/Imagenes/icon-512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"form_factor": "narrow",
+			"label": "Calculadora de Cuotas Prendarios"
+		}
+	],
+	"shortcuts": [
+		{
+			"name": "Calculadora de Cuotas",
+			"short_name": "Calculadora",
+			"description": "Calculá tu cuota de préstamo prendario",
+			"url": "/#calculadora",
+			"icons": [{ "src": "/Imagenes/icon-192.png", "sizes": "192x192" }]
+		},
+		{
+			"name": "Contacto",
+			"short_name": "Contacto",
+			"description": "Contactanos para tu préstamo prendario",
+			"url": "/#contacto",
+			"icons": [{ "src": "/Imagenes/icon-192.png", "sizes": "192x192" }]
+		}
+	]
+}

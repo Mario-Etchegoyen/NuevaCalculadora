@@ -1,0 +1,281 @@
+
+=== styles.css lines 918-1015 ===
+918: 			position: relative;
+919: 			text-align: center;
+920: 			margin-top: 1rem;
+921: 			overflow: visible;
+922: 		}
+923: 		#resultadoCuota {
+924: 			position: fixed;
+925: 			top: 0;
+926: 			left: 0;
+927: 			width: 0;
+928: 			height: 0;
+929: 			background:
+930: 				radial-gradient(circle at center, rgba(7, 16, 28, 0.98) 0%, rgba(10, 21, 36, 0.97) 42%, rgba(18, 38, 64, 0.94) 74%, rgba(28, 58, 93, 0.9) 100%),
+931: 				radial-gradient(circle at top right, rgba(93, 135, 196, 0.16), transparent 42%),
+932: 				radial-gradient(circle at bottom left, rgba(20, 100, 165, 0.12), transparent 44%);
+933: 			color: #fff;
+934: 			padding: 1.5rem;
+935: 			border-radius: 22px;
+936: 			border: 1px solid rgba(255,255,255,0.12);
+937: 			display: none;
+938: 			flex-direction: column;
+939: 			align-items: center;
+940: 			justify-content: center;
+941: 			overflow-y: auto;
+942: 			box-shadow: 0 22px 42px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.06);
+943: 			z-index: 999;
+944: 			backdrop-filter: blur(10px);
+945: 			box-sizing: border-box;
+946: 		}
+947: 		#resultadoCuota::before {
+948: 			content: '';
+949: 			position: absolute;
+950: 			inset: 0 0 auto 0;
+951: 			height: 6px;
+952: 			background: var(--corporate-line);
+953: 			opacity: 0.95;
+954: 			pointer-events: none;
+955: 		}
+956: 		#resultadoCuota.resultado-visible {
+957: 			display: block;
+958: 			animation: resultadoCuotaIn 0.35s ease forwards;
+959: 		}
+960: 
+961: 		.resultado-cuota-total {
+962: 			background: var(--corporate-line-soft);
+963: 			color: #ffffff;
+964: 			font-weight: 800;
+965: 			font-size: clamp(1.2rem, 3.6cqi, 1.75rem);
+966: 			padding: 0.55rem 1rem;
+967: 			border-radius: 999px;
+968: 			margin-bottom: 0.5rem;
+969: 			display: block;
+970: 			max-width: 100%;
+971: 			white-space: normal;
+972: 			word-break: break-word;
+973: 			line-height: 1.2;
+974: 			box-shadow: 0 10px 20px rgba(20, 100, 165, 0.22);
+975: 			text-align: center;
+976: 		}
+977: 		#contacto .contador-caracteres {
+978: 			display: flex;
+979: 			justify-content: flex-end;
+980: 			font-size: 0.82rem;
+981: 			font-weight: 700;
+982: 			color: #dbe7f5;
+983: 			margin-top: 0.35rem;
+984: 		}
+985: 		#contacto #contadorCaracteres {
+986: 			color: #8fb1db;
+987: 		}
+988: 
+989: 		.resultado-cuota-leyenda {
+990: 			font-size: clamp(0.75rem, 1.0vw, 0.9rem);
+991: 			line-height: 1.4;
+992: 			margin: 0.4rem 0;
+993: 			display: block;
+994: 			overflow: visible;
+995: 			white-space: normal;
+996: 			word-break: break-word;
+997: 			text-align: center;
+998: 		}
+999: 
+1000: 		.resultado-preaprobado {
+1001: 			background: rgba(255,255,255,0.94);
+1002: 			color: #072146;
+1003: 			border: none;
+1004: 			padding: 0.5rem 1.5rem;
+1005: 			border-radius: 20px;
+1006: 			font-weight: 700;
+1007: 			margin-top: 1rem;
+1008: 			cursor: pointer;
+1009: 			transition: transform 0.2s;
+1010: 		}
+1011: 		.resultado-preaprobado:hover {
+1012: 			transform: scale(1.05);
+1013: 			background: #f0f0f0;
+1014: 		}
+1015: 
+
+=== main.js lines 785-870 ===
+785: 			function calcularCuota() {
+786: 				const resumen = obtenerResumenPrestamo();
+787: 				if (!resumen) return;
+788: 
+789: 				state.cuota = resumen.cuota;
+790: 
+791: 				// Render
+792: 				// Ocultar elementos que pueden empujar el layout antes de renderizar el resultado
+793: 				DOM.btnCalcular.classList.add('vis-hidden');
+794: 				if (DOM.resultado.fraseInfo) DOM.resultado.fraseInfo.classList.add('vis-hidden');
+795: 
+796: 				DOM.resultado.container.innerHTML = `
+797: 					<div class="resultado-cuota-total">Total Cuota $ ${resumen.cuota.toLocaleString('es-AR')}</div>
+798: 					<p class="resultado-cuota-leyenda">Valor de la cuota sujeto a aprobación crediticia de acuerdo a pautas de la entidad interviniente.</p>
+799: 					<button type="button" class="resultado-preaprobado" id="btnSolicitarPreaprobado">Solicitar Preaprobado</button>
+800: 				`;
+801: 				DOM.resultado.container.classList.remove('resultado-hidden');
+802: 				DOM.resultado.container.classList.add('resultado-visible');
+803: 			requestAnimationFrame(() => requestAnimationFrame(() => { posicionarResultadoCuota(); fitResultadoCuota(); }));
+804: 			sincronizarDatosPrestamoPreaprobado();
+805: 
+806: 				// Setup nuevo botón generado
+807: 				document.getElementById('btnSolicitarPreaprobado').addEventListener('click', abrirModalPreaprobado);
+808: 			}
+809: 
+810: 			function validarFormulario() {
+811: 				const isValid = DOM.inputs.monto.classList.contains('input-con-valor') &&
+812: 								state.vehiculo && 
+813: 								state.combustible &&
+814: 								state.condicion &&
+815: 								state.anio &&
+816: 								state.plazo &&
+817: 								state.tasa !== null && !Number.isNaN(state.tasa);
+818: 				DOM.btnCalcular.disabled = !isValid;
+819: 			}
+820: 
+821: 			// Limpia solo los selects siguientes si el cambio afecta sus opciones
+822: 			function limpiarSelectsDesde(desdeDonde, opcionesPrevias = {}) {
+823: 				const orden = ['vehiculo', 'combustible', 'condicion', 'anio', 'plazo', 'tasa'];
+824: 				let idx = orden.indexOf(desdeDonde);
+825: 				if (idx === -1) return;
+826: 
+827: 				// Guardar el contexto antes del cambio
+828: 				let contextoPrevio = obtenerContextoPrestamoActual(opcionesPrevias);
+829: 
+830: 				for (let i = idx + 1; i < orden.length; i++) {
+831: 					const key = orden[i];
+832: 					const domEl = DOM.inputs[key];
+833: 					let limpiar = false;
+834: 
+835: 					// Determinar si las opciones del siguiente select cambian
+836: 					if (key === 'combustible') {
+837: 						const opcionesAntes = (opcionesPrevias.vehiculo) ? obtenerOpcionesCombustiblePara(contextoPrevio.vehiculo) : [];
+838: 						const opcionesAhora = (state.vehiculo) ? obtenerOpcionesCombustiblePara(state.vehiculo) : [];
+839: 						limpiar = JSON.stringify(opcionesAntes) !== JSON.stringify(opcionesAhora);
+840: 					} else if (key === 'condicion') {
+841: 						limpiar = opcionesPrevias.vehiculo !== state.vehiculo || opcionesPrevias.combustible !== state.combustible;
+842: 					} else if (key === 'anio') {
+843: 						limpiar = opcionesPrevias.vehiculo !== state.vehiculo || opcionesPrevias.combustible !== state.combustible || opcionesPrevias.condicion !== state.condicion || opcionesPrevias.cilindrada !== state.cilindrada || opcionesPrevias.potencia !== state.potencia;
+844: 					} else if (key === 'plazo') {
+845: 						limpiar = opcionesPrevias.anio !== state.anio;
+846: 					} else if (key === 'tasa') {
+847: 						limpiar = opcionesPrevias.plazo !== state.plazo;
+848: 					}
+849: 
+850: 					if (limpiar && domEl) {
+851: 						domEl.innerHTML = '<option value="" disabled selected hidden>Opciones</option>';
+852: 						domEl.classList.remove('select-con-valor');
+853: 						domEl.value = "";
+854: 						state[key] = null;
+855: 					}
+856: 					// Actualizar contexto previo para el siguiente select
+857: 					contextoPrevio = {...contextoPrevio, [key]: state[key]};
+858: 				}
+859: 				state.cuota = null;
+860: 				sincronizarDatosPrestamoPreaprobado();
+861: 				ocultarResultado();
+862: 			}
+863: 
+864: 			// Devuelve las opciones de combustible para un tipo de vehículo
+865: 			function obtenerOpcionesCombustiblePara(vehiculo) {
+866: 				if (['auto', 'utilitario'].includes(vehiculo)) {
+867: 					return [{ v: 'comun', t: 'Nafta/Diesel' }, { v: 'electricoAuto', t: 'Híbrido/Eléctrico' }];
+868: 				} else if (vehiculo === 'moto') {
+869: 					return [{ v: 'nafta', t: 'Nafta' }, { v: 'electricoMoto', t: 'Eléctrico' }];
+870: 				} else if (vehiculo === 'cuatriciclo') {
+
+=== main.js lines 1537-1555 ===
+1537: 
+1538: 			// UI Helpers (Ocultar resultado al re-editar)
+1539: 			Object.values(DOM.inputs).forEach(input => {
+1540: 				input.addEventListener('focus', ocultarResultado);
+1541: 			});
+1542: 
+1543: 			// Cerrar resultado si el usuario hace click en el fondo del contenedor
+1544: 			// (no cerrar cuando se hace click sobre controles interactivos como botones, inputs, selects)
+1545: 			const calculadoraElSafe = document.querySelector('.calculadora-container');
+1546: 			if (calculadoraElSafe) {
+1547: 				calculadoraElSafe.addEventListener('click', (e) => {
+1548: 					const resultadoEl = DOM.resultado.container;
+1549: 					if (!resultadoEl || !resultadoEl.classList.contains('resultado-visible')) return;
+1550: 					// Si el click fue dentro del propio panel de resultado, no cerrar
+1551: 					if (resultadoEl.contains(e.target)) return;
+1552: 					// Ignorar clicks sobre controles interactivos
+1553: 					if (e.target.closest('button, a, input, select, textarea, label') ) return;
+1554: 					// Si el click fue exactamente en el contenedor (fondo) o en un área no interactiva, cerrar
+1555: 					if (e.target === calculadoraElSafe || !e.target.closest('form')) {
+
+=== main.js lines 1871-1940 ===
+1871: 
+1872: 				el.style.setProperty('--frase-info-font', `${bestFit.toFixed(2)}px`);
+1873: 				const widestFittedLine = Math.max(...targetLines.map((line) => measureLineWidth(line, bestFit)));
+1874: 				el.style.width = `${Math.min(parentWidth, widestFittedLine + paddingX).toFixed(2)}px`;
+1875: 			}
+1876: 
+1877: 			function fitResultadoCuota() {
+1878: 				const chip = DOM.resultado.container?.querySelector('.resultado-cuota-total');
+1879: 				const panel = DOM.resultado.container;
+1880: 				if (!chip || !panel || !panel.classList.contains('resultado-visible')) return;
+1881: 
+1882: 				const referenciaTitulo = document.querySelector('#calculadora .panel-encabezado__titulo');
+1883: 				const maxFont = referenciaTitulo
+1884: 					? parseFloat(window.getComputedStyle(referenciaTitulo).fontSize || '0')
+1885: 					: 28;
+1886: 				const panelComputed = window.getComputedStyle(panel);
+1887: 				const panelPaddingX = parseFloat(panelComputed.paddingLeft || '0') + parseFloat(panelComputed.paddingRight || '0');
+1888: 				const availableWidth = panel.clientWidth - panelPaddingX;
+1889: 				if (availableWidth <= 0) return;
+1890: 
+1891: 				const measureChipWidth = (fontSizePx) => {
+1892: 					const clone = chip.cloneNode(true);
+1893: 					clone.style.position = 'absolute';
+1894: 					clone.style.visibility = 'hidden';
+1895: 					clone.style.pointerEvents = 'none';
+1896: 					clone.style.width = 'auto';
+1897: 					clone.style.maxWidth = 'none';
+1898: 					clone.style.whiteSpace = 'nowrap';
+1899: 					clone.style.fontSize = `${fontSizePx}px`;
+1900: 					clone.style.margin = '0';
+1901: 					document.body.appendChild(clone);
+1902: 					const width = clone.getBoundingClientRect().width;
+1903: 					clone.remove();
+1904: 					return width;
+1905: 				};
+1906: 
+1907: 				let minFont = 8;
+1908: 				let upperFont = maxFont;
+1909: 				let bestFit = minFont;
+1910: 
+1911: 				while ((upperFont - minFont) > 0.1) {
+1912: 					const probe = (minFont + upperFont) / 2;
+1913: 					if (measureChipWidth(probe) <= availableWidth) {
+1914: 						bestFit = probe;
+1915: 						minFont = probe;
+1916: 					} else {
+1917: 						upperFont = probe;
+1918: 					}
+1919: 				}
+1920: 
+1921: 				chip.style.fontSize = `${bestFit.toFixed(2)}px`;
+1922: 			}
+1923: 
+1924: 		function posicionarResultadoCuota() {
+1925: 			const el = DOM.resultado.container;
+1926: 			if (!el || !el.classList.contains('resultado-visible')) return;
+1927: 			const calculadora = document.querySelector('#calculadora .calculadora-container');
+1928: 			if (!calculadora) return;
+1929: 			const rect          = calculadora.getBoundingClientRect();
+1930: 			const solucionesEl  = document.querySelector('#servicios .section-panel');
+1931: 			const solucionesRect = solucionesEl ? solucionesEl.getBoundingClientRect() : rect;
+1932: 			const newLeft        = (rect.left + solucionesRect.left) / 2;
+1933: 			const newRight       = ((rect.left + rect.width) + (solucionesRect.left + solucionesRect.width)) / 2;
+1934: 			const newWidth       = newRight - newLeft;
+1935: 			const btnRect  = DOM.btnCalcular.getBoundingClientRect();
+1936: 			const paddingV = 20;
+1937: 			el.style.top       = `${btnRect.top + btnRect.height / 2}px`;
+1938: 			el.style.transform = 'translateY(-50%)';
+1939: 			el.style.left      = `${newLeft}px`;
+1940: 			el.style.width     = `${newWidth}px`;
