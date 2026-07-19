@@ -119,13 +119,20 @@
 		}
 
 		/* Menú de Navegación*/
+		.nav-right {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-end;
+			gap: 0.4rem;
+			margin-left: auto;
+			order: 2;
+		}
+
 		nav ul {
 			list-style: none;
 			display: flex;
 			gap: 2rem;
-			margin-left: auto;
 			align-items: center;
-			order: 2;
 		}
 
 		nav a {
@@ -2499,7 +2506,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    padding: 0.35rem 0.85rem;
+    padding: 0.15rem 0.85rem;
     background: #e8f0fe;
     color: #003087;
     border: 1.5px solid #003087;
