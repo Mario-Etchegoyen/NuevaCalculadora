@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /Buck_Up/
+
+Sitemap: https://www.tuprendario.com/sitemap.xml
+
+# TuPrendario.com - Calculadora de Cuotas Prestamos Prendarios Entre Rios
+# Gualeguaychu - Concepcion del Uruguay - Colon - Rosario del Tala
+# Basavilbaso - Urdinarrain - Gualeguay - Galarza - Ceibas - Entre Rios
