@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tuprendario-v3';
+const CACHE_NAME = 'tuprendario-v4';
 const CACHE_ASSETS = [
 	'/',
 	'/index.html',
@@ -35,10 +35,11 @@ self.addEventListener('fetch', e => {
 	if (e.request.method !== 'GET') return;
 
 	const url = new URL(e.request.url);
-	const esJS  = url.pathname.endsWith('.js');
-	const esCSS = url.pathname.endsWith('.css');
+	const esHTML = url.pathname.endsWith('.html') || url.pathname === '/' || url.pathname === '';
+	const esJS   = url.pathname.endsWith('.js');
+	const esCSS  = url.pathname.endsWith('.css');
 
-	if (esJS || esCSS) {
+	if (esHTML || esJS || esCSS) {
 		e.respondWith(
 			fetch(new Request(e.request, { cache: 'no-cache' })).then(res => {
 				if (!res || res.status !== 200 || res.type === 'opaque') return res;
