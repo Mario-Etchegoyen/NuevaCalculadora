@@ -2178,18 +2178,8 @@
 				gap: 0.5rem;
 			}
 
-			/* Resultado cuota: en tablet pasa a bloque bajo la calculadora */
+			/* Resultado cuota: mantiene posicionamiento JS (igual que desktop) */
 			#resultadoCuota.resultado-visible {
-				position: static !important;
-				transform: none !important;
-				left: auto !important;
-				top: auto !important;
-				width: auto !important;
-				max-width: 100% !important;
-				height: auto !important;
-				max-height: none !important;
-				margin: 1.2rem auto 0;
-				display: block;
 				border-radius: 18px;
 			}
 
@@ -2239,17 +2229,8 @@
 				font-size: 1.5rem !important;
 			}
 
-			/* Resultado cuota bloque */
+			/* Resultado cuota: mantiene posicionamiento JS (igual que desktop) */
 			#resultadoCuota.resultado-visible {
-				position: static !important;
-				transform: none !important;
-				left: auto !important;
-				top: auto !important;
-				width: auto !important;
-				max-width: 100% !important;
-				height: auto !important;
-				max-height: none !important;
-				margin: 1rem auto 0;
 				border-radius: 14px;
 			}
 
@@ -2333,17 +2314,6 @@
 				padding-top: var(--header-height);
 			}
 
-			#resultadoCuota.resultado-visible {
-				position: static !important;
-				transform: none !important;
-				left: auto !important;
-				top: auto !important;
-				width: auto !important;
-				max-width: 100% !important;
-				height: auto !important;
-				max-height: none !important;
-				margin: 0.8rem auto 0;
-			}
 		}
 
 		/* --- DESKTOP GRANDE (≥ 1400px) --- */
@@ -2625,4 +2595,63 @@
         border-radius: 0 0 0 10px;
     }
     .btn-instalar-app { font-size: 0.75rem; padding: 0.3rem 0.65rem; }
+}
+ 
+
+
+/* =========================================================
+   OPTIMIZACIONES DE RENDIMIENTO MOVIL
+   ========================================================= */
+
+@media (max-width: 768px) {
+    header,
+    .modal-preaprobado,
+    .modal-preaprobado__content,
+    .section-panel,
+    .calculadora-container,
+    .card,
+    .feature {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
+    :root {
+        --transition: color 0.25s ease, background-color 0.25s ease,
+                      border-color 0.25s ease, opacity 0.25s ease,
+                      transform 0.25s ease;
+    }
+
+    .custom-select .options,
+    .modal-preaprobado,
+    #resultadoCuota,
+    .notif-datos-prestamo,
+    header {
+        will-change: transform;
+        transform: translateZ(0);
+    }
+
+    .card:hover,
+    .feature:hover {
+        transform: none !important;
+        box-shadow: inherit !important;
+    }
+
+    .card,
+    .feature,
+    .section-panel {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.18) !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    .animate-fadeIn {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
 }

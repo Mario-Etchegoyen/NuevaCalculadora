@@ -1,1 +1,2212 @@
-"scrollRestoration"in history&&(history.scrollRestoration="manual"),window.addEventListener("load",function(){setTimeout(function(){window.scrollTo(0,0)},0)}),document.addEventListener("DOMContentLoaded",()=>{"use strict";const e={MONTO_MINIMO:1e6,GASTOS_ADMIN:3.5,IVA:21,ANIOS_RETROACTIVOS:9,LIMITE_TOTAL_ADJUNTOS_HTML:10485760,PLAZOS:[12,18,24,36,48,60],LIMITES:{MOTO:{CILINDRADA:{BAJA:125,MEDIA:200,ALTA:500,UVA:200},POTENCIA:{BAJA:1200,ALTA:5e3}}},TASAS:{AUTO:{COMUN:[53,53,53,53,53,53],ELECTRICO:[48,48,48,48,48,48],UVA:[27,28,28,28,28,0]},MOTO:{COMUN:[61,61,61,61,61,61],ELECTRICO:[48,48,48,48,48,48],UVA:[27,28,28,28,28,0]}},CONDICIONES:{AUTO:["0km","Usado"],UTILITARIO:["0km","Usado"],MOTO:["0km"],CUATRICICLO:["0km"]},LIMITES_ANIOS:{AUTO:9,UTILITARIO:9,MOTO:1,CUATRICICLO:1},EMAIL_PREAPROBADO:"preaprobados@tuprendario.com"},t=!0,o=!0,n=!1,a=[13,0,23.5,33,40,0],i=1200,r=(new Date).getFullYear(),s=Array.from({length:e.ANIOS_RETROACTIVOS+1},(e,t)=>r-t),l={AUTOS:{INICIO:s[7],MESES_MAX:48},MOTOS:{INICIO:s[7],MESES_MAX:48}},c={vehiculo:"",combustible:"",condicion:"",anio:null,plazo:null,tasa:null,cuota:null,cilindrada:null,potencia:null,preaprobadoForm:{}};function d(){const e=document.querySelector("header");if(!e)return;const t=Math.ceil(e.getBoundingClientRect().height);document.documentElement.style.setProperty("--header-height",`${t}px`)}const u={form:document.getElementById("formCalculadora"),inputs:{monto:document.getElementById("montoPrestamo"),vehiculo:document.getElementById("tipoVehiculo"),combustible:document.getElementById("tipoCombustible"),condicion:document.getElementById("condicion"),anio:document.getElementById("anio"),plazo:document.getElementById("plazo"),tasa:document.getElementById("tasaInteres")},btnCalcular:document.getElementById("btnCalcular"),resultado:{container:document.getElementById("resultadoCuota"),stack:document.querySelector(".resultado-stack"),fraseInfo:document.getElementById("frase-uva-info"),infoAutos:{anio:document.getElementById("autos-anio"),meses:document.getElementById("autos-meses")},infoMotos:{cilindrada:document.getElementById("motos-cilindrada"),anio:document.getElementById("motos-anio"),meses:document.getElementById("motos-meses")}},modales:{preaprobado:document.getElementById("modalDatosPreaprobado"),overlay:document.querySelector("#modalDatosPreaprobado .modal-preaprobado__overlay"),toast:document.getElementById("modalPreaprobadoToast")},preaprobadoPrestamoGrid:document.querySelector(".modal-preaprobado__prestamo-grid"),preaprobadoPrestamo:{monto:{visible:document.getElementById("preaprobadoMontoInfo"),hidden:document.getElementById("preaprobadoMonto")},anio:{control:document.getElementById("preaprobadoAnioEditable"),hidden:document.getElementById("preaprobadoAnio")},tasa:{control:document.getElementById("preaprobadoTasaEditable"),hidden:document.getElementById("preaprobadoTasa")},plazo:{control:document.getElementById("preaprobadoPlazoEditable"),hidden:document.getElementById("preaprobadoPlazo")},cuota:{visible:document.getElementById("preaprobadoCuotaInfo"),hidden:document.getElementById("preaprobadoCuota")}},contacto:{form:document.getElementById("formularioContacto"),exito:document.getElementById("mensajeExito"),contador:document.getElementById("contadorCaracteres")}};u.modales.preaprobado&&u.modales.preaprobado.parentElement!==document.body&&document.body.appendChild(u.modales.preaprobado);const p=e=>e.toLocaleString("es-AR",{maximumFractionDigits:0});function m(t=!1){const o=u.inputs.monto;let n=o.value.replace(/[^0-9]/g,""),a=parseInt(n,10);n?o.value=`$ ${parseInt(n,10).toLocaleString("es-AR")}`:(o.value="",t&&(o.placeholder=`Ingresá Monto (Mín. $${p(e.MONTO_MINIMO)})`));!isNaN(a)&&a>=e.MONTO_MINIMO?(o.classList.add("input-con-valor"),!0?u.inputs.vehiculo.disabled=!1:(Object.values(u.inputs).forEach(e=>{e!==u.inputs.monto&&(e.disabled=!0)}),v())):(o.classList.remove("input-con-valor"),t&&v()),P(),w()}function v(){Object.values(u.inputs).forEach(e=>{e!==u.inputs.monto&&(e.selectedIndex=0,e.classList.remove("select-con-valor"),e.disabled=!0)}),c.vehiculo="",c.combustible="",c.condicion="",c.anio=null,c.plazo=null,c.tasa=null,c.cilindrada=null,c.potencia=null,w()}function f(){const t=u.inputs.condicion;if(!c.vehiculo||!c.combustible)return;t.innerHTML='<option value="" disabled selected hidden>Opciones</option>';let o=[];"auto"===c.vehiculo?o=e.CONDICIONES.AUTO:"utilitario"===c.vehiculo?o=e.CONDICIONES.UTILITARIO:"moto"===c.vehiculo?o=e.CONDICIONES.MOTO:"cuatriciclo"===c.vehiculo&&(o=e.CONDICIONES.CUATRICICLO),o.forEach(e=>{t.innerHTML+=`<option value="${e}">${e}</option>`}),t.disabled=0===o.length}function b(){const e=u.inputs.anio;if(!c.vehiculo||!c.combustible||!c.condicion)return;e.innerHTML='<option value="" disabled selected hidden>Opciones</option>';const t=L(E());t.forEach(t=>{const o=document.createElement("option");o.value=t,o.textContent=t,e.appendChild(o)}),e.disabled=0===t.length}function h(){const e=u.inputs.plazo;if(!c.vehiculo||!c.combustible||!c.anio)return;e.innerHTML='<option value="" disabled selected hidden>Opciones</option>';const t=I(E());t.forEach(t=>{const o=document.createElement("option");o.value=t,o.textContent=`${t} meses`,e.appendChild(o)}),e.disabled=0===t.length}function y(){const e=u.inputs.tasa;if(!(c.vehiculo&&c.combustible&&c.anio&&c.plazo))return;e.innerHTML='<option value="" disabled selected hidden>Opciones</option>';const t=S(E());t.forEach(t=>{e.innerHTML+=`<option value="${t.valor}">${t.texto}</option>`}),e.disabled=0===t.length}function g(){const e=u.inputs.monto.value.replace(/[^0-9]/g,""),t=parseInt(e,10);return Number.isFinite(t)?t:null}function E(e={}){return{monto:Object.prototype.hasOwnProperty.call(e,"monto")?e.monto:g(),vehiculo:e.vehiculo??c.vehiculo,combustible:e.combustible??c.combustible,condicion:e.condicion??c.condicion,anio:e.anio??c.anio,plazo:e.plazo??c.plazo,tasa:e.tasa??c.tasa,cilindrada:e.cilindrada??c.cilindrada,potencia:e.potencia??c.potencia}}function L(t){if(!t?.vehiculo||!t?.combustible||!t?.condicion)return[];let o=[];const n=["comun","nafta"].includes(t.combustible),a="0km"===t.condicion;if("auto"===t.vehiculo)o=n&&a?s.slice(0,2):n?s.slice(0,e.LIMITES_ANIOS.AUTO+1):a?s.slice(0,2):s.slice(0,4);else if("utilitario"===t.vehiculo)o=n?a?s.slice(0,2):"Usado"===t.condicion?s.slice(0,e.LIMITES_ANIOS.UTILITARIO+1):s.slice(0,4):a?s.slice(0,2):s.slice(0,4);else if("moto"===t.vehiculo){if("nafta"===t.combustible){if(!t.cilindrada||t.cilindrada<300)return[];o=s.slice(0,e.LIMITES_ANIOS.MOTO+1)}else if("electricoMoto"===t.combustible){if(!t.potencia||t.potencia<i)return[];o=s.slice(0,e.LIMITES_ANIOS.MOTO+1)}}else"cuatriciclo"===t.vehiculo&&(o=s.slice(0,e.LIMITES_ANIOS.CUATRICICLO+1));return o}function I(t){if(!t?.vehiculo||!t?.combustible||!t?.anio)return[];let o=[];const n=s.indexOf(t.anio),a=["comun","nafta","electricoAuto"].includes(t.combustible);if("auto"===t.vehiculo||"utilitario"===t.vehiculo){const i="Usado"===t.condicion;o=a&&!i?e.PLAZOS.filter((e,t)=>1!==t):a&&i?n<=7?e.PLAZOS.filter((e,t)=>t<=5&&1!==t):8===n?e.PLAZOS.filter((e,t)=>t<=4&&1!==t):e.PLAZOS.filter((e,t)=>t<=3&&1!==t):e.PLAZOS.filter((e,t)=>t<=3&&1!==t)}else"moto"===t.vehiculo?o="nafta"===t.combustible?t.anio>=s[4]?[...e.PLAZOS]:t.anio===s[5]?e.PLAZOS.slice(0,5):e.PLAZOS.slice(0,4):[...e.PLAZOS]:"cuatriciclo"===t.vehiculo&&(o=[...e.PLAZOS]);return o}function S(r){if(!(r?.vehiculo&&r?.combustible&&r?.anio&&r?.plazo))return[];const s=e.PLAZOS.indexOf(r.plazo);if(-1===s)return[];const c=[],d=["comun","nafta"].includes(r.combustible),u=a[s]??0,p=e=>`${e.toFixed(1).replace(".",",")}%`,m=(e,t,o)=>{"number"!=typeof e||Number.isNaN(e)||c.push({valor:e,texto:o??`${t} (${p(e)})`})};if(["auto","utilitario"].includes(r.vehiculo)){const a=d?e.TASAS.AUTO.COMUN[s]:e.TASAS.AUTO.ELECTRICO[s];if(t&&m(a,"Fija"),r.anio>=l.AUTOS.INICIO&&r.plazo<=l.AUTOS.MESES_MAX){const t=e.TASAS.AUTO.UVA[s];o&&m(t,"UVA"),n&&u>0&&m(0,"Tasa 0%","Tasa 0%")}}else{const a=d?e.TASAS.MOTO.COMUN[s]:e.TASAS.MOTO.ELECTRICO[s];t&&m(a,"Fija");if(("moto"===r.vehiculo&&"nafta"===r.combustible&&r.cilindrada>=e.LIMITES.MOTO.CILINDRADA.MEDIA||"moto"===r.vehiculo&&"electricoMoto"===r.combustible&&r.potencia>=i||"cuatriciclo"===r.vehiculo)&&r.anio>=l.MOTOS.INICIO&&r.plazo<=l.MOTOS.MESES_MAX){const t=e.TASAS.MOTO.UVA[s];o&&m(t,"UVA"),n&&u>0&&m(0,"Tasa 0%","Tasa 0%")}}return c}function A(t,o=""){const n=t?.monto,i=t?.plazo,r=t?.tasa;if(!n||!i||null===r||Number.isNaN(r))return null;const s=e.PLAZOS.indexOf(i);if(-1===s)return null;const l=r/12/100,c=n/(1-e.GASTOS_ADMIN/100),d=Math.round(c),u=(a[s]??0)/100*(1+e.IVA/100),m=Math.round(c/(1-u)),v=0===l?m/i:d*l/(1-Math.pow(1+l,-i)),f=d*l*(e.IVA/100),b=0===l?Math.round(v):Math.ceil(v+f),h=o||`${r.toFixed(1).replace(".",",")}%`;return{cuota:b,montoTexto:`$ ${p(n)}`,anioTexto:t.anio?String(t.anio):"",plazoTexto:`${i} meses`,tasaTexto:h,cuotaTexto:`$ ${p(b)}`}}function C(){const e=u.inputs.tasa.options[u.inputs.tasa.selectedIndex]?.textContent||`${tasaAnual.toFixed(1).replace(".",",")}%`;return A(E(),e)}function O(e,t,o,n){if(!e)return"";e.innerHTML=`<option value="" disabled hidden>${n}</option>`,t.forEach(t=>{const o=document.createElement("option");o.value=String(t.valor),o.textContent=t.texto,e.appendChild(o)});const a=null!=o?String(o):"",i=t.some(e=>String(e.valor)===a);return e.disabled=0===t.length,e.value=i?a:"",e.value||(e.selectedIndex=0),e.value}function T(e){if(!e||!e.textContent||!e.textContent.trim())return!1;const t=window.getComputedStyle(e),o=parseFloat(t.lineHeight)||1.4*parseFloat(t.fontSize),n=o+(parseFloat(t.paddingTop)||0)+(parseFloat(t.paddingBottom)||0),a=e.getBoundingClientRect().height,i=function(e){if(!e||!e.textContent||!e.textContent.trim())return 0;const t=document.createRange();t.selectNodeContents(e);const o=t.getClientRects().length;return t.detach?.(),o}(e);return i>1||a>n+.45*o}function N(){const e=u.preaprobadoPrestamoGrid;if(!e)return;const t=u.preaprobadoPrestamo?.cuota?.visible,o=Boolean(t&&!t.classList.contains("is-empty")&&T(t));e.classList.toggle("is-two-columns",o)}function w(e=!1){const t=u.preaprobadoPrestamo;if(!t||!t.monto)return;!function(e=!1){const t=u.preaprobadoPrestamo?.anio?.control,o=u.preaprobadoPrestamo?.plazo?.control,n=u.preaprobadoPrestamo?.tasa?.control;if(!t||!o||!n)return;const a=E(),i=L(a).map(e=>({valor:e,texto:String(e)})),r=e?a.anio:parseInt(t.value,10)||a.anio,s=parseInt(O(t,i,r,"desde calculadora"),10),l=E({anio:Number.isFinite(s)?s:null}),c=I(l).map(e=>({valor:e,texto:`${e} meses`})),d=e?l.plazo:parseInt(o.value,10)||l.plazo,p=parseInt(O(o,c,d,"desde calculadora"),10),m=E({anio:Number.isFinite(s)?s:null,plazo:Number.isFinite(p)?p:null});O(n,S(m),e?m.tasa:parseFloat(n.value)||m.tasa,"desde calculadora"),z(t),z(o),z(n)}(e);const o=function(){const e=E(),t=u.preaprobadoPrestamo?.anio?.control,o=u.preaprobadoPrestamo?.plazo?.control,n=u.preaprobadoPrestamo?.tasa?.control,a=parseInt(t?.value||"",10),i=parseInt(o?.value||"",10),r=parseFloat(n?.value||""),s=n?.options?.[n.selectedIndex]?.textContent||"",l=A(E({anio:Number.isFinite(a)?a:null,plazo:Number.isFinite(i)?i:null,tasa:Number.isFinite(r)?r:null}),s);return{montoTexto:Number.isFinite(e.monto)&&e.monto>0?`$ ${p(e.monto)}`:"",anioTexto:Number.isFinite(a)?String(a):"",plazoTexto:Number.isFinite(i)?`${i} meses`:"",tasaTexto:Number.isFinite(r)?s:"",cuotaTexto:l?.cuotaTexto||""}}();Object.entries(t).forEach(([e,t])=>{const n=o[`${e}Texto`]||"";t.hidden&&(t.hidden.value=n),t.visible&&(t.visible.textContent=n||"desde calculadora",t.visible.classList.toggle("is-empty",""===n))}),requestAnimationFrame(N)}function x(){const e=parseInt(u.preaprobadoPrestamo?.anio?.control?.value||"",10),t=parseInt(u.preaprobadoPrestamo?.plazo?.control?.value||"",10),o=parseFloat(u.preaprobadoPrestamo?.tasa?.control?.value||""),n=u.inputs.anio,a=u.inputs.plazo,i=u.inputs.tasa;if(!(n&&a&&i&&Number.isFinite(e)&&Number.isFinite(t)&&Number.isFinite(o)))return;b();if(!Array.from(n.options).some(t=>t.value===String(e)))return;n.value!==String(e)?(n.value=String(e),n.dispatchEvent(new Event("change",{bubbles:!0}))):(c.anio=e,z(n)),h();if(!Array.from(a.options).some(e=>e.value===String(t)))return;a.value!==String(t)?(a.value=String(t),a.dispatchEvent(new Event("change",{bubbles:!0}))):(c.plazo=t,z(a)),y();Array.from(i.options).some(e=>e.value===String(o))&&(i.value!==String(o)?(i.value=String(o),i.dispatchEvent(new Event("change",{bubbles:!0}))):(c.tasa=o,z(i),P()),!u.btnCalcular.disabled&&C()&&M())}function M(){const e=C();e&&(c.cuota=e.cuota,u.btnCalcular.classList.add("vis-hidden"),u.resultado.fraseInfo&&u.resultado.fraseInfo.classList.add("vis-hidden"),u.resultado.container.innerHTML=`\n\t\t\t\t\t<div class="resultado-cuota-total">Total Cuota $ ${e.cuota.toLocaleString("es-AR")}</div>\n\t\t\t\t\t<p class="resultado-cuota-leyenda">Valor de la cuota sujeto a aprobación crediticia de acuerdo a pautas de la entidad interviniente.</p>\n\t\t\t\t\t<button type="button" class="resultado-preaprobado" id="btnSolicitarPreaprobado">Solicitar Preaprobado</button>\n\t\t\t\t`,u.resultado.container.classList.remove("resultado-hidden"),u.resultado.container.classList.add("resultado-visible"),u.resultado.container.style.animation="none",u.resultado.container.style.opacity="0",de(),ce(),requestAnimationFrame(()=>{u.resultado.container.style.animation="",u.resultado.container.style.opacity=""}),w(),document.getElementById("btnSolicitarPreaprobado").addEventListener("click",J))}function P(){const e=u.inputs.monto.classList.contains("input-con-valor")&&c.vehiculo&&c.combustible&&c.condicion&&c.anio&&c.plazo&&null!==c.tasa&&!Number.isNaN(c.tasa);u.btnCalcular.disabled=!e}function k(e,t={}){const o=["vehiculo","combustible","condicion","anio","plazo","tasa"];let n=o.indexOf(e);if(-1===n)return;let a=E(t);for(let e=n+1;e<o.length;e++){const n=o[e],i=u.inputs[n];let r=!1;if("combustible"===n){const e=t.vehiculo?F(a.vehiculo):[],o=c.vehiculo?F(c.vehiculo):[];r=JSON.stringify(e)!==JSON.stringify(o)}else"condicion"===n?r=t.vehiculo!==c.vehiculo||t.combustible!==c.combustible:"anio"===n?r=t.vehiculo!==c.vehiculo||t.combustible!==c.combustible||t.condicion!==c.condicion||t.cilindrada!==c.cilindrada||t.potencia!==c.potencia:"plazo"===n?r=t.anio!==c.anio:"tasa"===n&&(r=t.plazo!==c.plazo);r&&i&&(i.innerHTML='<option value="" disabled selected hidden>Opciones</option>',i.classList.remove("select-con-valor"),i.value="",c[n]=null),a={...a,[n]:c[n]}}c.cuota=null,w(),$()}function F(e){return["auto","utilitario"].includes(e)?[{v:"comun",t:"Nafta/Diesel"},{v:"electricoAuto",t:"Híbrido/Eléctrico"}]:"moto"===e?[{v:"nafta",t:"Nafta"},{v:"electricoMoto",t:"Eléctrico"}]:"cuatriciclo"===e?[{v:"nafta",t:"Nafta"},{v:"electricoCuatri",t:"Eléctrico"}]:[]}function $(){u.resultado.container.classList.add("resultado-hidden"),u.resultado.container.classList.remove("resultado-visible"),u.resultado.container.style.top="",u.resultado.container.style.left="",u.resultado.container.style.width="",u.resultado.container.style.height="",u.resultado.container.style.maxHeight="",u.resultado.container.style.transform="",u.btnCalcular.classList.remove("vis-hidden"),u.resultado.fraseInfo&&u.resultado.fraseInfo.classList.remove("vis-hidden")}function B(e){if(!e)return;const t=()=>{const t=e.value.trim();""===t?e.setCustomValidity(""):/^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$/.test(String(t||"").trim())?e.setCustomValidity(""):e.setCustomValidity("Ingresá un mail válido con formato usuario@dominio.extensión."),z(e)};e._syncCustomEmailValidity=t,e.addEventListener("input",t),e.addEventListener("change",t),e.addEventListener("blur",t),t()}function q(e){if(!e)return;const t=()=>{const t=e.value.replace(/\D+/g,"");e.value!==t&&(e.value=t),""!==t&&t.length<10?e.setCustomValidity("Ingresá solo números, con mínimo 10 dígitos."):e.setCustomValidity(""),z(e)};e._syncCustomPhoneDigits=t,e.addEventListener("input",t),e.addEventListener("change",t),e.addEventListener("blur",t),t()}function z(e){if(!e||!e.tagName)return;if(e.matches('input[type="hidden"], input[type="checkbox"], input[type="radio"]'))return;const t="SELECT"===e.tagName?"select-con-valor":"input-con-valor",o=function(e){return!(!e||e.disabled)&&(!e.matches('input[type="hidden"], input[type="checkbox"], input[type="radio"]')&&("file"===e.type?e.files&&e.files.length>0&&e.checkValidity():""!==("string"==typeof e.value?e.value.trim():e.value)&&e.checkValidity()))}(e);e.classList.toggle(t,o);const n="SELECT"===e.tagName?e.closest(".custom-select"):null;n&&n.classList.toggle("is-valid",o);const a="file"===e.type?e.closest(".modal-preaprobado__file-picker"):null;a&&a.classList.toggle("is-valid",o)}function _(e){e&&e.querySelectorAll('input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), select, textarea').forEach(e=>{const t=()=>z(e);e.addEventListener("input",t),e.addEventListener("change",t),e.addEventListener("blur",t)})}function D(e){e&&(e.querySelectorAll(".input-con-valor").forEach(e=>e.classList.remove("input-con-valor")),e.querySelectorAll(".select-con-valor").forEach(e=>e.classList.remove("select-con-valor")),e.querySelectorAll(".custom-select.is-valid").forEach(e=>e.classList.remove("is-valid")),e.querySelectorAll(".modal-preaprobado__file-picker.is-valid").forEach(e=>e.classList.remove("is-valid")))}function R(e=null){document.querySelectorAll("#calculadora .custom-select.open").forEach(t=>{t!==e&&t.classList.remove("open")})}function U(e){if(!e)return;const t=e.querySelector(".options");t&&e.classList.contains("open")&&t.querySelectorAll("li").forEach(e=>{e.style.fontSize="",e.style.letterSpacing="";const t=parseFloat(window.getComputedStyle(e).fontSize);if(!t)return;let o=t;for(;e.scrollWidth>e.clientWidth&&o>10.5;)o-=.25,e.style.fontSize=`${o}px`;e.scrollWidth>e.clientWidth&&(e.style.letterSpacing="-0.02em")})}function V(e,t,o,n,a){const i=document.createElement("div");i.className="js-modal-fondo";const r=document.createElement("div");r.className="js-modal";const s=document.createElement("label");s.textContent=e,s.className="js-modal-label";const l=document.createElement("input");l.type="text",l.className="js-modal-input",l.placeholder="w"===t&&n?`Entre ${o.toLocaleString("es-AR")}w y ${n.toLocaleString("es-AR")}w`:n?`Entre ${o} y ${n}`:`Mínimo ${o.toLocaleString("es-AR")}${t}`;const c=e=>{try{l.setSelectionRange(e,e)}catch(e){}},d=(e="")=>{if(e){const o=parseInt(e,10).toLocaleString("es-AR");return l.value=`${o} ${t}`,o.length}return l.value="",0};l.addEventListener("input",()=>{const e=l.value.replace(/[^0-9]/g,""),t=d(e);c(t)}),l.addEventListener("click",()=>{const e=l.value.replace(/[^0-9]/g,""),t=e?parseInt(e,10).toLocaleString("es-AR").length:0;c(t)});const u=document.createElement("button");u.textContent="Aceptar",u.className="js-modal-btn";const p=()=>{document.body.contains(i)&&document.body.removeChild(i)};i.addEventListener("click",p),r.addEventListener("click",e=>e.stopPropagation()),l.addEventListener("keydown",e=>{"Enter"===e.key?(e.preventDefault(),u.click()):"Escape"===e.key&&p()}),u.onclick=()=>{let e=parseInt(l.value.replace(/[^0-9]/g,""),10);!isNaN(e)&&e>=o&&(!n||e<=n)?(a(e),p()):(d(""),l.focus())},r.appendChild(s),r.appendChild(l),r.appendChild(document.createElement("br")),r.appendChild(u),i.appendChild(r),document.body.appendChild(i),d(""),l.focus(),c(0)}function j(){const e=u.modales.preaprobado;e&&e.style.removeProperty("--modal-preaprobado-max-height")}function H(){const e=u.modales.preaprobado,t=u.modales.overlay,o=e?.querySelector(".modal-preaprobado__content");if(!e||!t||!o)return;if("true"===e.getAttribute("aria-hidden"))return e.style.removeProperty("--modal-preaprobado-overlay-top"),e.style.removeProperty("--modal-preaprobado-overlay-width"),e.style.removeProperty("--modal-preaprobado-overlay-height"),void e.style.removeProperty("--modal-preaprobado-overlay-bleed");e.style.setProperty("--modal-preaprobado-overlay-top",`${o.offsetTop}px`),e.style.setProperty("--modal-preaprobado-overlay-width",`${o.offsetWidth}px`),e.style.setProperty("--modal-preaprobado-overlay-height",`${o.offsetHeight}px`),e.style.setProperty("--modal-preaprobado-overlay-bleed","12px")}function Z(){const e=u.modales.preaprobado;if(!e)return;const t=window.getComputedStyle(document.documentElement),o=document.querySelector("header"),n=o?o.getBoundingClientRect().height:parseFloat(t.getPropertyValue("--header-height"))||52,a=parseFloat(t.getPropertyValue("--modal-preaprobado-top-gap"))||0,i=parseFloat(t.getPropertyValue("--modal-inline-gutter"))||0,r=document.getElementById("tipoCombustible"),s=window.scrollY||window.pageYOffset||0,l=r?.closest(".custom-select")?.querySelector(".selected"),c=(l||r)?.getBoundingClientRect(),d=(c?c.top+s+c.height/2:n+a)-i,p=Math.max(n+a,d);e.style.setProperty("--modal-preaprobado-top-offset",`${p}px`)}function W(){const e=u.modales.preaprobado,t=document.querySelector("#calculadora .calculadora-container");if(!e||!t)return;const o=window.getComputedStyle(document.documentElement),n=parseFloat(o.getPropertyValue("--modal-preaprobado-scale"))||1,a=t.getBoundingClientRect().width;if(!a)return;const i=a*n;e.style.setProperty("--modal-preaprobado-width",`${i}px`)}function J(){$(),function(){if(!Q)return;const e=c.preaprobadoForm||{};Q.querySelectorAll("input, select, textarea").forEach(t=>{if("file"===t.type)return;const o=G(t);o&&o in e&&("radio"!==t.type?"checkbox"!==t.type?t.value=e[o]??"":t.checked=Boolean(e[o]):t.checked=t.value===e[o])}),Q.querySelectorAll('input[type="email"]').forEach(e=>e._syncCustomEmailValidity?.()),Q.querySelectorAll('input[type="tel"]').forEach(e=>e._syncCustomPhoneDigits?.()),K(),Q.querySelectorAll('input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), select').forEach(z),te&&te.classList.remove("visible");const t=Q.querySelector("#datosPrestamoSi"),o=t?.closest(".modal-preaprobado__section");o&&o.classList.toggle("prestamo-datos-ok",!0===t?.checked);ae()}();const e=Q?.querySelector("#datosPrestamoNo");if(e?.checked){const t=Q.querySelector("#datosPrestamoSi");t&&(t.checked=!1),e.checked=!1;const o=t?.closest(".modal-preaprobado__section");o&&o.classList.remove("prestamo-datos-ok"),c.preaprobadoForm&&delete c.preaprobadoForm["radio:datosPrestamo"]}w(!0),u.modales.preaprobado.setAttribute("aria-hidden","false"),requestAnimationFrame(()=>{Z(),W(),j(),H(),N(),document.body.classList.add("modal-preaprobado-open"),requestAnimationFrame(()=>{Z(),W(),H(),N()})})}function X(e=!0){document.body.classList.remove("modal-preaprobado-open"),e&&Y(),u.modales.preaprobado.setAttribute("aria-hidden","true"),u.modales.preaprobado.style.removeProperty("--modal-preaprobado-max-height")}function G(e){return"radio"===e.type?`radio:${e.name}`:e.id||e.name||""}function Y(){if(!Q)return;const e={};Q.querySelectorAll("input, select, textarea").forEach(t=>{if("file"===t.type)return;const o=G(t);o&&("radio"!==t.type?"checkbox"!==t.type?e[o]=t.value:e[o]=t.checked:t.checked&&(e[o]=t.value))}),c.preaprobadoForm=e}function K(){["estadoConyuge","estadoCotitular"].forEach(e=>{const t=Q.querySelector(`input[name="${e}"]:checked`);t?.dispatchEvent(new Event("change"))})}u.inputs.monto.placeholder=`Ingresá Monto (Mín. $${p(e.MONTO_MINIMO)})`,u.inputs.monto.addEventListener("input",()=>m(!1)),u.inputs.monto.addEventListener("blur",()=>m(!0)),Object.values(u.inputs).filter(e=>e&&"SELECT"===e.tagName).forEach(e=>function(e){if(!e||e.closest(".custom-select"))return;const t=document.createElement("div");t.className="custom-select",e.parentNode.insertBefore(t,e),t.appendChild(e);const o=document.createElement("button");o.type="button",o.className="selected";const n=document.createElement("span");n.className="selected-label",o.appendChild(n);const a=document.createElement("span");a.className="arrow",a.innerHTML='<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';const i=document.createElement("ul");i.className="options",t.appendChild(o),t.appendChild(a),t.appendChild(i);const r=()=>{const a=e.options[e.selectedIndex]||null,s=Boolean(e.value);n.textContent=e.disabled?"-----":s&&a?a.textContent:"Opciones",t.classList.toggle("is-disabled",e.disabled),t.classList.toggle("is-placeholder",e.disabled||!s),t.classList.toggle("is-valid",!e.disabled&&s&&e.checkValidity()),i.innerHTML="",Array.from(e.options).forEach(n=>{if(n.hidden||n.disabled||""===n.value)return;const a=document.createElement("li");a.textContent=n.textContent,a.classList.toggle("is-selected",n.selected),a.setAttribute("tabindex","-1"),a.addEventListener("click",()=>{e.value=n.value,e.dispatchEvent(new Event("change",{bubbles:!0})),e.dispatchEvent(new Event("input",{bubbles:!0})),t.classList.remove("open"),o.focus(),r()}),i.appendChild(a)})};o.addEventListener("click",()=>{if(e.disabled)return;e.dispatchEvent(new Event("focus")),r();const o=!t.classList.contains("open");R(t),t.classList.toggle("open",o),o&&requestAnimationFrame(()=>{U(t),i.querySelector("li.is-selected, li")?.focus()})}),o.addEventListener("keydown",o=>{e.disabled||("ArrowDown"===o.key||"ArrowUp"===o.key?(o.preventDefault(),t.classList.contains("open")||(R(t),t.classList.add("open"),requestAnimationFrame(()=>{U(t),("ArrowDown"===o.key?i.querySelector("li.is-selected, li"):i.querySelector("li:last-child"))?.focus()}))):"Escape"===o.key&&t.classList.remove("open"))}),i.addEventListener("keydown",e=>{const n=Array.from(i.querySelectorAll("li")),a=n.indexOf(document.activeElement);"ArrowDown"===e.key?(e.preventDefault(),n[Math.min(a+1,n.length-1)]?.focus()):"ArrowUp"===e.key?(e.preventDefault(),a>0?n[a-1].focus():(t.classList.remove("open"),o.focus())):"Enter"===e.key||" "===e.key?(e.preventDefault(),document.activeElement.click()):"Escape"!==e.key&&"Tab"!==e.key||(t.classList.remove("open"),o.focus())}),e.addEventListener("change",r),e.addEventListener("input",r),e.addEventListener("blur",r),new MutationObserver(r).observe(e,{childList:!0,subtree:!0,attributes:!0,attributeFilter:["disabled"]}),r()}(e)),document.addEventListener("click",e=>{e.target.closest("#calculadora .custom-select")||R()}),u.inputs.vehiculo.addEventListener("change",e=>{const t=e.target.value;if(c.vehiculo===t)return;const o={...c};c.vehiculo=t,e.target.classList.add("select-con-valor"),k("vehiculo",o),function(){const e=u.inputs.combustible,t=c.vehiculo;e.innerHTML='<option value="" disabled selected hidden>Opciones</option>';let o=[];["auto","utilitario"].includes(t)?o=[{v:"comun",t:"Nafta/Diesel"},{v:"electricoAuto",t:"Híbrido/Eléctrico"}]:"moto"===t?o=[{v:"nafta",t:"Nafta"},{v:"electricoMoto",t:"Eléctrico"}]:"cuatriciclo"===t&&(o=[{v:"nafta",t:"Nafta"},{v:"electricoCuatri",t:"Eléctrico"}]),o.forEach(t=>{const o=document.createElement("option");o.value=t.v,o.textContent=t.t,e.appendChild(o)}),e.disabled=0===o.length,e.classList.remove("select-con-valor"),k("combustible")}(),w()}),u.inputs.combustible.addEventListener("change",t=>{const o=t.target.value;if(c.combustible===o)return;const n={...c};c.combustible=o,t.target.classList.add("select-con-valor"),k("combustible",n);const a="nafta"===c.combustible;"moto"===c.vehiculo&&("nafta"===c.combustible||"electricoMoto"===c.combustible)||"cuatriciclo"===c.vehiculo&&("nafta"===c.combustible||"electricoCuatri"===c.combustible)?(u.inputs.condicion.innerHTML='<option value="" disabled selected hidden>Opciones</option>',u.inputs.condicion.disabled=!0,a?V("CILINDRADA","cc",300,null,e=>{c.cilindrada=e,f()}):V("POTENCIA","w",i,e.LIMITES.MOTO.POTENCIA.ALTA,e=>{c.potencia=e,f()})):f()}),u.inputs.condicion.addEventListener("change",e=>{const t=e.target.value;if(c.condicion===t)return;const o={...c};c.condicion=t;let n=e.target;n.value&&n.classList.add("select-con-valor"),k("condicion",o),b()}),u.inputs.condicion.addEventListener("focus",f),u.inputs.anio.addEventListener("focus",b),u.inputs.plazo.addEventListener("focus",h),u.inputs.tasa.addEventListener("focus",y),u.inputs.anio.addEventListener("change",e=>{const t=parseInt(e.target.value,10);if(c.anio===t)return;const o={...c};c.anio=t,e.target.classList.add("select-con-valor"),k("anio",o),h()}),u.inputs.plazo.addEventListener("change",e=>{const t=parseInt(e.target.value,10);if(c.plazo===t)return;const o={...c};c.plazo=t,e.target.classList.add("select-con-valor"),k("plazo",o),y()}),u.inputs.tasa.addEventListener("change",e=>{const t=parseFloat(e.target.value);c.tasa!==t&&(c.tasa=t,e.target.classList.add("select-con-valor"),P(),w())}),u.btnCalcular.addEventListener("click",M),Object.values(u.inputs).forEach(e=>{e.addEventListener("focus",$)}),document.addEventListener("click",e=>{const t=u.resultado.container;t&&t.classList.contains("resultado-visible")&&(t.contains(e.target)||u.btnCalcular.contains(e.target)||$())}),document.getElementById("cerrarModalPreaprobado").addEventListener("click",X),document.getElementById("btnCancelarPreaprobado").addEventListener("click",X),document.getElementById("datosPrestamoSi").addEventListener("change",()=>{const e=document.getElementById("datosPrestamoSi").closest(".modal-preaprobado__section");e&&e.classList.add("prestamo-datos-ok"),ae()}),document.getElementById("datosPrestamoNo").addEventListener("change",()=>{const e=document.getElementById("datosPrestamoNo").closest(".modal-preaprobado__section");e&&e.classList.remove("prestamo-datos-ok"),X(!0);const t=document.createElement("div");t.className="notif-datos-prestamo",t.textContent="Por favor corregí los datos del Préstamo",document.body.appendChild(t),requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add("is-visible"))),setTimeout(()=>{t.classList.remove("is-visible");const e=()=>{t.remove()};t.addEventListener("transitionend",e,{once:!0}),setTimeout(e,600),c.preaprobadoForm&&delete c.preaprobadoForm["radio:datosPrestamo"];const o=document.getElementById("calculadora");o&&o.scrollIntoView({behavior:"smooth",block:"start"})},2800)}),u.modales.preaprobado.addEventListener("click",e=>{e.target.closest(".modal-preaprobado__content")||X()});const Q=document.getElementById("formPreaprobado"),ee=document.getElementById("consentimientoDatos"),te=document.getElementById("errorTerminosModal");function oe(){if(!ee)return!1;const e=ee.checked,t=e?"":"Debes aceptar el tratamiento de datos para continuar.";return ee.setCustomValidity(t),te&&te.classList.toggle("visible",!e),e}var ne;function ae(){const e=document.getElementById("btnEnviarPreaprobado");if(!e)return;document.getElementById("tipoSolicitante"),document.getElementById("telefonoContacto");const t=document.getElementById("dniTitularFrente"),o=document.getElementById("dniTitularDorso"),n=document.getElementById("tituloFrente"),a=document.getElementById("telefonoCliente"),i=document.getElementById("mailCliente"),r=document.getElementById("consentimientoDatos"),s=!!("si"===document.querySelector('input[name="datosPrestamo"]:checked')?.value&&t?.files?.length>0&&o?.files?.length>0&&n?.files?.length>0&&a?.value.trim().length>=10&&i?.value.trim()&&/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(i?.value.trim())&&r?.checked);e.disabled=!s}function ie(e,t){const o=document.querySelectorAll(`input[name="${t}"]`),n=document.querySelectorAll(`[data-extra-group="${e}"]`),a=()=>{const e="si"===document.querySelector(`input[name="${t}"]:checked`)?.value;n.forEach(t=>{t.classList.toggle("is-hidden",!e),t.querySelectorAll("input").forEach(t=>{t.disabled=!e,e||(t.value=""),t._syncPreaprobadoFileUi&&t._syncPreaprobadoFileUi(),z(t)})})};o.forEach(e=>e.addEventListener("change",a)),a()}Q&&((ne=Q)&&ne.querySelectorAll('input[type="file"]').forEach(e=>{if("true"===e.dataset.preaprobadoFileReady)return;e.dataset.preaprobadoFileReady="true",e.classList.add("modal-preaprobado__file-native");const t=document.createElement("div");t.className="modal-preaprobado__file-picker";const o=document.createElement("span");o.className="modal-preaprobado__file-button",o.textContent="Imagen";const n=document.createElement("span");n.className="modal-preaprobado__file-name",n.textContent="",e.parentNode.insertBefore(t,e),t.appendChild(o),t.appendChild(n),t.appendChild(e);const a=()=>{const a=e.files&&e.files.length>0;n.textContent=a?e.files[0].name:"",n.classList.toggle("is-visible",a),o.classList.toggle("is-hidden",a),t.style.justifyContent=a?"flex-start":"center",t.classList.toggle("is-disabled",e.disabled)};e.addEventListener("change",a),e._syncPreaprobadoFileUi=a,a()}),_(Q),B(Q.querySelector("#mailContacto")),B(Q.querySelector("#mailCliente")),q(Q.querySelector("#telefonoContacto")),q(Q.querySelector("#telefonoCliente")),u.preaprobadoPrestamo?.anio?.control?.addEventListener("change",()=>{w(!1),x()}),u.preaprobadoPrestamo?.plazo?.control?.addEventListener("change",()=>{w(!1),x()}),u.preaprobadoPrestamo?.tasa?.control?.addEventListener("change",()=>{w(!1),x()}),Q.addEventListener("input",Y),Q.addEventListener("change",Y),ee&&(ee.addEventListener("change",oe),ee.addEventListener("change",ae),ee.addEventListener("invalid",()=>{oe()})),Q.addEventListener("input",ae),Q.addEventListener("change",ae),ae()),document.getElementById("btnEnviarPreaprobado")?.addEventListener("click",()=>{const e=document.getElementById("formPreaprobado");if(!e)return;if(!e.checkValidity())return void e.reportValidity();const t=e=>document.getElementById(e)?.value?.trim()||"",o=e=>{const t=document.getElementById(e);return t?.files?.length>0?t.files[0].name:"-"},n="si"===document.querySelector('input[name="estadoConyuge"]:checked')?.value,a=t("preaprobadoMonto")||"No indicado",i=t("preaprobadoAnio")||"No indicado",r=t("preaprobadoPlazo")||"No indicado",s=t("preaprobadoTasa")||"No indicado",l=t("preaprobadoCuota")||"No indicado";let c="";c+="🔹 *TITULAR*\n",c+=`DNI Frente: ${o("dniTitularFrente")}\n`,c+=`DNI Dorso: ${o("dniTitularDorso")}\n\n`,c+="🔹 *TÍTULO AUTOMOTOR*\n",c+=`Frente (o CAT): ${o("tituloFrente")}\n`,c+=`Dorso: ${o("tituloDorso")}\n\n`,c+="🔹 *CONTACTO CLIENTE*\n",c+=`telefonoContacto:\n${t("telefonoContacto")||"-"}\n`,c+=`mailContacto:\n${t("mailContacto")||"-"}\n\n`,n&&(c+="🔹 *CASADO/CONCUBINO*\n",c+=`DNI Frente: ${o("conyugeFrente")}\n`,c+=`DNI Dorso: ${o("conyugeDorso")}\n\n`),c+="⚠️ *NOTA:* Se enviarán por WhatsApp única y exclusivamente los archivos listados arriba. Ningún otro archivo.\n\n",c+="🔹 *DATOS PRÉSTAMO*\n",c+=`Monto: ${a}\n`,c+=`Año: ${i}\n`,c+=`Plazo: ${r}\n`,c+=`Tasa: ${s}\n`,c+=`Cuota: ${l}\n\n`,c+="✅ Acepto que procesen mis datos personales\n\n",c+="---\n",c+=`*Solicitante:* ${t("tipoSolicitante")||"-"}\n`,c+=`*Tel. Contacto:* ${t("telefonoContacto")||"-"}\n`;const d=t("mailContacto");d&&(c+=`*Mail Contacto:* ${d}\n`);const u="https://wa.me/5493446612371?text="+encodeURIComponent(c);window.open(u,"_blank")}),ie("conyuge","estadoConyuge"),ie("cotitular","estadoCotitular");const re=document.getElementById("linkDatosPreaprobadoHeader");re&&re.addEventListener("click",e=>{e.preventDefault(),J()});const se=document.getElementById("linkDatosPreaprobadoFooter");function le(){const e=u.resultado.fraseInfo;if(!e)return;const t=Array.from(e.querySelectorAll(".frase-line"));if(!t.length)return;const o=document.querySelector("#calculadora label")||document.querySelector("label"),n=o?parseFloat(window.getComputedStyle(o).fontSize||"0"):15.36,a=t.filter(e=>!e.classList.contains("frase-line--title")),i=a.length?a:t,r=window.getComputedStyle(e),s=parseFloat(r.paddingLeft||"0")+parseFloat(r.paddingRight||"0"),l=e.parentElement?.clientWidth||e.clientWidth,c=l-s;if(c<=0)return;const d=(e,t)=>{const o=e.cloneNode(!0);o.style.position="absolute",o.style.visibility="hidden",o.style.pointerEvents="none",o.style.width="auto",o.style.maxWidth="none",o.style.display="inline-block",o.style.whiteSpace="nowrap",o.style.fontSize=`${t}px`,o.style.lineHeight="1.2",o.style.letterSpacing="-0.01em",o.style.padding="0",o.style.margin="0",document.body.appendChild(o);const n=o.getBoundingClientRect().width;return o.remove(),n};let p=7,m=n,v=p;for(;m-p>.1;){const e=(p+m)/2;Math.max(...i.map(t=>d(t,e)))<=c?(v=e,p=e):m=e}e.style.setProperty("--frase-info-font",`${v.toFixed(2)}px`);const f=Math.max(...i.map(e=>d(e,v)));e.style.width=`${Math.min(l,f+s).toFixed(2)}px`}function ce(){const e=u.resultado.container?.querySelector(".resultado-cuota-total"),t=u.resultado.container;if(!e||!t||!t.classList.contains("resultado-visible"))return;const o=document.querySelector("#calculadora .panel-encabezado__titulo"),n=o?parseFloat(window.getComputedStyle(o).fontSize||"0"):28,a=window.getComputedStyle(t),i=parseFloat(a.paddingLeft||"0")+parseFloat(a.paddingRight||"0"),r=t.clientWidth-i;if(r<=0)return;const s=t=>{const o=e.cloneNode(!0);o.style.position="absolute",o.style.visibility="hidden",o.style.pointerEvents="none",o.style.width="auto",o.style.maxWidth="none",o.style.whiteSpace="nowrap",o.style.fontSize=`${t}px`,o.style.margin="0",document.body.appendChild(o);const n=o.getBoundingClientRect().width;return o.remove(),n};let l=8,c=n,d=l;for(;c-l>.1;){const e=(l+c)/2;s(e)<=r?(d=e,l=e):c=e}e.style.fontSize=`${d.toFixed(2)}px`}function de(){const e=u.resultado.container;if(!e||!e.classList.contains("resultado-visible"))return;const t=document.querySelector("#calculadora .calculadora-container");if(!t)return;const o=t.getBoundingClientRect(),n=document.querySelector("#servicios .section-panel"),a=n?n.getBoundingClientRect():o,i=(o.left+a.left)/2,r=(o.left+o.width+(a.left+a.width))/2-i,s=u.btnCalcular.getBoundingClientRect();e.style.top=`${s.top+s.height/2}px`,e.style.transform="translateY(-50%)",e.style.left=`${i}px`,e.style.width=`${r}px`,e.style.height="auto",e.style.maxHeight=o.height-40+"px"}if(se&&se.addEventListener("click",e=>{e.preventDefault(),J()}),document.querySelectorAll('header nav a[href^="#"]:not([data-modal-link="true"])').forEach(e=>{e.addEventListener("click",t=>{const o=e.getAttribute("href"),n=o?document.querySelector(o):null;"false"===u.modales.preaprobado.getAttribute("aria-hidden")&&n&&(t.preventDefault(),function(){if(!Q)return;Q.reset(),Q.querySelectorAll("input, select, textarea").forEach(e=>{"hidden"!==e.type&&("radio"===e.type||"checkbox"===e.type?e.checked=e.defaultChecked:"file"===e.type?(e.value="",e._syncPreaprobadoFileUi&&e._syncPreaprobadoFileUi()):e.value=e.defaultValue||"",e.setCustomValidity(""))}),D(Q),K(),c.preaprobadoForm={},te&&te.classList.remove("visible");const e=Q.querySelector("#datosPrestamoSi")?.closest(".modal-preaprobado__section");e&&e.classList.remove("prestamo-datos-ok")}(),X(!1),history.pushState(null,"",o),n.scrollIntoView({behavior:"smooth",block:"start"}))})}),document.addEventListener("keydown",e=>{"Escape"===e.key&&"false"===u.modales.preaprobado.getAttribute("aria-hidden")&&X()}),u.resultado.infoAutos.anio&&(u.resultado.infoAutos.anio.textContent=l.AUTOS.INICIO),u.resultado.infoAutos.meses&&(u.resultado.infoAutos.meses.textContent=l.AUTOS.MESES_MAX),u.resultado.infoMotos.cilindrada&&(u.resultado.infoMotos.cilindrada.textContent=e.LIMITES.MOTO.CILINDRADA.UVA),u.resultado.infoMotos.anio&&(u.resultado.infoMotos.anio.textContent=l.MOTOS.INICIO),u.resultado.infoMotos.meses&&(u.resultado.infoMotos.meses.textContent=l.MOTOS.MESES_MAX),function(){const e=u.resultado.fraseInfo;if(!e)return;e.querySelectorAll("[data-tasa-grupo]").forEach(e=>{const t=e.dataset.tasaGrupo,a="uva"===t&&o||"cero"===t&&n;e.style.display=a?"":"none"});const t=o||n;e.style.display=t?"":"none"}(),d(),window.ResizeObserver){const e=document.querySelector("header");e&&new ResizeObserver(()=>d()).observe(e)}window.ResizeObserver&&u.resultado.fraseInfo&&new ResizeObserver(()=>le()).observe(u.resultado.fraseInfo),window.addEventListener("load",d),window.addEventListener("resize",d),window.addEventListener("resize",le),window.addEventListener("resize",ce),window.addEventListener("resize",de);let ue=null;if(window.addEventListener("scroll",()=>{ue&&cancelAnimationFrame(ue),ue=requestAnimationFrame(()=>{de(),ue=null})},{passive:!0}),window.addEventListener("resize",Z),window.addEventListener("resize",W),window.addEventListener("resize",j),window.addEventListener("resize",H),window.addEventListener("resize",N),le(),ce(),de(),u.contacto.form){_(u.contacto.form);const e=u.contacto.form.querySelector("#email"),t=u.contacto.form.querySelector("#telefono");B(e),q(t);const o=u.contacto.exito?u.contacto.exito.textContent.trim():"Mensaje enviado exitosamente",n=(e,t=!1,n=5e3)=>{u.contacto.exito&&(u.contacto.exito.textContent=e,u.contacto.exito.classList.toggle("is-error",t),u.contacto.exito.classList.add("visible"),window.clearTimeout(window.contactoEstadoTimer),window.contactoEstadoTimer=window.setTimeout(()=>{u.contacto.exito.classList.remove("visible","is-error"),u.contacto.exito.textContent=o},n))};u.contacto.form.addEventListener("submit",t=>{if(t.preventDefault(),!u.contacto.form.checkValidity())return void u.contacto.form.reportValidity();const o=u.contacto.form.querySelector('button[type="submit"]'),a=o.textContent,i=u.contacto.form.getAttribute("action")||"https://formsubmit.co/ajax/contacto@tuprendario.com",r=new FormData(u.contacto.form);o.textContent="Enviando...",o.disabled=!0,fetch(i,{method:"POST",body:r}).then(async t=>{const o=await async function(e,t){const o=await e.text();let n=null;try{n=o?JSON.parse(o):null}catch(e){n=null}if(n&&"object"==typeof n)return Object.prototype.hasOwnProperty.call(n,"success")||(n.success=e.ok),n;const a=o.replace(/<style[\s\S]*?<\/style>/gi," ").replace(/<script[\s\S]*?<\/script>/gi," ").replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim(),i=a.toLowerCase(),r=t.includes("formsubmit.co");let s=r?`El servicio de formularios respondió ${e.status}. Si es el primer envío, confirmá la activación desde el mail que llega a la casilla destino.`:`El servicio configurado en ${t} respondió ${e.status}. Revisá la URL configurada en el formulario.`;return 404===e.status?s=r?"No se pudo contactar el servicio de formularios. Verificá la conexión a internet e intentá nuevamente.":`No se encontró ${t} en el servidor. Verificá que el archivo exista en el hosting y que la ruta sea correcta.`:r&&/confirm|activate|activation|verify|verification/.test(i)?s="FormSubmit pidió confirmar la casilla destino. Abrí el correo de activación en la cuenta receptora y luego reenviá el formulario.":""!==a&&(s+=` Detalle: ${a.slice(0,180)}${a.length>180?"...":""}`),{success:!1,message:s}}(t,i);if(!t.ok||!function(e){return!(!e||"object"!=typeof e||Object.prototype.hasOwnProperty.call(e,"success")&&!0!==e.success&&"true"!==e.success&&1!==e.success&&"1"!==e.success)}(o))throw new Error(o.message||"No fue posible enviar el mensaje.");n(o.message||"Mensaje enviado correctamente. Si es el primer envío, confirmá el correo de activación que envía FormSubmit."),u.contacto.form.reset(),e&&e.setCustomValidity(""),D(u.contacto.form),u.contacto.contador&&(u.contacto.contador.textContent="0")}).catch(e=>{n(e.message||"No fue posible enviar el mensaje.",!0,6500)}).finally(()=>{o.textContent=a,o.disabled=!1})});const a=document.getElementById("mensaje");if(a){a.addEventListener("input",function(){u.contacto.contador.textContent=this.value.length});const e=a.getAttribute("placeholder")||"";a.addEventListener("focus",function(){a.setAttribute("placeholder","")}),a.addEventListener("blur",function(){a.value&&""!==a.value.trim()||a.setAttribute("placeholder",e)})}}document.querySelectorAll('a[href^="#"]').forEach(e=>{"true"!==e.dataset.modalLink&&e.addEventListener("click",function(e){e.preventDefault();const t=document.querySelector(this.getAttribute("href"));if(t){const e=document.querySelector("header"),o=e?e.offsetHeight+10:0,n=window.getComputedStyle(t).scrollMarginTop,a=n?parseFloat(n):NaN,i=isNaN(a)?o:a,r=t.getBoundingClientRect().top+window.pageYOffset-i;window.scrollTo({top:r,behavior:"smooth"})}})});const pe=new IntersectionObserver(e=>{e.forEach(e=>{e.isIntersecting&&e.target.classList.add("animate-fadeIn")})},{threshold:.1});document.querySelectorAll("section").forEach(e=>pe.observe(e))});
+// ─────────────────────────────────────────────────────────────────────────────
+// Restaurar scroll al inicio en recarga con historial
+// ─────────────────────────────────────────────────────────────────────────────
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+window.addEventListener("load", function () {
+	setTimeout(function () { window.scrollTo(0, 0); }, 0);
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+	"use strict";
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// UTILIDAD: debounce — agrupa llamadas rápidas en una sola diferida
+	// ─────────────────────────────────────────────────────────────────────────
+	function debounce(fn, ms) {
+		let t;
+		return function () { clearTimeout(t); t = setTimeout(() => fn.apply(this, arguments), ms); };
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// CONFIGURACIÓN GLOBAL
+	// ─────────────────────────────────────────────────────────────────────────
+	const CONFIG = {
+		MONTO_MINIMO:              4000000,
+		GASTOS_ADMIN:              3.5,        // % sobre el monto
+		IVA:                       21,         // % de IVA aplicado
+		ANIOS_RETROACTIVOS:        9,          // años hacia atrás disponibles
+		LIMITE_TOTAL_ADJUNTOS_HTML: 10_485_760, // 10 MB en bytes
+		PLAZOS:                    [12, 18, 24, 36, 48, 60],
+
+		LIMITES: {
+			MOTO: {
+				CILINDRADA: { BAJA: 125, MEDIA: 200, ALTA: 500, UVA: 200 },
+				POTENCIA:   { BAJA: 1200, ALTA: 5000 }
+			}
+		},
+
+		// Tasas anuales (%) indexadas igual que PLAZOS
+		TASAS: {
+			AUTO: {
+				COMUN:    [42.9, 42.9, 42.9, 42.9, 42.9, 42.9],
+				ELECTRICO:[39.9, 39.9, 39.9, 39.9, 39.9, 39.9],
+				UVA:      [17.9, 17.9, 17.9, 17.9, 17.9, 0]
+			},
+			MOTO: {
+				COMUN:    [61, 61, 61, 61, 61, 61],
+				ELECTRICO:[48, 48, 48, 48, 48, 48],
+				UVA:      [27, 28, 28, 28, 28,  0]
+			}
+		},
+
+		CONDICIONES: {
+			AUTO:       ["0km", "Usado"],
+			UTILITARIO: ["0km", "Usado"],
+			MOTO:       ["0km"],
+			CUATRICICLO:["0km"]
+		},
+
+		LIMITES_ANIOS: { AUTO: 9, UTILITARIO: 9, MOTO: 1, CUATRICICLO: 1 },
+
+		EMAIL_PREAPROBADO: "preaprobados@tuprendario.com"
+	};
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// FLAGS DE HABILITACIÓN DE TIPOS DE TASA
+	// ─────────────────────────────────────────────────────────────────────────
+	const TASA_FIJA_HABILITADA = true;
+	const TASA_UVA_HABILITADA  = true;
+	const TASA_CERO_HABILITADA = false;
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// QUEBRANTO POR PLAZO — índice alineado con CONFIG.PLAZOS [12,18,24,36,48,60]
+	// ─────────────────────────────────────────────────────────────────────────
+	const QUEBRANTOS_POR_PLAZO = [13, 0, 23.5, 33, 40, 0];
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// POTENCIA MÍNIMA PARA MOTO ELÉCTRICA (vatios)
+	// ─────────────────────────────────────────────────────────────────────────
+	const POTENCIA_MINIMA_MOTO = 1200;
+	const CILINDRADA_MINIMA_MOTO = 300;
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// AÑO ACTUAL Y LISTA DE AÑOS DISPONIBLES (desc.)
+	// ─────────────────────────────────────────────────────────────────────────
+	const anioActual = (new Date()).getFullYear();
+	const aniosDisponibles = Array.from(
+		{ length: CONFIG.ANIOS_RETROACTIVOS + 1 },
+		(_, idx) => anioActual - idx
+	);
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// LÍMITES PARA ELEGIBILIDAD A TASA UVA
+	// ─────────────────────────────────────────────────────────────────────────
+	const LIMITES_UVA = {
+		AUTOS: { INICIO: aniosDisponibles[7], MESES_MAX: 48 },
+		MOTOS: { INICIO: aniosDisponibles[7], MESES_MAX: 48 }
+	};
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// ESTADO GLOBAL DE LA CALCULADORA
+	// ─────────────────────────────────────────────────────────────────────────
+	const estado = {
+		vehiculo:       "",
+		combustible:    "",
+		condicion:      "",
+		anio:           null,
+		plazo:          null,
+		tasa:           null,
+		cuota:          null,
+		cilindrada:     null,
+		potencia:       null,
+		preaprobadoForm: {}
+	};
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Actualiza la variable CSS --header-height según la altura real del header
+	// ─────────────────────────────────────────────────────────────────────────
+	function actualizarAlturaHeader() {
+		const header = document.querySelector("header");
+		if (!header) return;
+		const altura = Math.ceil(header.getBoundingClientRect().height);
+		document.documentElement.style.setProperty("--header-height", `${altura}px`);
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// REFERENCIAS AL DOM
+	// ─────────────────────────────────────────────────────────────────────────
+	const DOM = {
+		form: document.getElementById("formCalculadora"),
+		inputs: {
+			monto:      document.getElementById("montoPrestamo"),
+			vehiculo:   document.getElementById("tipoVehiculo"),
+			combustible:document.getElementById("tipoCombustible"),
+			condicion:  document.getElementById("condicion"),
+			anio:       document.getElementById("anio"),
+			plazo:      document.getElementById("plazo"),
+			tasa:       document.getElementById("tasaInteres")
+		},
+		btnCalcular: document.getElementById("btnCalcular"),
+		resultado: {
+			container: document.getElementById("resultadoCuota"),
+			stack:     document.querySelector(".resultado-stack"),
+			fraseInfo: document.getElementById("frase-uva-info"),
+			infoAutos: {
+				anio:  document.getElementById("autos-anio"),
+				meses: document.getElementById("autos-meses")
+			},
+			infoMotos: {
+				cilindrada: document.getElementById("motos-cilindrada"),
+				anio:       document.getElementById("motos-anio"),
+				meses:      document.getElementById("motos-meses")
+			}
+		},
+		modales: {
+			preaprobado: document.getElementById("modalDatosPreaprobado"),
+			overlay:     document.querySelector("#modalDatosPreaprobado .modal-preaprobado__overlay"),
+			toast:       document.getElementById("modalPreaprobadoToast")
+		},
+		preaprobadoPrestamoGrid: document.querySelector(".modal-preaprobado__prestamo-grid"),
+		preaprobadoPrestamo: {
+			monto: {
+				visible: document.getElementById("preaprobadoMontoInfo"),
+				hidden:  document.getElementById("preaprobadoMonto")
+			},
+			anio: {
+				control: document.getElementById("preaprobadoAnioEditable"),
+				hidden:  document.getElementById("preaprobadoAnio")
+			},
+			tasa: {
+				control: document.getElementById("preaprobadoTasaEditable"),
+				hidden:  document.getElementById("preaprobadoTasa")
+			},
+			plazo: {
+				control: document.getElementById("preaprobadoPlazoEditable"),
+				hidden:  document.getElementById("preaprobadoPlazo")
+			},
+			cuota: {
+				visible: document.getElementById("preaprobadoCuotaInfo"),
+				hidden:  document.getElementById("preaprobadoCuota")
+			}
+		},
+		contacto: {
+			form:     document.getElementById("formularioContacto"),
+			exito:    document.getElementById("mensajeExito"),
+			contador: document.getElementById("contadorCaracteres")
+		}
+	};
+
+	// Mover el modal al body si quedó anidado dentro de otra sección
+	if (DOM.modales.preaprobado && DOM.modales.preaprobado.parentElement !== document.body) {
+		document.body.appendChild(DOM.modales.preaprobado);
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// UTILIDAD: formatea un número como moneda argentina sin decimales
+	// ─────────────────────────────────────────────────────────────────────────
+	const formatearPesos = (num) =>
+		num.toLocaleString("es-AR", { maximumFractionDigits: 0 });
+
+	DOM.inputs.monto.placeholder = `Mín. $ ${formatearPesos(CONFIG.MONTO_MINIMO)}`;
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Procesa el campo monto: formatea, habilita/deshabilita campos dependientes
+	// @param {boolean} alPerderFoco - true cuando se llama desde el evento blur
+	// ─────────────────────────────────────────────────────────────────────────
+	function procesarMonto(alPerderFoco = false) {
+		const inputMonto = DOM.inputs.monto;
+		let soloNumeros = inputMonto.value.replace(/[^0-9]/g, "");
+		let montoInt    = parseInt(soloNumeros, 10);
+
+		if (soloNumeros) {
+			inputMonto.value = `$ ${parseInt(soloNumeros, 10).toLocaleString("es-AR")}`;
+		} else {
+			inputMonto.value = "";
+			if (alPerderFoco) {
+				inputMonto.placeholder = `Ingresá Monto (Mín. $${formatearPesos(CONFIG.MONTO_MINIMO)})`;
+			}
+		}
+
+		if (!isNaN(montoInt) && montoInt >= CONFIG.MONTO_MINIMO) {
+			inputMonto.classList.add("input-con-valor");
+			// Habilitar el siguiente campo (vehículo)
+			if (true) {
+				DOM.inputs.vehiculo.disabled = false;
+			} else {
+				Object.values(DOM.inputs).forEach(inp => {
+					if (inp !== DOM.inputs.monto) inp.disabled = true;
+				});
+				resetearCamposDependientes();
+			}
+		} else {
+			inputMonto.classList.remove("input-con-valor");
+			if (alPerderFoco) resetearCamposDependientes();
+		}
+
+		actualizarBotonCalcular();
+		actualizarPanelPreaprobado();
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Resetea todos los campos dependientes al monto (vehículo en adelante)
+	// ─────────────────────────────────────────────────────────────────────────
+	function resetearCamposDependientes() {
+		Object.values(DOM.inputs).forEach(inp => {
+			if (inp !== DOM.inputs.monto) {
+				inp.selectedIndex = 0;
+				inp.classList.remove("select-con-valor");
+				inp.disabled = true;
+			}
+		});
+		estado.vehiculo    = "";
+		estado.combustible = "";
+		estado.condicion   = "";
+		estado.anio        = null;
+		estado.plazo       = null;
+		estado.tasa        = null;
+		estado.cilindrada  = null;
+		estado.potencia    = null;
+		actualizarPanelPreaprobado();
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Carga las opciones del select Condición según vehículo y combustible
+	// ─────────────────────────────────────────────────────────────────────────
+	function cargarCondicion() {
+		const selectCondicion = DOM.inputs.condicion;
+		if (!estado.vehiculo || !estado.combustible) return;
+
+		selectCondicion.innerHTML = '<option value="" disabled selected hidden>Opciones</option>';
+		let opciones = [];
+
+		if      (estado.vehiculo === "auto")       opciones = CONFIG.CONDICIONES.AUTO;
+		else if (estado.vehiculo === "utilitario") opciones = CONFIG.CONDICIONES.UTILITARIO;
+		else if (estado.vehiculo === "moto")       opciones = CONFIG.CONDICIONES.MOTO;
+		else if (estado.vehiculo === "cuatriciclo") opciones = CONFIG.CONDICIONES.CUATRICICLO;
+
+		opciones.forEach(op => {
+			selectCondicion.innerHTML += `<option value="${op}">${op}</option>`;
+		});
+		selectCondicion.disabled = opciones.length === 0;
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Carga las opciones del select Año según el estado actual
+	// ─────────────────────────────────────────────────────────────────────────
+	function cargarAnio() {
+		const selectAnio = DOM.inputs.anio;
+		if (!estado.vehiculo || !estado.combustible || !estado.condicion) return;
+
+		selectAnio.innerHTML = '<option value="" disabled selected hidden>Opciones</option>';
+		const anios = obtenerAnios(leerEstado());
+
+		anios.forEach(anio => {
+			const opt = document.createElement("option");
+			opt.value       = anio;
+			opt.textContent = anio;
+			selectAnio.appendChild(opt);
+		});
+		selectAnio.disabled = anios.length === 0;
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Carga las opciones del select Plazo según el estado actual
+	// ─────────────────────────────────────────────────────────────────────────
+	function cargarPlazo() {
+		const selectPlazo = DOM.inputs.plazo;
+		if (!estado.vehiculo || !estado.combustible || !estado.anio) return;
+
+		selectPlazo.innerHTML = '<option value="" disabled selected hidden>Opciones</option>';
+		const plazos = obtenerPlazos(leerEstado());
+
+		plazos.forEach(plazo => {
+			const opt = document.createElement("option");
+			opt.value       = plazo;
+			opt.textContent = `${plazo} meses`;
+			selectPlazo.appendChild(opt);
+		});
+		selectPlazo.disabled = plazos.length === 0;
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Carga las opciones del select Tasa según el estado actual
+	// ─────────────────────────────────────────────────────────────────────────
+	function cargarTasa() {
+		const selectTasa = DOM.inputs.tasa;
+		if (!(estado.vehiculo && estado.combustible && estado.anio && estado.plazo)) return;
+
+		selectTasa.innerHTML = '<option value="" disabled selected hidden>Opciones</option>';
+		const tasas = obtenerTasas(leerEstado());
+
+		tasas.forEach(t => {
+			selectTasa.innerHTML += `<option value="${t.valor}">${t.texto}</option>`;
+		});
+		selectTasa.disabled = tasas.length === 0;
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Lee y devuelve el monto del input como entero (o null si inválido)
+	// ─────────────────────────────────────────────────────────────────────────
+	function leerMonto() {
+		const raw   = DOM.inputs.monto.value.replace(/[^0-9]/g, "");
+		const valor = parseInt(raw, 10);
+		return Number.isFinite(valor) ? valor : null;
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Construye y devuelve un objeto con el estado actual de la calculadora.
+	// Se puede sobreescribir cualquier propiedad pasando un objeto parcial.
+	// ─────────────────────────────────────────────────────────────────────────
+	function leerEstado(overrides = {}) {
+		return {
+			monto:      Object.prototype.hasOwnProperty.call(overrides, "monto") ? overrides.monto : leerMonto(),
+			vehiculo:   overrides.vehiculo   ?? estado.vehiculo,
+			combustible:overrides.combustible ?? estado.combustible,
+			condicion:  overrides.condicion  ?? estado.condicion,
+			anio:       overrides.anio       ?? estado.anio,
+			plazo:      overrides.plazo      ?? estado.plazo,
+			tasa:       overrides.tasa       ?? estado.tasa,
+			cilindrada: overrides.cilindrada ?? estado.cilindrada,
+			potencia:   overrides.potencia   ?? estado.potencia
+		};
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Devuelve los años disponibles para el contexto dado
+	// ─────────────────────────────────────────────────────────────────────────
+	function obtenerAnios(ctx) {
+		if (!ctx?.vehiculo || !ctx?.combustible || !ctx?.condicion) return [];
+
+		let lista = [];
+		const esCombustibleComun = ["comun", "nafta"].includes(ctx.combustible);
+		const esNuevo            = ctx.condicion === "0km";
+
+		if (ctx.vehiculo === "auto") {
+			lista = esCombustibleComun && esNuevo ? aniosDisponibles.slice(0, 2)
+				  : esCombustibleComun            ? aniosDisponibles.slice(0, CONFIG.LIMITES_ANIOS.AUTO + 1)
+				  : esNuevo                       ? aniosDisponibles.slice(0, 2)
+				  :                                 aniosDisponibles.slice(0, 4);
+
+		} else if (ctx.vehiculo === "utilitario") {
+			lista = esCombustibleComun
+				? (esNuevo ? aniosDisponibles.slice(0, 2)
+					: ctx.condicion === "Usado" ? aniosDisponibles.slice(0, CONFIG.LIMITES_ANIOS.UTILITARIO + 1)
+					: aniosDisponibles.slice(0, 4))
+				: (esNuevo ? aniosDisponibles.slice(0, 2) : aniosDisponibles.slice(0, 4));
+
+		} else if (ctx.vehiculo === "moto") {
+			if (ctx.combustible === "nafta") {
+				if (!ctx.cilindrada || ctx.cilindrada < CILINDRADA_MINIMA_MOTO) return [];
+				lista = aniosDisponibles.slice(0, CONFIG.LIMITES_ANIOS.MOTO + 1);
+			} else if (ctx.combustible === "electricoMoto") {
+				if (!ctx.potencia || ctx.potencia < POTENCIA_MINIMA_MOTO) return [];
+				lista = aniosDisponibles.slice(0, CONFIG.LIMITES_ANIOS.MOTO + 1);
+			}
+
+		} else if (ctx.vehiculo === "cuatriciclo") {
+			lista = aniosDisponibles.slice(0, CONFIG.LIMITES_ANIOS.CUATRICICLO + 1);
+		}
+
+		return lista;
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Devuelve los plazos disponibles para el contexto dado
+	// ─────────────────────────────────────────────────────────────────────────
+	function obtenerPlazos(ctx) {
+		if (!ctx?.vehiculo || !ctx?.combustible || !ctx?.anio) return [];
+
+		let lista = [];
+		const idxAnio       = aniosDisponibles.indexOf(ctx.anio);
+		const esCombComun   = ["comun", "nafta", "electricoAuto"].includes(ctx.combustible);
+
+		if (ctx.vehiculo === "auto" || ctx.vehiculo === "utilitario") {
+			const esUsado = ctx.condicion === "Usado";
+			lista = esCombComun && !esUsado
+				? CONFIG.PLAZOS.filter((_, i) => i !== 1)
+				: esCombComun && esUsado
+					? idxAnio <= 7  ? CONFIG.PLAZOS.filter((_, i) => i <= 5 && i !== 1)
+					: idxAnio === 8 ? CONFIG.PLAZOS.filter((_, i) => i <= 4 && i !== 1)
+					:                 CONFIG.PLAZOS.filter((_, i) => i <= 3 && i !== 1)
+				: CONFIG.PLAZOS.filter((_, i) => i <= 3 && i !== 1);
+
+		} else if (ctx.vehiculo === "moto") {
+			lista = ctx.combustible === "nafta"
+				? ctx.anio >= aniosDisponibles[4] ? [...CONFIG.PLAZOS]
+				: ctx.anio === aniosDisponibles[5] ? CONFIG.PLAZOS.slice(0, 5)
+				:                                    CONFIG.PLAZOS.slice(0, 4)
+				: [...CONFIG.PLAZOS];
+
+		} else if (ctx.vehiculo === "cuatriciclo") {
+			lista = [...CONFIG.PLAZOS];
+		}
+
+		return lista;
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Devuelve las tasas disponibles para el contexto dado
+	// Cada ítem: { valor: number, texto: string }
+	// ─────────────────────────────────────────────────────────────────────────
+	function obtenerTasas(ctx) {
+		if (!(ctx?.vehiculo && ctx?.combustible && ctx?.anio && ctx?.plazo)) return [];
+
+		const idxPlazo     = CONFIG.PLAZOS.indexOf(ctx.plazo);
+		if (idxPlazo === -1) return [];
+
+		const tasasDisponibles  = [];
+		const esCombComun       = ["comun", "nafta"].includes(ctx.combustible);
+		const quebrantoPlazo    = QUEBRANTOS_POR_PLAZO[idxPlazo] ?? 0;
+		const formatPct         = (v) => `${v.toFixed(1).replace(".", ",")}%`;
+
+		const agregarTasa = (valor, etiqueta, textoForzado) => {
+			if (typeof valor !== "number" || Number.isNaN(valor)) return;
+			tasasDisponibles.push({
+				valor,
+				texto: textoForzado ?? `${etiqueta} (${formatPct(valor)})`
+			});
+		};
+
+		if (["auto", "utilitario"].includes(ctx.vehiculo)) {
+			const tasaFija = esCombComun
+				? CONFIG.TASAS.AUTO.COMUN[idxPlazo]
+				: CONFIG.TASAS.AUTO.ELECTRICO[idxPlazo];
+
+			if (TASA_FIJA_HABILITADA) agregarTasa(tasaFija, "Fija");
+
+			if (ctx.anio >= LIMITES_UVA.AUTOS.INICIO && ctx.plazo <= LIMITES_UVA.AUTOS.MESES_MAX) {
+				const tasaUva = CONFIG.TASAS.AUTO.UVA[idxPlazo];
+				if (TASA_UVA_HABILITADA)  agregarTasa(tasaUva, "UVA");
+				if (TASA_CERO_HABILITADA && quebrantoPlazo > 0) agregarTasa(0, "Tasa 0%", "Tasa 0%");
+			}
+
+		} else {
+			const tasaFija = esCombComun
+				? CONFIG.TASAS.MOTO.COMUN[idxPlazo]
+				: CONFIG.TASAS.MOTO.ELECTRICO[idxPlazo];
+
+			if (TASA_FIJA_HABILITADA) agregarTasa(tasaFija, "Fija");
+
+			const aplicaUva =
+				(ctx.vehiculo === "moto" && ctx.combustible === "nafta"      && ctx.cilindrada >= CONFIG.LIMITES.MOTO.CILINDRADA.MEDIA) ||
+				(ctx.vehiculo === "moto" && ctx.combustible === "electricoMoto" && ctx.potencia >= POTENCIA_MINIMA_MOTO) ||
+				(ctx.vehiculo === "cuatriciclo");
+
+			if (aplicaUva && ctx.anio >= LIMITES_UVA.MOTOS.INICIO && ctx.plazo <= LIMITES_UVA.MOTOS.MESES_MAX) {
+				const tasaUva = CONFIG.TASAS.MOTO.UVA[idxPlazo];
+				if (TASA_UVA_HABILITADA)  agregarTasa(tasaUva, "UVA");
+				if (TASA_CERO_HABILITADA && quebrantoPlazo > 0) agregarTasa(0, "Tasa 0%", "Tasa 0%");
+			}
+		}
+
+		return tasasDisponibles;
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Calcula la cuota mensual dado un contexto
+	// @returns {object|null} objeto con cuota y textos formateados, o null si faltan datos
+	// ─────────────────────────────────────────────────────────────────────────
+	function calcularCuota(ctx, textoTasaForzado = "") {
+		const monto = ctx?.monto;
+		const plazo = ctx?.plazo;
+		const tasa  = ctx?.tasa;
+
+		if (!monto || !plazo || tasa === null || Number.isNaN(tasa)) return null;
+
+		const idxPlazo = CONFIG.PLAZOS.indexOf(plazo);
+		if (idxPlazo === -1) return null;
+
+		const tasaMensual       = tasa / 12 / 100;
+		const montoConGastos    = monto / (1 - CONFIG.GASTOS_ADMIN / 100);
+		const montoRedondeado   = Math.round(montoConGastos);
+		const quebrantoConIVA   = (QUEBRANTOS_POR_PLAZO[idxPlazo] ?? 0) / 100 * (1 + CONFIG.IVA / 100);
+		const montoConQuebranto = Math.round(montoConGastos / (1 - quebrantoConIVA));
+
+		// Cuota base (sistema francés o lineal si tasa = 0)
+		const cuotaBase = tasaMensual === 0
+			? montoConQuebranto / plazo
+			: montoRedondeado * tasaMensual / (1 - Math.pow(1 + tasaMensual, -plazo));
+
+		// IVA sobre intereses
+		const ivaIntereses = montoRedondeado * tasaMensual * (CONFIG.IVA / 100);
+
+		const cuotaFinal = tasaMensual === 0
+			? Math.round(cuotaBase)
+			: Math.ceil(cuotaBase + ivaIntereses);
+
+		const textoTasa = textoTasaForzado || `${tasa.toFixed(1).replace(".", ",")}%`;
+
+		return {
+			cuota:      cuotaFinal,
+			montoTexto: `$ ${formatearPesos(monto)}`,
+			anioTexto:  ctx.anio ? String(ctx.anio) : "",
+			plazoTexto: `${plazo} meses`,
+			tasaTexto:  textoTasa,
+			cuotaTexto: `$ ${formatearPesos(cuotaFinal)}`
+		};
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Calcula la cuota con el estado actual de los selects
+	// ─────────────────────────────────────────────────────────────────────────
+	function calcularCuotaActual() {
+		const textoTasa = DOM.inputs.tasa.options[DOM.inputs.tasa.selectedIndex]?.textContent
+			|| `${estado.tasa?.toFixed(1).replace(".", ",")}%`;
+		return calcularCuota(leerEstado(), textoTasa);
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Puebla un <select> con opciones y devuelve el valor seleccionado
+	// @param {HTMLSelectElement} selectEl
+	// @param {Array<{valor, texto}>} opciones
+	// @param {any} valorPreferido - valor a preseleccionar
+	// @param {string} placeholder - texto del placeholder
+	// ─────────────────────────────────────────────────────────────────────────
+	function poblarSelect(selectEl, opciones, valorPreferido, placeholder) {
+		if (!selectEl) return "";
+		selectEl.innerHTML = `<option value="" disabled hidden>${placeholder}</option>`;
+
+		opciones.forEach(op => {
+			const opt       = document.createElement("option");
+			opt.value       = String(op.valor);
+			opt.textContent = op.texto;
+			selectEl.appendChild(opt);
+		});
+
+		const valorStr = valorPreferido != null ? String(valorPreferido) : "";
+		const existe   = opciones.some(op => String(op.valor) === valorStr);
+
+		selectEl.disabled = opciones.length === 0;
+		selectEl.value    = existe ? valorStr : "";
+		if (!selectEl.value) selectEl.selectedIndex = 0;
+		return selectEl.value;
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Detecta si el contenido de un elemento desborda (varias líneas)
+	// ─────────────────────────────────────────────────────────────────────────
+	function textoDesborda(el) {
+		if (!el || !el.textContent || !el.textContent.trim()) return false;
+
+		const estilos    = window.getComputedStyle(el);
+		const lineHeight = parseFloat(estilos.lineHeight) || 1.4 * parseFloat(estilos.fontSize);
+		const altoUnaLinea = lineHeight + (parseFloat(estilos.paddingTop) || 0) + (parseFloat(estilos.paddingBottom) || 0);
+		const altoReal   = el.getBoundingClientRect().height;
+
+		const cantLineas = (function contarLineas(el) {
+			if (!el || !el.textContent || !el.textContent.trim()) return 0;
+			const rango = document.createRange();
+			rango.selectNodeContents(el);
+			const n = rango.getClientRects().length;
+			rango.detach?.();
+			return n;
+		})(el);
+
+		return cantLineas > 1 || altoReal > altoUnaLinea + 0.45 * lineHeight;
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Ajusta la grilla de datos de préstamo en el modal según si desborda la cuota
+	// ─────────────────────────────────────────────────────────────────────────
+	function ajustarColumnasPreaprobado() {
+		const grid   = DOM.preaprobadoPrestamoGrid;
+		if (!grid) return;
+		const elCuota  = DOM.preaprobadoPrestamo?.cuota?.visible;
+		const desborda = Boolean(elCuota && !elCuota.classList.contains("is-empty") && textoDesborda(elCuota));
+		grid.classList.toggle("is-two-columns", desborda);
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Actualiza los datos del panel Preaprobado (selects y textos de resumen)
+	// @param {boolean} forzarDesdeCalculadora - si true, toma los valores del estado global
+	// ─────────────────────────────────────────────────────────────────────────
+	function actualizarPanelPreaprobado(forzarDesdeCalculadora = false) {
+		const panelPreaprobado = DOM.preaprobadoPrestamo;
+		if (!panelPreaprobado || !panelPreaprobado.monto) return;
+
+		// Sincroniza los selects del panel con los disponibles en la calculadora
+		(function sincronizarSelectsPreaprobado(forzar = false) {
+			const ctrlAnio  = DOM.preaprobadoPrestamo?.anio?.control;
+			const ctrlPlazo = DOM.preaprobadoPrestamo?.plazo?.control;
+			const ctrlTasa  = DOM.preaprobadoPrestamo?.tasa?.control;
+			if (!ctrlAnio || !ctrlPlazo || !ctrlTasa) return;
+
+			const ctxActual    = leerEstado();
+			const opcsAnio     = obtenerAnios(ctxActual).map(a => ({ valor: a, texto: String(a) }));
+			const valAnioPref  = forzar ? ctxActual.anio : parseInt(ctrlAnio.value, 10) || ctxActual.anio;
+			const anioSel      = parseInt(poblarSelect(ctrlAnio, opcsAnio, valAnioPref, "desde calculadora"), 10);
+
+			const ctxConAnio   = leerEstado({ anio: Number.isFinite(anioSel) ? anioSel : null });
+			const opcsPlazos   = obtenerPlazos(ctxConAnio).map(p => ({ valor: p, texto: `${p} meses` }));
+			const valPlazoPref = forzar ? ctxConAnio.plazo : parseInt(ctrlPlazo.value, 10) || ctxConAnio.plazo;
+			const plazoSel     = parseInt(poblarSelect(ctrlPlazo, opcsPlazos, valPlazoPref, "desde calculadora"), 10);
+
+			const ctxConPlazo  = leerEstado({ anio: Number.isFinite(anioSel) ? anioSel : null, plazo: Number.isFinite(plazoSel) ? plazoSel : null });
+			poblarSelect(ctrlTasa, obtenerTasas(ctxConPlazo), forzar ? ctxConPlazo.tasa : parseFloat(ctrlTasa.value) || ctxConPlazo.tasa, "desde calculadora");
+
+			actualizarEstadoVisual(ctrlAnio);
+			actualizarEstadoVisual(ctrlPlazo);
+			actualizarEstadoVisual(ctrlTasa);
+		})(forzarDesdeCalculadora);
+
+		// Calcula los textos a mostrar usando los selects del modal
+		const textos = (function calcularTextosPanel() {
+			const ctxActual = leerEstado();
+			const ctrlAnio  = DOM.preaprobadoPrestamo?.anio?.control;
+			const ctrlPlazo = DOM.preaprobadoPrestamo?.plazo?.control;
+			const ctrlTasa  = DOM.preaprobadoPrestamo?.tasa?.control;
+
+			const anioVal   = parseInt(ctrlAnio?.value  || "", 10);
+			const plazoVal  = parseInt(ctrlPlazo?.value || "", 10);
+			const tasaVal   = parseFloat(ctrlTasa?.value || "");
+			const textoTasa = ctrlTasa?.options?.[ctrlTasa.selectedIndex]?.textContent || "";
+
+			const resultado = calcularCuota(
+				leerEstado({
+					anio:  Number.isFinite(anioVal)  ? anioVal  : null,
+					plazo: Number.isFinite(plazoVal) ? plazoVal : null,
+					tasa:  Number.isFinite(tasaVal)  ? tasaVal  : null
+				}),
+				textoTasa
+			);
+
+			return {
+				montoTexto: Number.isFinite(ctxActual.monto) && ctxActual.monto > 0 ? `$ ${formatearPesos(ctxActual.monto)}` : "",
+				anioTexto:  Number.isFinite(anioVal)  ? String(anioVal)  : "",
+				plazoTexto: Number.isFinite(plazoVal) ? `${plazoVal} meses` : "",
+				tasaTexto:  Number.isFinite(tasaVal)  ? textoTasa : "",
+				cuotaTexto: resultado?.cuotaTexto || ""
+			};
+		})();
+
+		// Actualiza los elementos visible/hidden del panel
+		Object.entries(panelPreaprobado).forEach(([campo, refs]) => {
+			const texto = textos[`${campo}Texto`] || "";
+			if (refs.hidden)  refs.hidden.value     = texto;
+			if (refs.visible) {
+				refs.visible.textContent = texto || "desde calculadora";
+				refs.visible.classList.toggle("is-empty", texto === "");
+			}
+		});
+
+		requestAnimationFrame(ajustarColumnasPreaprobado);
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Sincroniza los selects de la calculadora principal desde el modal Preaprobado
+	// (cuando el usuario edita año/plazo/tasa en el modal)
+	// ─────────────────────────────────────────────────────────────────────────
+	function sincronizarCalculadoraDesdeModal() {
+		const anioModal  = parseInt(DOM.preaprobadoPrestamo?.anio?.control?.value  || "", 10);
+		const plazoModal = parseInt(DOM.preaprobadoPrestamo?.plazo?.control?.value || "", 10);
+		const tasaModal  = parseFloat(DOM.preaprobadoPrestamo?.tasa?.control?.value || "");
+
+		const selAnio  = DOM.inputs.anio;
+		const selPlazo = DOM.inputs.plazo;
+		const selTasa  = DOM.inputs.tasa;
+
+		if (!(selAnio && selPlazo && selTasa && Number.isFinite(anioModal) && Number.isFinite(plazoModal) && Number.isFinite(tasaModal))) return;
+
+		cargarAnio();
+		if (!Array.from(selAnio.options).some(o => o.value === String(anioModal))) return;
+		if (selAnio.value !== String(anioModal)) {
+			selAnio.value = String(anioModal);
+			selAnio.dispatchEvent(new Event("change", { bubbles: true }));
+		} else {
+			estado.anio = anioModal;
+			actualizarEstadoVisual(selAnio);
+		}
+
+		cargarPlazo();
+		if (!Array.from(selPlazo.options).some(o => o.value === String(plazoModal))) return;
+		if (selPlazo.value !== String(plazoModal)) {
+			selPlazo.value = String(plazoModal);
+			selPlazo.dispatchEvent(new Event("change", { bubbles: true }));
+		} else {
+			estado.plazo = plazoModal;
+			actualizarEstadoVisual(selPlazo);
+		}
+
+		cargarTasa();
+		if (Array.from(selTasa.options).some(o => o.value === String(tasaModal))) {
+			if (selTasa.value !== String(tasaModal)) {
+				selTasa.value = String(tasaModal);
+				selTasa.dispatchEvent(new Event("change", { bubbles: true }));
+			} else {
+				estado.tasa = tasaModal;
+				actualizarEstadoVisual(selTasa);
+				actualizarBotonCalcular();
+			}
+			if (!DOM.btnCalcular.disabled && calcularCuotaActual()) mostrarResultado();
+		}
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Muestra el resultado de la cuota calculada
+	// ─────────────────────────────────────────────────────────────────────────
+	function mostrarResultado() {
+		const resultado = calcularCuotaActual();
+		if (!resultado) return;
+
+		estado.cuota = resultado.cuota;
+		DOM.btnCalcular.classList.add("vis-hidden");
+		if (DOM.resultado.fraseInfo) DOM.resultado.fraseInfo.classList.add("vis-hidden");
+
+		DOM.resultado.container.innerHTML = `
+					<div class="resultado-cuota-total">Total Cuota $ ${resultado.cuota.toLocaleString("es-AR")}</div>
+					<p class="resultado-cuota-leyenda">Valor de la cuota sujeto a aprobación crediticia de acuerdo a pautas de la entidad interviniente.</p>
+					<button type="button" class="resultado-preaprobado" id="btnSolicitarPreaprobado">Solicitar Preaprobado</button>
+				`;
+
+		DOM.resultado.container.classList.remove("resultado-hidden");
+		DOM.resultado.container.classList.add("resultado-visible");
+		DOM.resultado.container.style.animation = "none";
+		DOM.resultado.container.style.opacity   = "0";
+
+		posicionarResultado();
+		ajustarFuenteResultado();
+
+		requestAnimationFrame(() => {
+			DOM.resultado.container.style.animation = "";
+			DOM.resultado.container.style.opacity   = "";
+		});
+
+		actualizarPanelPreaprobado();
+		document.getElementById("btnSolicitarPreaprobado").addEventListener("click", abrirModalPreaprobado);
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Habilita/deshabilita el botón Calcular según si todos los campos están completos
+	// ─────────────────────────────────────────────────────────────────────────
+	function actualizarBotonCalcular() {
+		const listo =
+			DOM.inputs.monto.classList.contains("input-con-valor") &&
+			estado.vehiculo &&
+			estado.combustible &&
+			estado.condicion &&
+			estado.anio &&
+			estado.plazo &&
+			estado.tasa !== null && !Number.isNaN(estado.tasa);
+
+		DOM.btnCalcular.disabled = !listo;
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Invalida y resetea los campos dependientes a partir del campo indicado.
+	// @param {string} campoOrigen - nombre del campo que cambió
+	// @param {object} estadoAnterior - snapshot del estado antes del cambio
+	// ─────────────────────────────────────────────────────────────────────────
+	function invalidarDependientes(campoOrigen, estadoAnterior = {}) {
+		const orden = ["vehiculo", "combustible", "condicion", "anio", "plazo", "tasa"];
+		let idxOrigen = orden.indexOf(campoOrigen);
+		if (idxOrigen === -1) return;
+
+		let ctxAux = leerEstado(estadoAnterior);
+
+		for (let i = idxOrigen + 1; i < orden.length; i++) {
+			const campo  = orden[i];
+			const selectEl = DOM.inputs[campo];
+			let debeLimpiar = false;
+
+			if (campo === "combustible") {
+				const combAnt = estadoAnterior.vehiculo ? obtenerCombustiblesParaVehiculo(ctxAux.vehiculo) : [];
+				const combNuevo = estado.vehiculo ? obtenerCombustiblesParaVehiculo(estado.vehiculo) : [];
+				debeLimpiar = JSON.stringify(combAnt) !== JSON.stringify(combNuevo);
+			} else if (campo === "condicion") {
+				debeLimpiar = estadoAnterior.vehiculo !== estado.vehiculo || estadoAnterior.combustible !== estado.combustible;
+			} else if (campo === "anio") {
+				debeLimpiar = estadoAnterior.vehiculo !== estado.vehiculo || estadoAnterior.combustible !== estado.combustible ||
+					estadoAnterior.condicion !== estado.condicion || estadoAnterior.cilindrada !== estado.cilindrada ||
+					estadoAnterior.potencia !== estado.potencia;
+			} else if (campo === "plazo") {
+				debeLimpiar = estadoAnterior.anio !== estado.anio;
+			} else if (campo === "tasa") {
+				debeLimpiar = estadoAnterior.plazo !== estado.plazo;
+			}
+
+			if (debeLimpiar && selectEl) {
+				selectEl.innerHTML = '<option value="" disabled selected hidden>Opciones</option>';
+				selectEl.classList.remove("select-con-valor");
+				selectEl.value = "";
+				estado[campo] = null;
+			}
+			ctxAux = { ...ctxAux, [campo]: estado[campo] };
+		}
+
+		estado.cuota = null;
+		actualizarPanelPreaprobado();
+		ocultarResultado();
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Devuelve las opciones de combustible según el tipo de vehículo
+	// ─────────────────────────────────────────────────────────────────────────
+	function obtenerCombustiblesParaVehiculo(vehiculo) {
+		if (["auto", "utilitario"].includes(vehiculo))
+			return [{ v: "comun", t: "Nafta/Diesel" }, { v: "electricoAuto", t: "Híbrido/Eléctrico" }];
+		if (vehiculo === "moto")
+			return [{ v: "nafta", t: "Nafta" }, { v: "electricoMoto", t: "Eléctrico" }];
+		if (vehiculo === "cuatriciclo")
+			return [{ v: "nafta", t: "Nafta" }, { v: "electricoCuatri", t: "Eléctrico" }];
+		return [];
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Oculta el panel de resultado y restaura el botón Calcular
+	// ─────────────────────────────────────────────────────────────────────────
+	function ocultarResultado() {
+		DOM.resultado.container.classList.add("resultado-hidden");
+		DOM.resultado.container.classList.remove("resultado-visible");
+		DOM.resultado.container.style.top       = "";
+		DOM.resultado.container.style.left      = "";
+		DOM.resultado.container.style.width     = "";
+		DOM.resultado.container.style.height    = "";
+		DOM.resultado.container.style.maxHeight = "";
+		DOM.resultado.container.style.transform = "";
+		DOM.btnCalcular.classList.remove("vis-hidden");
+		if (DOM.resultado.fraseInfo) DOM.resultado.fraseInfo.classList.remove("vis-hidden");
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Configura validación sintáctica de email en un input
+	// ─────────────────────────────────────────────────────────────────────────
+	function configurarValidacionEmail(inputEl) {
+		if (!inputEl) return;
+		const validar = () => {
+			const val = inputEl.value.trim();
+			if (val === "") {
+				inputEl.setCustomValidity("");
+			} else if (/^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$/.test(val)) {
+				inputEl.setCustomValidity("");
+			} else {
+				inputEl.setCustomValidity("Ingresá un mail válido con formato usuario@dominio.extensión.");
+			}
+			actualizarEstadoVisual(inputEl);
+		};
+		inputEl._syncCustomEmailValidity = validar;
+		inputEl.addEventListener("input",  validar);
+		inputEl.addEventListener("change", validar);
+		inputEl.addEventListener("blur",   validar);
+		validar();
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Configura un input tel para aceptar solo números y mínimo 10 dígitos
+	// ─────────────────────────────────────────────────────────────────────────
+	function configurarTelefonoSoloNumeros(inputEl) {
+		if (!inputEl) return;
+		const validar = () => {
+			const soloNum = inputEl.value.replace(/\D+/g, "");
+			if (inputEl.value !== soloNum) inputEl.value = soloNum;
+			if (soloNum !== "" && soloNum.length < 10) {
+				inputEl.setCustomValidity("Ingresá solo números, con mínimo 10 dígitos.");
+			} else {
+				inputEl.setCustomValidity("");
+			}
+			actualizarEstadoVisual(inputEl);
+		};
+		inputEl._syncCustomPhoneDigits = validar;
+		inputEl.addEventListener("input",  validar);
+		inputEl.addEventListener("change", validar);
+		inputEl.addEventListener("blur",   validar);
+		validar();
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Agrega/quita la clase CSS de "campo con valor" según validez del campo
+	// ─────────────────────────────────────────────────────────────────────────
+	function actualizarEstadoVisual(inputEl) {
+		if (!inputEl || !inputEl.tagName) return;
+		if (inputEl.matches('input[type="hidden"], input[type="checkbox"], input[type="radio"]')) return;
+
+		const claseValido = inputEl.tagName === "SELECT" ? "select-con-valor" : "input-con-valor";
+
+		const tieneValor = (function esValido(el) {
+			if (!el || el.disabled) return false;
+			if (el.matches('input[type="hidden"], input[type="checkbox"], input[type="radio"]')) return false;
+			if (el.type === "file") return el.files && el.files.length > 0 && el.checkValidity();
+			const val = typeof el.value === "string" ? el.value.trim() : el.value;
+			return val !== "" && el.checkValidity();
+		})(inputEl);
+
+		inputEl.classList.toggle(claseValido, tieneValor);
+
+		// Custom select wrapper
+		const customSelect = inputEl.tagName === "SELECT" ? inputEl.closest(".custom-select") : null;
+		if (customSelect) customSelect.classList.toggle("is-valid", tieneValor);
+
+		// File picker wrapper
+		const filePicker = inputEl.type === "file" ? inputEl.closest(".modal-preaprobado__file-picker") : null;
+		if (filePicker) filePicker.classList.toggle("is-valid", tieneValor);
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Inicializa los listeners de validación visual en todos los campos del form
+	// ─────────────────────────────────────────────────────────────────────────
+	function inicializarValidacionVisual(formEl) {
+		if (!formEl) return;
+		formEl.querySelectorAll('input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), select, textarea')
+			.forEach(el => {
+				const fn = () => actualizarEstadoVisual(el);
+				el.addEventListener("input",  fn);
+				el.addEventListener("change", fn);
+				el.addEventListener("blur",   fn);
+			});
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Resetea las clases de validación visual de un formulario
+	// ─────────────────────────────────────────────────────────────────────────
+	function resetearClasesValidacion(formEl) {
+		if (!formEl) return;
+		formEl.querySelectorAll(".input-con-valor").forEach(el => el.classList.remove("input-con-valor"));
+		formEl.querySelectorAll(".select-con-valor").forEach(el => el.classList.remove("select-con-valor"));
+		formEl.querySelectorAll(".custom-select.is-valid").forEach(el => el.classList.remove("is-valid"));
+		formEl.querySelectorAll(".modal-preaprobado__file-picker.is-valid").forEach(el => el.classList.remove("is-valid"));
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Cierra los custom-selects abiertos excepto el indicado
+	// ─────────────────────────────────────────────────────────────────────────
+	function cerrarOtrosSelects(excepto = null) {
+		document.querySelectorAll("#calculadora .custom-select.open").forEach(cs => {
+			if (cs !== excepto) cs.classList.remove("open");
+		});
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Ajusta el font-size de las opciones de un custom-select para que entren en una línea
+	// ─────────────────────────────────────────────────────────────────────────
+	function ajustarFuenteOpciones(customSelectEl) {
+		if (!customSelectEl) return;
+		const listaOpc = customSelectEl.querySelector(".options");
+		if (!listaOpc || !customSelectEl.classList.contains("open")) return;
+
+		listaOpc.querySelectorAll("li").forEach(li => {
+			li.style.fontSize     = "";
+			li.style.letterSpacing= "";
+			const fzBase = parseFloat(window.getComputedStyle(li).fontSize);
+			if (!fzBase) return;
+			let fz = fzBase;
+			while (li.scrollWidth > li.clientWidth && fz > 10.5) {
+				fz -= 0.25;
+				li.style.fontSize = `${fz}px`;
+			}
+			if (li.scrollWidth > li.clientWidth) li.style.letterSpacing = "-0.02em";
+		});
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Muestra un modal de entrada numérica para cilindrada o potencia
+	// @param {string} titulo - etiqueta del campo
+	// @param {string} unidad - "cc" o "w"
+	// @param {number} minimo - valor mínimo aceptable
+	// @param {number|null} maximo - valor máximo (o null si no hay límite superior)
+	// @param {Function} callback - función llamada con el valor ingresado
+	// ─────────────────────────────────────────────────────────────────────────
+	function mostrarModalNumerico(titulo, unidad, minimo, maximo, callback) {
+		const fondo  = document.createElement("div");
+		fondo.className = "js-modal-fondo";
+
+		const modal  = document.createElement("div");
+		modal.className = "js-modal";
+
+		const label  = document.createElement("label");
+		label.textContent = titulo;
+		label.className   = "js-modal-label";
+
+		const input  = document.createElement("input");
+		input.type        = "text";
+		input.className   = "js-modal-input";
+		input.placeholder = unidad === "w" && maximo
+			? `Entre ${minimo.toLocaleString("es-AR")}w y ${maximo.toLocaleString("es-AR")}w`
+			: maximo
+				? `Entre ${minimo} y ${maximo}`
+				: `Mínimo ${minimo.toLocaleString("es-AR")}${unidad}`;
+
+		const moverCursor = (pos) => { try { input.setSelectionRange(pos, pos); } catch (e) {} };
+
+		const setValorFormateado = (val = "") => {
+			if (val) {
+				const fmt = parseInt(val, 10).toLocaleString("es-AR");
+				input.value = `${fmt} ${unidad}`;
+				return fmt.length;
+			}
+			input.value = "";
+			return 0;
+		};
+
+		input.addEventListener("input", () => {
+			const raw = input.value.replace(/[^0-9]/g, "");
+			const pos = setValorFormateado(raw);
+			moverCursor(pos);
+		});
+		input.addEventListener("click", () => {
+			const raw = input.value.replace(/[^0-9]/g, "");
+			const pos = raw ? parseInt(raw, 10).toLocaleString("es-AR").length : 0;
+			moverCursor(pos);
+		});
+
+		const btnAceptar = document.createElement("button");
+		btnAceptar.textContent = "Aceptar";
+		btnAceptar.className   = "js-modal-btn";
+
+		const cerrar = () => { if (document.body.contains(fondo)) document.body.removeChild(fondo); };
+
+		fondo.addEventListener("click", cerrar);
+		modal.addEventListener("click", e => e.stopPropagation());
+		input.addEventListener("keydown", e => {
+			if (e.key === "Enter") { e.preventDefault(); btnAceptar.click(); }
+			else if (e.key === "Escape") cerrar();
+		});
+
+		btnAceptar.onclick = () => {
+			const valor = parseInt(input.value.replace(/[^0-9]/g, ""), 10);
+			if (!isNaN(valor) && valor >= minimo && (!maximo || valor <= maximo)) {
+				callback(valor);
+				cerrar();
+			} else {
+				setValorFormateado("");
+				input.focus();
+			}
+		};
+
+		modal.appendChild(label);
+		modal.appendChild(input);
+		modal.appendChild(document.createElement("br"));
+		modal.appendChild(btnAceptar);
+		fondo.appendChild(modal);
+		document.body.appendChild(fondo);
+		setValorFormateado("");
+		input.focus();
+		moverCursor(0);
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Modal Preaprobado: quita max-height forzada
+	// ─────────────────────────────────────────────────────────────────────────
+	function eliminarMaxHeightModal() {
+		const modal = DOM.modales.preaprobado;
+		if (modal) modal.style.removeProperty("--modal-preaprobado-max-height");
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Modal Preaprobado: actualiza las variables CSS del overlay
+	// ─────────────────────────────────────────────────────────────────────────
+	function actualizarOverlayModal() {
+		const modal   = DOM.modales.preaprobado;
+		const overlay = DOM.modales.overlay;
+		const contenido = modal?.querySelector(".modal-preaprobado__content");
+		if (!modal || !overlay || !contenido) return;
+
+		if (modal.getAttribute("aria-hidden") === "true") {
+			modal.style.removeProperty("--modal-preaprobado-overlay-top");
+			modal.style.removeProperty("--modal-preaprobado-overlay-width");
+			modal.style.removeProperty("--modal-preaprobado-overlay-height");
+			modal.style.removeProperty("--modal-preaprobado-overlay-bleed");
+			return;
+		}
+
+		modal.style.setProperty("--modal-preaprobado-overlay-top",    `${contenido.offsetTop}px`);
+		modal.style.setProperty("--modal-preaprobado-overlay-width",  `${contenido.offsetWidth}px`);
+		modal.style.setProperty("--modal-preaprobado-overlay-height", `${contenido.offsetHeight}px`);
+		modal.style.setProperty("--modal-preaprobado-overlay-bleed",  "12px");
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Modal Preaprobado: calcula y aplica el offset top de posicionamiento
+	// ─────────────────────────────────────────────────────────────────────────
+	function calcularOffsetTopModal() {
+		const modal = DOM.modales.preaprobado;
+		if (!modal) return;
+
+		const estilosRoot    = window.getComputedStyle(document.documentElement);
+		const header         = document.querySelector("header");
+		const alturaHeader   = header ? header.getBoundingClientRect().height : parseFloat(estilosRoot.getPropertyValue("--header-height")) || 52;
+		const gapTop         = parseFloat(estilosRoot.getPropertyValue("--modal-preaprobado-top-gap")) || 0;
+		const gutterInline   = parseFloat(estilosRoot.getPropertyValue("--modal-inline-gutter")) || 0;
+		const selCombustible = document.getElementById("tipoCombustible");
+		const scrollY        = window.scrollY || window.pageYOffset || 0;
+
+		const btnSelComb = selCombustible?.closest(".custom-select")?.querySelector(".selected");
+		const refEl      = (btnSelComb || selCombustible);
+		const rect       = refEl?.getBoundingClientRect();
+		const centroRef  = (rect ? rect.top + scrollY + rect.height / 2 : alturaHeader + gapTop) - gutterInline;
+		const topFinal   = Math.max(alturaHeader + gapTop, centroRef);
+
+		modal.style.setProperty("--modal-preaprobado-top-offset", `${topFinal}px`);
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Modal Preaprobado: ajusta el ancho para que coincida con la calculadora
+	// ─────────────────────────────────────────────────────────────────────────
+	function actualizarAnchoModal() {
+		const modal       = DOM.modales.preaprobado;
+		const contenedor  = document.querySelector("#calculadora .calculadora-container");
+		if (!modal || !contenedor) return;
+
+		const estilosRoot = window.getComputedStyle(document.documentElement);
+		const escala      = parseFloat(estilosRoot.getPropertyValue("--modal-preaprobado-scale")) || 1;
+		const anchoContenedor = contenedor.getBoundingClientRect().width;
+		if (!anchoContenedor) return;
+
+		modal.style.setProperty("--modal-preaprobado-width", `${anchoContenedor * escala}px`);
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Abre el modal Preaprobado: oculta resultado, restaura estado del form
+	// ─────────────────────────────────────────────────────────────────────────
+	function abrirModalPreaprobado() {
+		ocultarResultado();
+
+		// Restaurar valores guardados en estado.preaprobadoForm
+		(function restaurarFormPreaprobado() {
+			if (!formPreaprobado) return;
+			const datosGuardados = estado.preaprobadoForm || {};
+
+			formPreaprobado.querySelectorAll("input, select, textarea").forEach(el => {
+				if (el.type === "file") return;
+				const clave = obtenerClaveInput(el);
+				if (!clave || !(clave in datosGuardados)) return;
+				if (el.type === "radio")    el.checked = el.value === datosGuardados[clave];
+				else if (el.type === "checkbox") el.checked = Boolean(datosGuardados[clave]);
+				else el.value = datosGuardados[clave] ?? "";
+			});
+
+			formPreaprobado.querySelectorAll('input[type="email"]').forEach(el => el._syncCustomEmailValidity?.());
+			formPreaprobado.querySelectorAll('input[type="tel"]').forEach(el => el._syncCustomPhoneDigits?.());
+			sincronizarRadiosDinamicos();
+			formPreaprobado.querySelectorAll('input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), select').forEach(actualizarEstadoVisual);
+
+			if (errorTerminos) errorTerminos.classList.remove("visible");
+
+			const radioSi  = formPreaprobado.querySelector("#datosPrestamoSi");
+			const seccionPrestamo = radioSi?.closest(".modal-preaprobado__section");
+			if (seccionPrestamo) seccionPrestamo.classList.toggle("prestamo-datos-ok", radioSi?.checked === true);
+
+			actualizarBotonEnviarPreaprobado();
+		})();
+
+		// Si el usuario dijo "No" a los datos, resetear esa respuesta
+		const radioNo = formPreaprobado?.querySelector("#datosPrestamoNo");
+		if (radioNo?.checked) {
+			const radioSi = formPreaprobado.querySelector("#datosPrestamoSi");
+			if (radioSi) radioSi.checked = false;
+			radioNo.checked = false;
+			const seccion = radioSi?.closest(".modal-preaprobado__section");
+			if (seccion) seccion.classList.remove("prestamo-datos-ok");
+			if (estado.preaprobadoForm) delete estado.preaprobadoForm["radio:datosPrestamo"];
+		}
+
+		actualizarPanelPreaprobado(true);
+		DOM.modales.preaprobado.setAttribute("aria-hidden", "false");
+
+		requestAnimationFrame(() => {
+			calcularOffsetTopModal();
+			actualizarAnchoModal();
+			eliminarMaxHeightModal();
+			actualizarOverlayModal();
+			ajustarColumnasPreaprobado();
+			document.body.classList.add("modal-preaprobado-open");
+			requestAnimationFrame(() => {
+				calcularOffsetTopModal();
+				actualizarAnchoModal();
+				actualizarOverlayModal();
+				ajustarColumnasPreaprobado();
+			});
+		});
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Cierra el modal Preaprobado
+	// @param {boolean} guardar - si true, guarda el estado del form antes de cerrar
+	// ─────────────────────────────────────────────────────────────────────────
+	function cerrarModalPreaprobado(guardar = true) {
+		document.body.classList.remove("modal-preaprobado-open");
+		if (guardar) guardarEstadoFormPreaprobado();
+		DOM.modales.preaprobado.setAttribute("aria-hidden", "true");
+		DOM.modales.preaprobado.style.removeProperty("--modal-preaprobado-max-height");
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Devuelve la clave identificadora de un input (para guardado de estado)
+	// ─────────────────────────────────────────────────────────────────────────
+	function obtenerClaveInput(inputEl) {
+		if (inputEl.type === "radio") return `radio:${inputEl.name}`;
+		return inputEl.id || inputEl.name || "";
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Guarda el estado actual del formulario Preaprobado en estado.preaprobadoForm
+	// ─────────────────────────────────────────────────────────────────────────
+	function guardarEstadoFormPreaprobado() {
+		if (!formPreaprobado) return;
+		const datos = {};
+		formPreaprobado.querySelectorAll("input, select, textarea").forEach(el => {
+			if (el.type === "file") return;
+			const clave = obtenerClaveInput(el);
+			if (!clave) return;
+			if      (el.type === "radio")    { if (el.checked) datos[clave] = el.value; }
+			else if (el.type === "checkbox") datos[clave] = el.checked;
+			else                             datos[clave] = el.value;
+		});
+		estado.preaprobadoForm = datos;
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Sincroniza los radios de cónyuge y cotitular disparando el evento change
+	// ─────────────────────────────────────────────────────────────────────────
+	function sincronizarRadiosDinamicos() {
+		["estadoConyuge", "estadoCotitular"].forEach(nombre => {
+			const radioChecked = formPreaprobado.querySelector(`input[name="${nombre}"]:checked`);
+			radioChecked?.dispatchEvent(new Event("change"));
+		});
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Inicialización de eventos del campo monto
+	// ─────────────────────────────────────────────────────────────────────────
+	DOM.inputs.monto.addEventListener("input", () => procesarMonto(false));
+	DOM.inputs.monto.addEventListener("blur",  () => procesarMonto(true));
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Inicialización de custom selects (reemplaza <select> nativo con UI custom)
+	// ─────────────────────────────────────────────────────────────────────────
+	Object.values(DOM.inputs)
+		.filter(el => el && el.tagName === "SELECT")
+		.forEach(selectEl => inicializarCustomSelect(selectEl));
+
+	function inicializarCustomSelect(selectEl) {
+		if (!selectEl || selectEl.closest(".custom-select")) return;
+
+		// Estructura del custom select
+		const wrapper    = document.createElement("div");
+		wrapper.className = "custom-select";
+		selectEl.parentNode.insertBefore(wrapper, selectEl);
+		wrapper.appendChild(selectEl);
+
+		const btnSelected = document.createElement("button");
+		btnSelected.type  = "button";
+		btnSelected.className = "selected";
+
+		const spanLabel   = document.createElement("span");
+		spanLabel.className = "selected-label";
+		btnSelected.appendChild(spanLabel);
+
+		const spanArrow   = document.createElement("span");
+		spanArrow.className = "arrow";
+		spanArrow.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+		const listaOpc    = document.createElement("ul");
+		listaOpc.className = "options";
+
+		wrapper.appendChild(btnSelected);
+		wrapper.appendChild(spanArrow);
+		wrapper.appendChild(listaOpc);
+
+		// Renderiza el estado visual del custom select
+		const renderizar = () => {
+			const optSel   = selectEl.options[selectEl.selectedIndex] || null;
+			const tieneVal = Boolean(selectEl.value);
+
+			spanLabel.textContent = selectEl.disabled ? "-----"
+				: tieneVal && optSel ? optSel.textContent
+				: "Opciones";
+
+			wrapper.classList.toggle("is-disabled",    selectEl.disabled);
+			wrapper.classList.toggle("is-placeholder", selectEl.disabled || !tieneVal);
+			wrapper.classList.toggle("is-valid",       !selectEl.disabled && tieneVal && selectEl.checkValidity());
+
+			listaOpc.innerHTML = "";
+			Array.from(selectEl.options).forEach(opt => {
+				if (opt.hidden || opt.disabled || opt.value === "") return;
+				const li = document.createElement("li");
+				li.textContent = opt.textContent;
+				li.classList.toggle("is-selected", opt.selected);
+				li.setAttribute("tabindex", "-1");
+				li.addEventListener("click", () => {
+					selectEl.value = opt.value;
+					selectEl.dispatchEvent(new Event("change", { bubbles: true }));
+					selectEl.dispatchEvent(new Event("input",  { bubbles: true }));
+					wrapper.classList.remove("open");
+					btnSelected.focus();
+					renderizar();
+				});
+				listaOpc.appendChild(li);
+			});
+		};
+
+		// Click en el botón del select
+		btnSelected.addEventListener("click", () => {
+			if (selectEl.disabled) return;
+			selectEl.dispatchEvent(new Event("focus"));
+			renderizar();
+			const estabaAbierto = wrapper.classList.contains("open");
+			cerrarOtrosSelects(wrapper);
+			wrapper.classList.toggle("open", !estabaAbierto);
+			if (!estabaAbierto) {
+				requestAnimationFrame(() => {
+					ajustarFuenteOpciones(wrapper);
+					listaOpc.querySelector("li.is-selected, li")?.focus();
+				});
+			}
+		});
+
+		// Teclado en el botón
+		btnSelected.addEventListener("keydown", e => {
+			if (selectEl.disabled) return;
+			if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+				e.preventDefault();
+				if (!wrapper.classList.contains("open")) {
+					cerrarOtrosSelects(wrapper);
+					wrapper.classList.add("open");
+					requestAnimationFrame(() => {
+						ajustarFuenteOpciones(wrapper);
+						(e.key === "ArrowDown"
+							? listaOpc.querySelector("li.is-selected, li")
+							: listaOpc.querySelector("li:last-child"))?.focus();
+					});
+				}
+			} else if (e.key === "Escape") {
+				wrapper.classList.remove("open");
+			}
+		});
+
+		// Teclado en la lista
+		listaOpc.addEventListener("keydown", e => {
+			const items = Array.from(listaOpc.querySelectorAll("li"));
+			const idx   = items.indexOf(document.activeElement);
+			if      (e.key === "ArrowDown")  { e.preventDefault(); items[Math.min(idx + 1, items.length - 1)]?.focus(); }
+			else if (e.key === "ArrowUp")    { e.preventDefault(); idx > 0 ? items[idx - 1].focus() : (wrapper.classList.remove("open"), btnSelected.focus()); }
+			else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); document.activeElement.click(); }
+			else if (e.key === "Escape" || e.key === "Tab") { wrapper.classList.remove("open"); btnSelected.focus(); }
+		});
+
+		// Sincronizar con el select nativo
+		selectEl.addEventListener("change", renderizar);
+		selectEl.addEventListener("input",  renderizar);
+		selectEl.addEventListener("blur",   renderizar);
+		new MutationObserver(renderizar).observe(selectEl, {
+			childList: true, subtree: true, attributes: true, attributeFilter: ["disabled"]
+		});
+		renderizar();
+	}
+
+	// Cerrar custom selects al hacer click fuera
+	document.addEventListener("click", e => {
+		if (!e.target.closest("#calculadora .custom-select")) cerrarOtrosSelects();
+	});
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// EVENTOS DE LOS SELECTS DE LA CALCULADORA
+	// ─────────────────────────────────────────────────────────────────────────
+
+	// Vehículo
+	DOM.inputs.vehiculo.addEventListener("change", e => {
+		const nuevoVehiculo = e.target.value;
+		if (estado.vehiculo === nuevoVehiculo) return;
+		const estadoAnterior = { ...estado };
+		estado.vehiculo = nuevoVehiculo;
+		e.target.classList.add("select-con-valor");
+		invalidarDependientes("vehiculo", estadoAnterior);
+
+		// Cargar combustibles
+		const selCombustible = DOM.inputs.combustible;
+		selCombustible.innerHTML = '<option value="" disabled selected hidden>Opciones</option>';
+		const combustibles = obtenerCombustiblesParaVehiculo(estado.vehiculo);
+		combustibles.forEach(c => {
+			const opt = document.createElement("option");
+			opt.value = c.v; opt.textContent = c.t;
+			selCombustible.appendChild(opt);
+		});
+		selCombustible.disabled = combustibles.length === 0;
+		selCombustible.classList.remove("select-con-valor");
+		invalidarDependientes("combustible");
+		actualizarPanelPreaprobado();
+	});
+
+	// Combustible
+	DOM.inputs.combustible.addEventListener("change", e => {
+		const nuevoCombustible = e.target.value;
+		if (estado.combustible === nuevoCombustible) return;
+		const estadoAnterior = { ...estado };
+		estado.combustible = nuevoCombustible;
+		e.target.classList.add("select-con-valor");
+		invalidarDependientes("combustible", estadoAnterior);
+
+		const esNafta = estado.combustible === "nafta";
+		const esMotoOCuatri =
+			(estado.vehiculo === "moto"        && ["nafta", "electricoMoto"].includes(estado.combustible)) ||
+			(estado.vehiculo === "cuatriciclo" && ["nafta", "electricoCuatri"].includes(estado.combustible));
+
+		if (esMotoOCuatri) {
+			DOM.inputs.condicion.innerHTML = '<option value="" disabled selected hidden>Opciones</option>';
+			DOM.inputs.condicion.disabled  = true;
+			if (esNafta) {
+			mostrarModalNumerico("CILINDRADA", "cc", CILINDRADA_MINIMA_MOTO, null, val => { estado.cilindrada = val; cargarCondicion(); });
+			} else {
+				mostrarModalNumerico("POTENCIA", "w", POTENCIA_MINIMA_MOTO, CONFIG.LIMITES.MOTO.POTENCIA.ALTA, val => { estado.potencia = val; cargarCondicion(); });
+			}
+		} else {
+			cargarCondicion();
+		}
+	});
+
+	// Condición
+	DOM.inputs.condicion.addEventListener("change", e => {
+		const nuevaCondicion = e.target.value;
+		if (estado.condicion === nuevaCondicion) return;
+		const estadoAnterior = { ...estado };
+		estado.condicion = nuevaCondicion;
+		if (e.target.value) e.target.classList.add("select-con-valor");
+		invalidarDependientes("condicion", estadoAnterior);
+		cargarAnio();
+	});
+
+	DOM.inputs.condicion.addEventListener("focus", cargarCondicion);
+	DOM.inputs.anio.addEventListener("focus",      cargarAnio);
+	DOM.inputs.plazo.addEventListener("focus",     cargarPlazo);
+	DOM.inputs.tasa.addEventListener("focus",      cargarTasa);
+
+	// Año
+	DOM.inputs.anio.addEventListener("change", e => {
+		const nuevoAnio = parseInt(e.target.value, 10);
+		if (estado.anio === nuevoAnio) return;
+		const estadoAnterior = { ...estado };
+		estado.anio = nuevoAnio;
+		e.target.classList.add("select-con-valor");
+		invalidarDependientes("anio", estadoAnterior);
+		cargarPlazo();
+	});
+
+	// Plazo
+	DOM.inputs.plazo.addEventListener("change", e => {
+		const nuevoPlazo = parseInt(e.target.value, 10);
+		if (estado.plazo === nuevoPlazo) return;
+		const estadoAnterior = { ...estado };
+		estado.plazo = nuevoPlazo;
+		e.target.classList.add("select-con-valor");
+		invalidarDependientes("plazo", estadoAnterior);
+		cargarTasa();
+	});
+
+	// Tasa
+	DOM.inputs.tasa.addEventListener("change", e => {
+		const nuevaTasa = parseFloat(e.target.value);
+		if (estado.tasa !== nuevaTasa) {
+			estado.tasa = nuevaTasa;
+			e.target.classList.add("select-con-valor");
+			actualizarBotonCalcular();
+			actualizarPanelPreaprobado();
+		}
+	});
+
+	// Botón Calcular
+	DOM.btnCalcular.addEventListener("click", mostrarResultado);
+
+	// Ocultar resultado al hacer foco en cualquier campo
+	Object.values(DOM.inputs).forEach(inp => {
+		inp.addEventListener("focus", ocultarResultado);
+	});
+
+	// Ocultar resultado al hacer click fuera
+	document.addEventListener("click", e => {
+		const container = DOM.resultado.container;
+		if (container && container.classList.contains("resultado-visible")) {
+			if (!container.contains(e.target) && !DOM.btnCalcular.contains(e.target)) {
+				ocultarResultado();
+			}
+		}
+	});
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// EVENTOS DEL MODAL PREAPROBADO
+	// ─────────────────────────────────────────────────────────────────────────
+	document.getElementById("cerrarModalPreaprobado").addEventListener("click", cerrarModalPreaprobado);
+	document.getElementById("btnCancelarPreaprobado").addEventListener("click", cerrarModalPreaprobado);
+
+	document.getElementById("datosPrestamoSi").addEventListener("change", () => {
+		const seccion = document.getElementById("datosPrestamoSi").closest(".modal-preaprobado__section");
+		if (seccion) seccion.classList.add("prestamo-datos-ok");
+		actualizarBotonEnviarPreaprobado();
+	});
+
+	document.getElementById("datosPrestamoNo").addEventListener("change", () => {
+		const seccion = document.getElementById("datosPrestamoNo").closest(".modal-preaprobado__section");
+		if (seccion) seccion.classList.remove("prestamo-datos-ok");
+		cerrarModalPreaprobado(true);
+
+		// Notificación de corrección de datos
+		const notif = document.createElement("div");
+		notif.className   = "notif-datos-prestamo";
+		notif.textContent = "Por favor corregí los datos del Préstamo";
+		document.body.appendChild(notif);
+		requestAnimationFrame(() => requestAnimationFrame(() => notif.classList.add("is-visible")));
+
+		setTimeout(() => {
+			notif.classList.remove("is-visible");
+			const eliminar = () => notif.remove();
+			notif.addEventListener("transitionend", eliminar, { once: true });
+			setTimeout(eliminar, 600);
+
+			if (estado.preaprobadoForm) delete estado.preaprobadoForm["radio:datosPrestamo"];
+			const secCalc = document.getElementById("calculadora");
+			if (secCalc) secCalc.scrollIntoView({ behavior: "smooth", block: "start" });
+		}, 2800);
+	});
+
+	// Cerrar modal al click en overlay
+	DOM.modales.preaprobado.addEventListener("click", e => {
+		if (!e.target.closest(".modal-preaprobado__content")) cerrarModalPreaprobado();
+	});
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Referencias al formulario Preaprobado y sus controles de validación
+	// ─────────────────────────────────────────────────────────────────────────
+	const formPreaprobado = document.getElementById("formPreaprobado");
+	const checkConsentimiento = document.getElementById("consentimientoDatos");
+	const errorTerminos       = document.getElementById("errorTerminosModal");
+
+	// Valida el checkbox de consentimiento
+	function validarConsentimiento() {
+		if (!checkConsentimiento) return false;
+		const aceptado = checkConsentimiento.checked;
+		const msg = aceptado ? "" : "Debes aceptar el tratamiento de datos para continuar.";
+		checkConsentimiento.setCustomValidity(msg);
+		if (errorTerminos) errorTerminos.classList.toggle("visible", !aceptado);
+		return aceptado;
+	}
+
+	let _refFormPreaprobado; // referencia temporal para inicializar file inputs
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Habilita/deshabilita el botón Enviar del modal según campos obligatorios
+	// ─────────────────────────────────────────────────────────────────────────
+	function actualizarBotonEnviarPreaprobado() {
+		const btnEnviar = document.getElementById("btnEnviarPreaprobado");
+		if (!btnEnviar) return;
+
+		const dniFrente        = document.getElementById("dniTitularFrente");
+		const dniDorso         = document.getElementById("dniTitularDorso");
+		const tituloFrente     = document.getElementById("tituloFrente");
+		const telCliente       = document.getElementById("telefonoCliente");
+		const mailCliente      = document.getElementById("mailCliente");
+		const consentimiento   = document.getElementById("consentimientoDatos");
+		const solicitante      = document.getElementById("tipoSolicitante");
+		const telContacto      = document.getElementById("telefonoContacto");
+
+		const listo = !!(
+			document.querySelector('input[name="datosPrestamo"]:checked')?.value === "si" &&
+			solicitante?.value.trim().length > 0 &&
+			telContacto?.value.trim().length >= 10 &&
+			dniFrente?.files?.length    > 0 &&
+			dniDorso?.files?.length     > 0 &&
+			tituloFrente?.files?.length > 0 &&
+			telCliente?.value.trim().length >= 10 &&
+			mailCliente?.value.trim() &&
+			/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mailCliente?.value.trim()) &&
+			consentimiento?.checked
+		);
+
+		btnEnviar.disabled = !listo;
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Inicializa el toggle de sección extra (cónyuge / cotitular)
+	// @param {string} grupo - "conyuge" o "cotitular"
+	// @param {string} nombreRadio - nombre del radio group
+	// ─────────────────────────────────────────────────────────────────────────
+	function inicializarOpcionExtra(grupo, nombreRadio) {
+		const radios     = document.querySelectorAll(`input[name="${nombreRadio}"]`);
+		const secExtras  = document.querySelectorAll(`[data-extra-group="${grupo}"]`);
+
+		const actualizar = () => {
+			const marcadoSi = document.querySelector(`input[name="${nombreRadio}"]:checked`)?.value === "si";
+			secExtras.forEach(sec => {
+				sec.classList.toggle("is-hidden", !marcadoSi);
+				sec.querySelectorAll("input").forEach(inp => {
+					inp.disabled = !marcadoSi;
+					if (!marcadoSi) inp.value = "";
+					if (inp._syncPreaprobadoFileUi) inp._syncPreaprobadoFileUi();
+					actualizarEstadoVisual(inp);
+				});
+			});
+		};
+		radios.forEach(r => r.addEventListener("change", actualizar));
+		actualizar();
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Inicializar inputs file con UI custom (reemplaza el nativo)
+	// ─────────────────────────────────────────────────────────────────────────
+	const FILE_NAME_MAP = {
+		dniTitularFrente: "DNI_Titular_Frente",
+		dniTitularDorso:  "DNI_Titular_Dorso",
+		tituloFrente:     "Titulo_Frente",
+		tituloDorso:      "Titulo_Dorso",
+		conyugeFrente:    "DNI_Conyuge_Frente",
+		conyugeDorso:     "DNI_Conyuge_Dorso",
+		cotitularFrente:  "DNI_Cotitular_Frente",
+		cotitularDorso:   "DNI_Cotitular_Dorso",
+	};
+
+	if (formPreaprobado) {
+		(_refFormPreaprobado = formPreaprobado) &&
+		_refFormPreaprobado.querySelectorAll('input[type="file"]').forEach(inputFile => {
+			if (inputFile.dataset.preaprobadoFileReady === "true") return;
+			inputFile.dataset.preaprobadoFileReady = "true";
+			inputFile.classList.add("modal-preaprobado__file-native");
+
+			const pickerDiv  = document.createElement("div");
+			pickerDiv.className = "modal-preaprobado__file-picker";
+
+			const btnImagen  = document.createElement("span");
+			btnImagen.className  = "modal-preaprobado__file-button";
+			btnImagen.textContent = "Imagen";
+
+			const spanNombre = document.createElement("span");
+			spanNombre.className  = "modal-preaprobado__file-name";
+			spanNombre.textContent = "";
+
+			inputFile.parentNode.insertBefore(pickerDiv, inputFile);
+			pickerDiv.appendChild(btnImagen);
+			pickerDiv.appendChild(spanNombre);
+			pickerDiv.appendChild(inputFile);
+
+			const sincronizarUI = () => {
+				const tieneArchivo = inputFile.files && inputFile.files.length > 0;
+				if (tieneArchivo) {
+					const archivo = inputFile.files[0];
+					const ext = archivo.name.includes(".") ? archivo.name.split(".").pop().toLowerCase() : "";
+					const base = FILE_NAME_MAP[inputFile.id] || inputFile.id;
+					inputFile._nombreNormalizado = ext ? `${base}.${ext}` : base;
+				} else {
+					inputFile._nombreNormalizado = null;
+				}
+				spanNombre.textContent = tieneArchivo ? inputFile._nombreNormalizado : "";
+				spanNombre.classList.toggle("is-visible",  tieneArchivo);
+				btnImagen.classList.toggle("is-hidden",    tieneArchivo);
+				pickerDiv.style.justifyContent = tieneArchivo ? "flex-start" : "center";
+				pickerDiv.classList.toggle("is-disabled", inputFile.disabled);
+			};
+
+			inputFile.addEventListener("change", sincronizarUI);
+			inputFile._syncPreaprobadoFileUi = sincronizarUI;
+			sincronizarUI();
+		});
+
+		inicializarValidacionVisual(formPreaprobado);
+		configurarValidacionEmail(formPreaprobado.querySelector("#mailContacto"));
+		configurarValidacionEmail(formPreaprobado.querySelector("#mailCliente"));
+		configurarTelefonoSoloNumeros(formPreaprobado.querySelector("#telefonoContacto"));
+		configurarTelefonoSoloNumeros(formPreaprobado.querySelector("#telefonoCliente"));
+
+		// Sincronizar selects del modal con la calculadora al cambiar año/plazo/tasa
+		DOM.preaprobadoPrestamo?.anio?.control?.addEventListener("change",  () => { actualizarPanelPreaprobado(false); sincronizarCalculadoraDesdeModal(); });
+		DOM.preaprobadoPrestamo?.plazo?.control?.addEventListener("change", () => { actualizarPanelPreaprobado(false); sincronizarCalculadoraDesdeModal(); });
+		DOM.preaprobadoPrestamo?.tasa?.control?.addEventListener("change",  () => { actualizarPanelPreaprobado(false); sincronizarCalculadoraDesdeModal(); });
+
+		formPreaprobado.addEventListener("input",  guardarEstadoFormPreaprobado);
+		formPreaprobado.addEventListener("change", guardarEstadoFormPreaprobado);
+
+		if (checkConsentimiento) {
+			checkConsentimiento.addEventListener("change",  validarConsentimiento);
+			checkConsentimiento.addEventListener("change",  actualizarBotonEnviarPreaprobado);
+			checkConsentimiento.addEventListener("invalid", () => validarConsentimiento());
+		}
+
+		formPreaprobado.addEventListener("input",  actualizarBotonEnviarPreaprobado);
+		formPreaprobado.addEventListener("change", actualizarBotonEnviarPreaprobado);
+		actualizarBotonEnviarPreaprobado();
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Envío por WhatsApp del formulario Preaprobado
+	// ─────────────────────────────────────────────────────────────────────────
+	document.getElementById("btnEnviarPreaprobado")?.addEventListener("click", () => {
+		const formEl = document.getElementById("formPreaprobado");
+		if (!formEl) return;
+
+		const getVal   = id => document.getElementById(id)?.value?.trim() || "";
+		const getNombre = id => {
+			const el = document.getElementById(id);
+			if (!el?.files?.length) return "-";
+			return el._nombreNormalizado || el.files[0].name;
+		};
+
+		const tieneConyuge   = document.querySelector('input[name="estadoConyuge"]:checked')?.value === "si";
+		const monto          = getVal("preaprobadoMonto")  || "No indicado";
+		const anio           = getVal("preaprobadoAnio")   || "No indicado";
+		const plazo          = getVal("preaprobadoPlazo")  || "No indicado";
+		const tasa           = getVal("preaprobadoTasa")   || "No indicado";
+		const cuota          = getVal("preaprobadoCuota")  || "No indicado";
+
+		let msg = "";
+		msg += "🔵 *TITULAR*\n";
+		msg += `DNI Frente: ${getNombre("dniTitularFrente")}\n`;
+		msg += `DNI Dorso: ${getNombre("dniTitularDorso")}\n\n`;
+		msg += "🔵 *TÍTULO AUTOMOTOR*\n";
+		msg += `Frente (o CAT): ${getNombre("tituloFrente")}\n`;
+		msg += `Dorso: ${getNombre("tituloDorso")}\n\n`;
+		msg += "🔵 *CONTACTO CLIENTE*\n";
+		msg += `telefonoContacto:\n${getVal("telefonoContacto") || "-"}\n`;
+		msg += `mailContacto:\n${getVal("mailContacto") || "-"}\n\n`;
+
+		if (tieneConyuge) {
+			msg += "🔵 *CASADO/CONCUBINO*\n";
+			msg += `DNI Frente: ${getNombre("conyugeFrente")}\n`;
+			msg += `DNI Dorso: ${getNombre("conyugeDorso")}\n\n`;
+		}
+
+		msg += "🔵 *NOTA:* Se enviarán por WhatsApp única y exclusivamente los archivos listados arriba. Ningún otro archivo.\n\n";
+		msg += "🔵 *DATOS PRÉSTAMO*\n";
+		msg += `Monto: ${monto}\n`;
+		msg += `Año: ${anio}\n`;
+		msg += `Plazo: ${plazo}\n`;
+		msg += `Tasa: ${tasa}\n`;
+		msg += `Cuota: ${cuota}\n\n`;
+		msg += "✅ Acepto que procesen mis datos personales\n\n";
+		msg += "---\n";
+		msg += `*Solicitante:* ${getVal("tipoSolicitante") || "-"}\n`;
+		msg += `*Tel. Contacto:* ${getVal("telefonoContacto") || "-"}\n`;
+		const mailCtc = getVal("mailContacto");
+		if (mailCtc) msg += `*Mail Contacto:* ${mailCtc}\n`;
+
+		const url = "https://wa.me/5493446612371?text=" + encodeURIComponent(msg);
+		const _a = document.createElement("a");
+		_a.href = url;
+		_a.target = "_blank";
+		_a.rel = "noopener noreferrer";
+		document.body.appendChild(_a);
+		_a.click();
+		document.body.removeChild(_a);
+	});
+
+	// Inicializar secciones extra de cónyuge y cotitular
+	inicializarOpcionExtra("conyuge",    "estadoConyuge");
+	inicializarOpcionExtra("cotitular",  "estadoCotitular");
+
+	// Links Preaprobado (header y footer)
+	const linkPreaprobadoHeader = document.getElementById("linkDatosPreaprobadoHeader");
+	if (linkPreaprobadoHeader) {
+		linkPreaprobadoHeader.addEventListener("click", e => { e.preventDefault(); abrirModalPreaprobado(); });
+	}
+
+	const linkPreaprobadoFooter = document.getElementById("linkDatosPreaprobadoFooter");
+	if (linkPreaprobadoFooter) {
+		linkPreaprobadoFooter.addEventListener("click", e => { e.preventDefault(); abrirModalPreaprobado(); });
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// AJUSTE DINÁMICO DE FUENTE: frase UVA/0% en el panel resultado
+	// ─────────────────────────────────────────────────────────────────────────
+	let _cacheFrase = { ancho: -1 };
+	function ajustarFuenteFrase() {
+		const fraseEl = DOM.resultado.fraseInfo;
+		if (!fraseEl) return;
+
+		const lineas = Array.from(fraseEl.querySelectorAll(".frase-line"));
+		if (!lineas.length) return;
+
+		const refLabel   = document.querySelector("#calculadora label") || document.querySelector("label");
+		const fzBase     = refLabel ? parseFloat(window.getComputedStyle(refLabel).fontSize || "0") : 15.36;
+		const lineasData = lineas.filter(l => !l.classList.contains("frase-line--title"));
+		const lineasRef  = lineasData.length ? lineasData : lineas;
+
+		const estilos    = window.getComputedStyle(fraseEl);
+		const padding    = parseFloat(estilos.paddingLeft || "0") + parseFloat(estilos.paddingRight || "0");
+		const anchoDisp  = (fraseEl.parentElement?.clientWidth || fraseEl.clientWidth) - padding;
+		if (anchoDisp <= 0) return;
+		if (Math.abs(anchoDisp - _cacheFrase.ancho) < 1) return;
+		_cacheFrase.ancho = anchoDisp;
+
+		const medirAncho = (el, fz) => {
+			const clon = el.cloneNode(true);
+			Object.assign(clon.style, {
+				position: "absolute", visibility: "hidden", pointerEvents: "none",
+				width: "auto", maxWidth: "none", display: "inline-block",
+				whiteSpace: "nowrap", fontSize: `${fz}px`, lineHeight: "1.2",
+				letterSpacing: "-0.01em", padding: "0", margin: "0"
+			});
+			document.body.appendChild(clon);
+			const w = clon.getBoundingClientRect().width;
+			clon.remove();
+			return w;
+		};
+
+		let min = 7, max = fzBase, mejor = min;
+		while (max - min > 0.1) {
+			const mid = (min + max) / 2;
+			if (Math.max(...lineasRef.map(l => medirAncho(l, mid))) <= anchoDisp) {
+				mejor = mid; min = mid;
+			} else { max = mid; }
+		}
+
+		fraseEl.style.setProperty("--frase-info-font", `${mejor.toFixed(2)}px`);
+		const anchoReal = Math.max(...lineasRef.map(l => medirAncho(l, mejor)));
+		fraseEl.style.width = `${Math.min(anchoDisp + padding, anchoReal + padding).toFixed(2)}px`;
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// AJUSTE DINÁMICO DE FUENTE: total cuota en el panel resultado
+	// ─────────────────────────────────────────────────────────────────────────
+	let _cacheResultado = { ancho: -1 };
+	function ajustarFuenteResultado() {
+		const elCuotaTotal = DOM.resultado.container?.querySelector(".resultado-cuota-total");
+		const contenedor   = DOM.resultado.container;
+		if (!elCuotaTotal || !contenedor || !contenedor.classList.contains("resultado-visible")) return;
+
+		const refTitulo = document.querySelector("#calculadora .panel-encabezado__titulo");
+		const fzBase    = refTitulo ? parseFloat(window.getComputedStyle(refTitulo).fontSize || "0") : 28;
+		const estilos   = window.getComputedStyle(contenedor);
+		const padding   = parseFloat(estilos.paddingLeft || "0") + parseFloat(estilos.paddingRight || "0");
+		const anchoDisp = contenedor.clientWidth - padding;
+		if (anchoDisp <= 0) return;
+		if (Math.abs(anchoDisp - _cacheResultado.ancho) < 1) return;
+		_cacheResultado.ancho = anchoDisp;
+
+		const medirAncho = (fz) => {
+			const clon = elCuotaTotal.cloneNode(true);
+			Object.assign(clon.style, {
+				position: "absolute", visibility: "hidden", pointerEvents: "none",
+				width: "auto", maxWidth: "none", whiteSpace: "nowrap",
+				fontSize: `${fz}px`, margin: "0"
+			});
+			document.body.appendChild(clon);
+			const w = clon.getBoundingClientRect().width;
+			clon.remove();
+			return w;
+		};
+
+		let min = 8, max = fzBase, mejor = min;
+		while (max - min > 0.1) {
+			const mid = (min + max) / 2;
+			if (medirAncho(mid) <= anchoDisp) { mejor = mid; min = mid; }
+			else { max = mid; }
+		}
+		elCuotaTotal.style.fontSize = `${mejor.toFixed(2)}px`;
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// POSICIONAMIENTO DEL PANEL DE RESULTADO (flotante entre calculadora y servicios)
+	// ─────────────────────────────────────────────────────────────────────────
+	function posicionarResultado() {
+		const contenedor = DOM.resultado.container;
+		if (!contenedor || !contenedor.classList.contains("resultado-visible")) return;
+
+		const panelCalc    = document.querySelector("#calculadora .calculadora-container");
+		if (!panelCalc) return;
+
+		const rectCalc     = panelCalc.getBoundingClientRect();
+		const panelServ    = document.querySelector("#servicios .section-panel");
+		const rectServ     = panelServ ? panelServ.getBoundingClientRect() : rectCalc;
+
+		const leftInicio   = (rectCalc.left + rectServ.left) / 2;
+		const anchoTotal   = (rectCalc.left + rectCalc.width + rectServ.left + rectServ.width) / 2 - leftInicio;
+		const rectBtn      = DOM.btnCalcular.getBoundingClientRect();
+
+		contenedor.style.top       = `${rectBtn.top + rectBtn.height / 2}px`;
+		contenedor.style.transform = "translateY(-50%)";
+		contenedor.style.left      = `${leftInicio}px`;
+		contenedor.style.width     = `${anchoTotal}px`;
+		contenedor.style.height    = "auto";
+		contenedor.style.maxHeight = `${rectCalc.height - 40}px`;
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Navegación suave: si el modal está abierto, cerrarlo antes de navegar
+	// ─────────────────────────────────────────────────────────────────────────
+	document.querySelectorAll('header nav a[href^="#"]:not([data-modal-link="true"])').forEach(enlace => {
+		enlace.addEventListener("click", e => {
+			const href      = enlace.getAttribute("href");
+			const destino   = href ? document.querySelector(href) : null;
+
+			if (DOM.modales.preaprobado.getAttribute("aria-hidden") === "false" && destino) {
+				e.preventDefault();
+				(function resetearFormPreaprobado() {
+					if (!formPreaprobado) return;
+					formPreaprobado.reset();
+					formPreaprobado.querySelectorAll("input, select, textarea").forEach(el => {
+						if (el.type === "hidden") return;
+						if (el.type === "radio" || el.type === "checkbox") el.checked = el.defaultChecked;
+						else if (el.type === "file") { el.value = ""; if (el._syncPreaprobadoFileUi) el._syncPreaprobadoFileUi(); }
+						else el.value = el.defaultValue || "";
+						el.setCustomValidity("");
+					});
+					resetearClasesValidacion(formPreaprobado);
+					sincronizarRadiosDinamicos();
+					estado.preaprobadoForm = {};
+					if (errorTerminos) errorTerminos.classList.remove("visible");
+					const secPrestamo = formPreaprobado.querySelector("#datosPrestamoSi")?.closest(".modal-preaprobado__section");
+					if (secPrestamo) secPrestamo.classList.remove("prestamo-datos-ok");
+				})();
+				cerrarModalPreaprobado(false);
+				history.pushState(null, "", href);
+				destino.scrollIntoView({ behavior: "smooth", block: "start" });
+			}
+		});
+	});
+
+	// Cerrar modal con Escape
+	document.addEventListener("keydown", e => {
+		if (e.key === "Escape" && DOM.modales.preaprobado.getAttribute("aria-hidden") === "false") {
+			cerrarModalPreaprobado();
+		}
+	});
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// Inicializar textos de límites UVA en el panel de información
+	// ─────────────────────────────────────────────────────────────────────────
+	if (DOM.resultado.infoAutos.anio)       DOM.resultado.infoAutos.anio.textContent       = LIMITES_UVA.AUTOS.INICIO;
+	if (DOM.resultado.infoAutos.meses)      DOM.resultado.infoAutos.meses.textContent      = LIMITES_UVA.AUTOS.MESES_MAX;
+	if (DOM.resultado.infoMotos.cilindrada) DOM.resultado.infoMotos.cilindrada.textContent = CONFIG.LIMITES.MOTO.CILINDRADA.UVA;
+	if (DOM.resultado.infoMotos.anio)       DOM.resultado.infoMotos.anio.textContent       = LIMITES_UVA.MOTOS.INICIO;
+	if (DOM.resultado.infoMotos.meses)      DOM.resultado.infoMotos.meses.textContent      = LIMITES_UVA.MOTOS.MESES_MAX;
+
+	// Mostrar/ocultar la frase de info según tasas habilitadas
+	(function inicializarFraseInfo() {
+		const fraseEl = DOM.resultado.fraseInfo;
+		if (!fraseEl) return;
+		fraseEl.querySelectorAll("[data-tasa-grupo]").forEach(span => {
+			const grupo   = span.dataset.tasaGrupo;
+			const visible = (grupo === "uva" && TASA_UVA_HABILITADA) || (grupo === "cero" && TASA_CERO_HABILITADA);
+			span.style.display = visible ? "" : "none";
+		});
+		fraseEl.style.display = (TASA_UVA_HABILITADA || TASA_CERO_HABILITADA) ? "" : "none";
+	})();
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// RESIZE OBSERVERS Y EVENT LISTENERS DE REDIMENSIONADO
+	// ─────────────────────────────────────────────────────────────────────────
+	actualizarAlturaHeader();
+
+	if (window.ResizeObserver) {
+		const headerEl = document.querySelector("header");
+		if (headerEl) new ResizeObserver(debounce(actualizarAlturaHeader, 100)).observe(headerEl);
+	}
+
+	if (window.ResizeObserver && DOM.resultado.fraseInfo) {
+		new ResizeObserver(debounce(ajustarFuenteFrase, 150)).observe(DOM.resultado.fraseInfo);
+	}
+
+	window.addEventListener("load", actualizarAlturaHeader);
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// AJUSTE DINÁMICO DE FUENTE: placeholder del input Monto
+	// ─────────────────────────────────────────────────────────────────────────
+	let _cacheMontoAncho = -1;
+	function ajustarFuenteMonto() {
+		const input = DOM.inputs.monto;
+		if (!input) return;
+
+		const estilos   = window.getComputedStyle(input);
+		const anchoDisp = input.clientWidth
+			- parseFloat(estilos.paddingLeft  || 0)
+			- parseFloat(estilos.paddingRight || 0);
+		if (anchoDisp <= 0) return;
+		if (Math.abs(anchoDisp - _cacheMontoAncho) < 1) return;
+		_cacheMontoAncho = anchoDisp;
+
+		const texto  = input.placeholder;
+		if (!texto) return;
+
+		const fzBase = parseFloat(estilos.fontSize) || 16;
+
+		const medirAncho = (fz) => {
+			const span = document.createElement("span");
+			Object.assign(span.style, {
+				position: "absolute", visibility: "hidden", pointerEvents: "none",
+				whiteSpace: "nowrap", fontSize: `${fz}px`,
+				fontFamily: estilos.fontFamily, fontWeight: estilos.fontWeight,
+				letterSpacing: estilos.letterSpacing, padding: "0", margin: "0"
+			});
+			span.textContent = texto;
+			document.body.appendChild(span);
+			const w = span.getBoundingClientRect().width;
+			span.remove();
+			return w;
+		};
+
+		if (medirAncho(fzBase) <= anchoDisp) {
+			input.style.removeProperty("font-size");
+			return;
+		}
+
+		let min = 9, max = fzBase, mejor = min;
+		while (max - min > 0.25) {
+			const mid = (min + max) / 2;
+			if (medirAncho(mid) <= anchoDisp) { mejor = mid; min = mid; }
+			else { max = mid; }
+		}
+		input.style.fontSize = `${mejor.toFixed(2)}px`;
+	}
+
+	// Un único listener debounced reemplaza los 9 individuales
+	const _onResize = debounce(() => {
+		actualizarAlturaHeader();
+		ajustarFuenteMonto();
+		ajustarFuenteFrase();
+		ajustarFuenteResultado();
+		posicionarResultado();
+		calcularOffsetTopModal();
+		actualizarAnchoModal();
+		eliminarMaxHeightModal();
+		actualizarOverlayModal();
+		ajustarColumnasPreaprobado();
+	}, 150);
+
+	window.addEventListener("resize", _onResize, { passive: true });
+
+	// Reposicionar resultado en scroll (throttle via rAF)
+	let rafScrollId = null;
+	window.addEventListener("scroll", () => {
+		if (rafScrollId) cancelAnimationFrame(rafScrollId);
+		rafScrollId = requestAnimationFrame(() => { posicionarResultado(); rafScrollId = null; });
+	}, { passive: true });
+
+	// Ejecución inicial de ajustes de fuente y posición
+	ajustarFuenteMonto();
+	ajustarFuenteFrase();
+	ajustarFuenteResultado();
+	posicionarResultado();
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// FORMULARIO DE CONTACTO
+	// ─────────────────────────────────────────────────────────────────────────
+	if (DOM.contacto.form) {
+		inicializarValidacionVisual(DOM.contacto.form);
+
+		const inputEmail    = DOM.contacto.form.querySelector("#email");
+		const inputTelefono = DOM.contacto.form.querySelector("#telefono");
+		configurarValidacionEmail(inputEmail);
+		configurarTelefonoSoloNumeros(inputTelefono);
+
+		const textoExitoOriginal = DOM.contacto.exito
+			? DOM.contacto.exito.textContent.trim()
+			: "Mensaje enviado exitosamente";
+
+		// Muestra mensaje de estado del formulario de contacto
+		const mostrarEstadoContacto = (mensaje, esError = false, duracion = 5000) => {
+			if (!DOM.contacto.exito) return;
+			DOM.contacto.exito.textContent = mensaje;
+			DOM.contacto.exito.classList.toggle("is-error", esError);
+			DOM.contacto.exito.classList.add("visible");
+			window.clearTimeout(window.contactoEstadoTimer);
+			window.contactoEstadoTimer = window.setTimeout(() => {
+				DOM.contacto.exito.classList.remove("visible", "is-error");
+				DOM.contacto.exito.textContent = textoExitoOriginal;
+			}, duracion);
+		};
+
+		DOM.contacto.form.addEventListener("submit", async e => {
+			e.preventDefault();
+			if (!DOM.contacto.form.checkValidity()) { DOM.contacto.form.reportValidity(); return; }
+
+			const btnEnviar   = DOM.contacto.form.querySelector('button[type="submit"]');
+			const textoOrig   = btnEnviar.textContent;
+			const urlAccion   = DOM.contacto.form.getAttribute("action") || "https://formsubmit.co/ajax/contacto@tuprendario.com";
+			const datos       = new FormData(DOM.contacto.form);
+
+			btnEnviar.textContent = "Enviando...";
+			btnEnviar.disabled    = true;
+
+			try {
+				const respuesta = await fetch(urlAccion, { method: "POST", body: datos });
+
+				// Parsea la respuesta de FormSubmit (puede ser JSON o HTML)
+				const parsearRespuesta = async (resp, url) => {
+					const textoResp = await resp.text();
+					let json = null;
+					try { json = textoResp ? JSON.parse(textoResp) : null; } catch { json = null; }
+
+					if (json && typeof json === "object") {
+						if (!Object.prototype.hasOwnProperty.call(json, "success")) json.success = resp.ok;
+						return json;
+					}
+
+					// Limpiar HTML para extraer texto legible
+					const textoLimpio = textoResp
+						.replace(/<style[\s\S]*?<\/style>/gi, " ")
+						.replace(/<script[\s\S]*?<\/script>/gi, " ")
+						.replace(/<[^>]+>/g, " ")
+						.replace(/\s+/g, " ").trim();
+
+					const esFormSubmit = url.includes("formsubmit.co");
+					let msgError = esFormSubmit
+						? `El servicio de formularios respondió ${resp.status}. Si es el primer envío, confirmá la activación desde el mail que llega a la casilla destino.`
+						: `El servicio configurado en ${url} respondió ${resp.status}. Revisá la URL configurada en el formulario.`;
+
+					if (resp.status === 404) {
+						msgError = esFormSubmit
+							? "No se pudo contactar el servicio de formularios. Verificá la conexión a internet e intentá nuevamente."
+							: `No se encontró ${url} en el servidor. Verificá que el archivo exista en el hosting y que la ruta sea correcta.`;
+					} else if (esFormSubmit && /confirm|activate|activation|verify|verification/.test(textoLimpio.toLowerCase())) {
+						msgError = "FormSubmit pidió confirmar la casilla destino. Abrí el correo de activación en la cuenta receptora y luego reenviá el formulario.";
+					} else if (textoLimpio !== "") {
+						msgError += ` Detalle: ${textoLimpio.slice(0, 180)}${textoLimpio.length > 180 ? "..." : ""}`;
+					}
+
+					return { success: false, message: msgError };
+				};
+
+				const resultado = await parsearRespuesta(respuesta, urlAccion);
+				const exitoso   = resultado && typeof resultado === "object" &&
+					Object.prototype.hasOwnProperty.call(resultado, "success") &&
+					(resultado.success === true || resultado.success === "true" || resultado.success === 1 || resultado.success === "1");
+
+				if (!respuesta.ok || !exitoso) throw new Error(resultado.message || "No fue posible enviar el mensaje.");
+
+				mostrarEstadoContacto(resultado.message || "Mensaje enviado correctamente. Si es el primer envío, confirmá el correo de activación que envía FormSubmit.");
+				DOM.contacto.form.reset();
+				if (inputEmail) inputEmail.setCustomValidity("");
+				resetearClasesValidacion(DOM.contacto.form);
+				if (DOM.contacto.contador) DOM.contacto.contador.textContent = "0";
+
+			} catch (err) {
+				mostrarEstadoContacto(err.message || "No fue posible enviar el mensaje.", true, 6500);
+			} finally {
+				btnEnviar.textContent = textoOrig;
+				btnEnviar.disabled    = false;
+			}
+		});
+
+		// Contador de caracteres del textarea mensaje
+		const textareaMensaje = document.getElementById("mensaje");
+		if (textareaMensaje) {
+			textareaMensaje.addEventListener("input", function () {
+				DOM.contacto.contador.textContent = this.value.length;
+			});
+			const placeholderOriginal = textareaMensaje.getAttribute("placeholder") || "";
+			textareaMensaje.addEventListener("focus", function () { textareaMensaje.setAttribute("placeholder", ""); });
+			textareaMensaje.addEventListener("blur",  function () {
+				if (!textareaMensaje.value || textareaMensaje.value.trim() === "") {
+					textareaMensaje.setAttribute("placeholder", placeholderOriginal);
+				}
+			});
+		}
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// SCROLL SUAVE PARA TODOS LOS LINKS ANCLA (excepto los del modal)
+	// ─────────────────────────────────────────────────────────────────────────
+	document.querySelectorAll('a[href^="#"]').forEach(enlace => {
+		if (enlace.dataset.modalLink === "true") return;
+		enlace.addEventListener("click", function (e) {
+			e.preventDefault();
+			const destino = document.querySelector(this.getAttribute("href"));
+			if (!destino) return;
+
+			const header       = document.querySelector("header");
+			const alturaHeader = header ? header.offsetHeight + 10 : 0;
+			const scrollMargin = window.getComputedStyle(destino).scrollMarginTop;
+			const margen       = scrollMargin ? parseFloat(scrollMargin) : NaN;
+			const offset       = isNaN(margen) ? alturaHeader : margen;
+			const posY         = destino.getBoundingClientRect().top + window.pageYOffset - offset;
+			window.scrollTo({ top: posY, behavior: "smooth" });
+		});
+	});
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// INTERSECTION OBSERVER: animación fadeIn al entrar en viewport
+	// ─────────────────────────────────────────────────────────────────────────
+	const observadorSecciones = new IntersectionObserver(
+		entries => {
+			entries.forEach(entry => {
+				if (entry.isIntersecting) entry.target.classList.add("animate-fadeIn");
+			});
+		},
+		{ threshold: 0.1 }
+	);
+	document.querySelectorAll("section").forEach(sec => observadorSecciones.observe(sec));
+
+}); // fin DOMContentLoaded

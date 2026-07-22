@@ -1,0 +1,85 @@
+RewriteEngine On
+
+# ── HTTP → HTTPS ────────────────────────────────────────────────────────────
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP_HOST} ^www\.tuprendario\.com [NC]
+RewriteRule ^(.*)$ https://tuprendario.com/$1 [L,R=301]
+
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP_HOST} ^tuprendario\.com [NC]
+RewriteRule ^(.*)$ https://tuprendario.com/$1 [L,R=301]
+
+# ── www → no-www (ya sobre HTTPS) ───────────────────────────────────────────
+RewriteCond %{HTTPS} on
+RewriteCond %{HTTP_HOST} ^www\.tuprendario\.com [NC]
+RewriteRule ^(.*)$ https://tuprendario.com/$1 [L,R=301]
+
+# ── Brotli (prioridad sobre gzip) ──────────────────────────────────────────
+<IfModule mod_brotli.c>
+    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript application/javascript application/json application/ld+json image/svg+xml
+</IfModule>
+
+# ── Gzip fallback ──────────────────────────────────────────────────────────
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/ld+json image/svg+xml
+    <IfModule mod_setenvif.c>
+        BrowserMatch ^Mozilla/4 gzip-only-text/html
+        BrowserMatch ^Mozilla/4\.0[678] no-gzip
+        BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+    </IfModule>
+</IfModule>
+
+# ── Vary: Accept-Encoding ──────────────────────────────────────────────────
+<IfModule mod_headers.c>
+    <FilesMatch "\.(html|css|js|json|svg|xml)$">
+        Header append Vary Accept-Encoding
+    </FilesMatch>
+</IfModule>
+
+# ── Keep-Alive ─────────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+    Header set Connection keep-alive
+</IfModule>
+
+# ── ETag ───────────────────────────────────────────────────────────────────
+FileETag MTime Size
+
+# ── Caché por tipo ─────────────────────────────────────────────────────────
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg              "access plus 1 year"
+    ExpiresByType image/jpeg             "access plus 1 year"
+    ExpiresByType image/png              "access plus 1 year"
+    ExpiresByType image/gif              "access plus 1 year"
+    ExpiresByType image/webp             "access plus 1 year"
+    ExpiresByType image/avif             "access plus 1 year"
+    ExpiresByType image/svg+xml          "access plus 1 year"
+    ExpiresByType image/x-icon           "access plus 1 year"
+    ExpiresByType font/woff              "access plus 1 year"
+    ExpiresByType font/woff2             "access plus 1 year"
+    ExpiresByType application/font-woff  "access plus 1 year"
+    ExpiresByType application/font-woff2 "access plus 1 year"
+    ExpiresByType text/html              "access plus 0 seconds"
+    ExpiresByType text/css               "access plus 0 seconds"
+    ExpiresByType application/javascript "access plus 0 seconds"
+    ExpiresByType application/json       "access plus 0 seconds"
+</IfModule>
+
+# ── Cache-Control ──────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+    <FilesMatch "\.(html|js|css|json)$">
+        Header set Cache-Control "no-cache, must-revalidate"
+    </FilesMatch>
+    <FilesMatch "\.(jpg|jpeg|png|gif|webp|avif|svg|ico|woff|woff2)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+</IfModule>
+
+# ── Security headers (mejoran score Lighthouse) ────────────────────────────
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options    "nosniff"
+    Header set X-Frame-Options           "SAMEORIGIN"
+    Header set X-XSS-Protection          "1; mode=block"
+    Header set Referrer-Policy           "strict-origin-when-cross-origin"
+    Header set Permissions-Policy        "geolocation=(), microphone=(), camera=()"
+</IfModule>
